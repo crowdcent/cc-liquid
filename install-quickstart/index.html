@@ -461,18 +461,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#first-time-setup" class="md-nav__link">
+  <a href="#or-run-without-directly-installing-uvx" class="md-nav__link">
     <span class="md-ellipsis">
-      First-time setup
+      Or run without directly installing (uvx)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#run-without-installing-uvx" class="md-nav__link">
+  <a href="#first-time-setup" class="md-nav__link">
     <span class="md-ellipsis">
-      Run without installing (uvx)
+      First-time setup
     </span>
   </a>
   
@@ -965,18 +965,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#first-time-setup" class="md-nav__link">
+  <a href="#or-run-without-directly-installing-uvx" class="md-nav__link">
     <span class="md-ellipsis">
-      First-time setup
+      Or run without directly installing (uvx)
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#run-without-installing-uvx" class="md-nav__link">
+  <a href="#first-time-setup" class="md-nav__link">
     <span class="md-ellipsis">
-      Run without installing (uvx)
+      First-time setup
     </span>
   </a>
   
@@ -1079,13 +1079,17 @@
 </div>
 </div>
 </div>
+<p>Then, install cc-liquid as a CLI tool:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>cc-liquid
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1"># Optional Numerai support</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>cc-liquid<span class="o">[</span>numerai<span class="o">]</span>
+</code></pre></div></p>
+<h3 id="or-run-without-directly-installing-uvx">Or run without directly installing (uvx)</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>uvx<span class="w"> </span>cc-liquid<span class="w"> </span>init
 </code></pre></div>
 <h3 id="first-time-setup">First-time setup</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>cc-liquid<span class="w"> </span>init<span class="w">               </span><span class="c1"># interactive setup wizard (recommended)</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>cc-liquid<span class="w"> </span>init<span class="w"> </span>--non-interactive<span class="w">  </span><span class="c1"># use safe defaults without prompts</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>cc-liquid<span class="w"> </span>init<span class="w">               </span><span class="c1"># interactive setup wizard (recommended)</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>cc-liquid<span class="w"> </span>init<span class="w"> </span>--non-interactive<span class="w">  </span><span class="c1"># use safe defaults without prompts</span>
 </code></pre></div>
 <p>The wizard will guide you through:
 - Choosing testnet vs mainnet (defaults to testnet for safety)
@@ -1093,10 +1097,6 @@
 - Entering API keys (with links to get them)
 - Setting up portfolio parameters
 - Auto-adding <code>.env</code> to <code>.gitignore</code> for security</p>
-<h3 id="run-without-installing-uvx">Run without installing (uvx)</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>uvx<span class="w"> </span>cc-liquid<span class="w"> </span>--help
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>uvx<span class="w"> </span>cc-liquid<span class="w"> </span>account
-</code></pre></div>
 <h3 id="enable-tab-auto-completion-in-your-shell-optional">Enable tab auto-completion in your shell (optional)</h3>
 <p>Tabs for commands, options, and values.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>cc-liquid<span class="w"> </span>completion<span class="w"> </span>install<span class="w">          </span><span class="c1"># auto-detects your shell</span>
@@ -1197,7 +1197,7 @@ See <a href="https://click.palletsprojects.com/en/stable/shell-completion/">Clic
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 13, 2025 19:47:43 UTC">August 13, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 13, 2025 20:39:39 UTC">August 13, 2025</span>
   </span>
 
     
