@@ -461,6 +461,24 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#first-time-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      First-time setup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-without-installing-uvx" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run without installing (uvx)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#enable-tab-auto-completion-in-your-shell-optional" class="md-nav__link">
     <span class="md-ellipsis">
       Enable tab auto-completion in your shell (optional)
@@ -947,6 +965,24 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#first-time-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      First-time setup
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run-without-installing-uvx" class="md-nav__link">
+    <span class="md-ellipsis">
+      Run without installing (uvx)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#enable-tab-auto-completion-in-your-shell-optional" class="md-nav__link">
     <span class="md-ellipsis">
       Enable tab auto-completion in your shell (optional)
@@ -1030,30 +1066,57 @@
 <li>Optional: CrowdCent API key</li>
 </ul>
 <h2 id="install">Install</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>cc-liquid
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="c1"># Optional Numerai support</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>uv<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>cc-liquid<span class="o">[</span>numerai<span class="o">]</span>
+<p>If uv is not installed, install:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="macos--linux" name="__tabbed_1" type="radio" /><input id="windows-powershell" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="macos--linux">macOS / Linux</label><label for="windows-powershell">Windows (PowerShell)</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w"> </span>-LsSf<span class="w"> </span>https://astral.sh/uv/install.sh<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">powershell</span> <span class="n">-ExecutionPolicy</span> <span class="n">ByPass</span> <span class="n">-c</span> <span class="s2">&quot;irm https://astral.sh/uv/install.ps1 | iex&quot;</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>cc-liquid
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1"># Optional Numerai support</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>cc-liquid<span class="o">[</span>numerai<span class="o">]</span>
+</code></pre></div>
+<h3 id="first-time-setup">First-time setup</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>cc-liquid<span class="w"> </span>init<span class="w">               </span><span class="c1"># interactive setup wizard (recommended)</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>cc-liquid<span class="w"> </span>init<span class="w"> </span>--non-interactive<span class="w">  </span><span class="c1"># use safe defaults without prompts</span>
+</code></pre></div>
+<p>The wizard will guide you through:
+- Choosing testnet vs mainnet (defaults to testnet for safety)
+- Selecting data source (CrowdCent, Numerai, or local)
+- Entering API keys (with links to get them)
+- Setting up portfolio parameters
+- Auto-adding <code>.env</code> to <code>.gitignore</code> for security</p>
+<h3 id="run-without-installing-uvx">Run without installing (uvx)</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>uvx<span class="w"> </span>cc-liquid<span class="w"> </span>--help
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>uvx<span class="w"> </span>cc-liquid<span class="w"> </span>account
 </code></pre></div>
 <h3 id="enable-tab-auto-completion-in-your-shell-optional">Enable tab auto-completion in your shell (optional)</h3>
 <p>Tabs for commands, options, and values.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>cc-liquid<span class="w"> </span>completion<span class="w"> </span>install<span class="w">          </span><span class="c1"># auto-detects your shell</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>cc-liquid<span class="w"> </span>completion<span class="w"> </span>install<span class="w">          </span><span class="c1"># auto-detects your shell</span>
 </code></pre></div>
 <p>Manual equivalent:</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="bash" name="__tabbed_1" type="radio" /><input id="zsh" name="__tabbed_1" type="radio" /><input id="fish" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="bash">Bash</label><label for="zsh">Zsh</label><label for="fish">Fish</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="bash" name="__tabbed_2" type="radio" /><input id="zsh" name="__tabbed_2" type="radio" /><input id="fish" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="bash">Bash</label><label for="zsh">Zsh</label><label for="fish">Fish</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nv">_CC_LIQUID_COMPLETE</span><span class="o">=</span>bash_source<span class="w"> </span>cc-liquid<span class="w"> </span>&gt;<span class="w"> </span>~/.cc-liquid-complete.bash
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;. ~/.cc-liquid-complete.bash&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nv">_CC_LIQUID_COMPLETE</span><span class="o">=</span>bash_source<span class="w"> </span>cc-liquid<span class="w"> </span>&gt;<span class="w"> </span>~/.cc-liquid-complete.bash
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;. ~/.cc-liquid-complete.bash&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.bashrc
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nv">_CC_LIQUID_COMPLETE</span><span class="o">=</span>zsh_source<span class="w"> </span>cc-liquid<span class="w"> </span>&gt;<span class="w"> </span>~/.cc-liquid-complete.zsh
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;. ~/.cc-liquid-complete.zsh&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.zshrc
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nv">_CC_LIQUID_COMPLETE</span><span class="o">=</span>zsh_source<span class="w"> </span>cc-liquid<span class="w"> </span>&gt;<span class="w"> </span>~/.cc-liquid-complete.zsh
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;. ~/.cc-liquid-complete.zsh&#39;</span><span class="w"> </span>&gt;&gt;<span class="w"> </span>~/.zshrc
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>~/.config/fish/completions
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nv">_CC_LIQUID_COMPLETE</span><span class="o">=</span>fish_source<span class="w"> </span>cc-liquid<span class="w"> </span>&gt;<span class="w"> </span>~/.config/fish/completions/cc-liquid.fish
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span>~/.config/fish/completions
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nv">_CC_LIQUID_COMPLETE</span><span class="o">=</span>fish_source<span class="w"> </span>cc-liquid<span class="w"> </span>&gt;<span class="w"> </span>~/.config/fish/completions/cc-liquid.fish
 </code></pre></div>
 </div>
 </div>
@@ -1061,55 +1124,55 @@
 <p>Restart your shell to activate completion, or run <code>source ~/.bashrc</code>, <code>source ~/.zshrc</code>, etc. as needed.<br />
 See <a href="https://click.palletsprojects.com/en/stable/shell-completion/">Click Shell Completion</a> for details.</p>
 <h2 id="configure">Configure</h2>
-<p>1) Create <code>.env</code> in your working directory (never commit secrets):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a># Secrets only
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>CROWDCENT_API_KEY=...                # from your CrowdCent profile
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>HYPERLIQUID_PRIVATE_KEY=0x...        # default signer key name
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>HYPER_AGENT_KEY_VAULT=0x...          # optional: assign profile-specific signer keys
+<p>After running <code>cc-liquid init</code>, you'll have two files:</p>
+<p>1) <code>.env</code> - Contains your secrets (auto-added to .gitignore):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a># Secrets only - NEVER commit this file to git!
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>CROWDCENT_API_KEY=...                # from https://crowdcent.com/profile
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>HYPERLIQUID_PRIVATE_KEY=0x...        # from https://app.hyperliquid.xyz/API
 </code></pre></div>
-<p>2) Create <code>cc-liquid-config.yaml</code> with addresses and profiles:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nt">active_profile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">personal</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nt">profiles</span><span class="p">:</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">  </span><span class="nt">personal</span><span class="p">:</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">    </span><span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0xYourMain</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">    </span><span class="nt">vault</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">    </span><span class="nt">signer_env</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HYPER_AGENT_KEY_PERSONAL</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="nt">data</span><span class="p">:</span>
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="w">  </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">crowdcent</span><span class="w">         </span><span class="c1"># crowdcent | numerai | local</span>
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">  </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">predictions.parquet</span>
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">  </span><span class="nt">date_column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">release_date</span>
-<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">  </span><span class="nt">asset_id_column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">id</span>
-<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">  </span><span class="nt">prediction_column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pred_10d</span>
-<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>
-<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="nt">portfolio</span><span class="p">:</span>
-<a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="w">  </span><span class="nt">num_long</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
-<a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a><span class="w">  </span><span class="nt">num_short</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
-<a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="w">  </span><span class="nt">target_leverage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
-<a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="w">  </span><span class="nt">rebalancing</span><span class="p">:</span>
-<a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="w">    </span><span class="nt">every_n_days</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
-<a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a><span class="w">    </span><span class="nt">at_time</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;18:15&quot;</span>
-<a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>
-<a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a><span class="nt">execution</span><span class="p">:</span>
-<a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a><span class="w">  </span><span class="nt">slippage_tolerance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.005</span>
+<p>2) <code>cc-liquid-config.yaml</code> - Your trading configuration:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nt">active_profile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">personal</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="nt">profiles</span><span class="p">:</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">  </span><span class="nt">personal</span><span class="p">:</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="w">    </span><span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0xYourMain</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="w">    </span><span class="nt">vault</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="w">    </span><span class="nt">signer_env</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HYPER_AGENT_KEY_PERSONAL</span>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="nt">data</span><span class="p">:</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="w">  </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">crowdcent</span><span class="w">         </span><span class="c1"># crowdcent | numerai | local</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="w">  </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">predictions.parquet</span>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="w">  </span><span class="nt">date_column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">release_date</span>
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="w">  </span><span class="nt">asset_id_column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">id</span>
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="w">  </span><span class="nt">prediction_column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pred_10d</span>
+<a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>
+<a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a><span class="nt">portfolio</span><span class="p">:</span>
+<a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="w">  </span><span class="nt">num_long</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="w">  </span><span class="nt">num_short</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="w">  </span><span class="nt">target_leverage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
+<a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a><span class="w">  </span><span class="nt">rebalancing</span><span class="p">:</span>
+<a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a><span class="w">    </span><span class="nt">every_n_days</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a><span class="w">    </span><span class="nt">at_time</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;18:15&quot;</span>
+<a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a>
+<a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a><span class="nt">execution</span><span class="p">:</span>
+<a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a><span class="w">  </span><span class="nt">slippage_tolerance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.005</span>
 </code></pre></div>
 <h2 id="first-run">First run</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>cc-liquid<span class="w"> </span>config<span class="w">     </span><span class="c1"># verify config is loaded</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>cc-liquid<span class="w"> </span>account<span class="w">    </span><span class="c1"># view account and positions</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>cc-liquid<span class="w"> </span>rebalance<span class="w">  </span><span class="c1"># plan and execute trades (prompts for confirmation)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>cc-liquid<span class="w"> </span>config<span class="w">     </span><span class="c1"># verify config is loaded</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>cc-liquid<span class="w"> </span>account<span class="w">    </span><span class="c1"># view account and positions</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>cc-liquid<span class="w"> </span>rebalance<span class="w">  </span><span class="c1"># plan and execute trades (prompts for confirmation)</span>
 </code></pre></div>
 <p>Use overrides without editing files:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>cc-liquid<span class="w"> </span>rebalance<span class="w"> </span>--set<span class="w"> </span>data.source<span class="o">=</span>numerai<span class="w"> </span>--set<span class="w"> </span>portfolio.num_long<span class="o">=</span><span class="m">20</span><span class="w"> </span>--set<span class="w"> </span>portfolio.target_leverage<span class="o">=</span><span class="m">2</span>.0
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>cc-liquid<span class="w"> </span>rebalance<span class="w"> </span>--set<span class="w"> </span>data.source<span class="o">=</span>numerai<span class="w"> </span>--set<span class="w"> </span>portfolio.num_long<span class="o">=</span><span class="m">20</span><span class="w"> </span>--set<span class="w"> </span>portfolio.target_leverage<span class="o">=</span><span class="m">2</span>.0
 </code></pre></div>
 <h3 id="testnet-first-recommended">Testnet first (recommended)</h3>
 <p>To avoid live trading while getting set up, use Hyperliquid testnet:</p>
 <p>Use a testnet profile or override <code>network: testnet</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>cc-liquid<span class="w"> </span>rebalance<span class="w"> </span>--set<span class="w"> </span><span class="nv">is_testnet</span><span class="o">=</span><span class="nb">true</span><span class="w">   </span><span class="c1"># or set profile.network=testnet</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>cc-liquid<span class="w"> </span>rebalance<span class="w"> </span>--set<span class="w"> </span><span class="nv">is_testnet</span><span class="o">=</span><span class="nb">true</span><span class="w">   </span><span class="c1"># or set profile.network=testnet</span>
 </code></pre></div>
 <h2 id="autopilot-continuous">Autopilot (continuous)</h2>
 <p>Runs a live dashboard and executes on your schedule.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>cc-liquid<span class="w"> </span>run<span class="w"> </span>--skip-confirm<span class="w">   </span><span class="c1"># WARNING: executes trades automatically</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>cc-liquid<span class="w"> </span>run<span class="w"> </span>--skip-confirm<span class="w">   </span><span class="c1"># WARNING: executes trades automatically</span>
 </code></pre></div>
 <p>See the <a href="../walkthrough/">User Guide</a> for a deeper walkthrough.</p>
 
@@ -1134,7 +1197,7 @@ See <a href="https://click.palletsprojects.com/en/stable/shell-completion/">Clic
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 13, 2025 16:53:41 UTC">August 13, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 13, 2025 19:47:43 UTC">August 13, 2025</span>
   </span>
 
     

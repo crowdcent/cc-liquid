@@ -867,6 +867,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#cc-liquid-init" class="md-nav__link">
+    <span class="md-ellipsis">
+      init
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#cc-liquid-profile" class="md-nav__link">
     <span class="md-ellipsis">
       profile
@@ -1076,6 +1085,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#cc-liquid-init" class="md-nav__link">
+    <span class="md-ellipsis">
+      init
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#cc-liquid-profile" class="md-nav__link">
     <span class="md-ellipsis">
       profile
@@ -1236,61 +1254,71 @@ Bash/Zsh, appends a source line to the user's rc file idempotently.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>  -o, --output TEXT  Output file path (defaults to path in config).
 <a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>  --help             Show this message and exit.
 </code></pre></div>
+<h3 id="cc-liquid-init">cc-liquid init</h3>
+<p>Interactive setup wizard for first-time users.</p>
+<p>Guides you through creating config files with validation and helpful defaults.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>cc-liquid init [OPTIONS]
+</code></pre></div>
+<p><strong>Options:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>  --non-interactive  Skip interactive setup, use defaults
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>  --help             Show this message and exit.
+</code></pre></div>
 <h3 id="cc-liquid-profile">cc-liquid profile</h3>
 <p>Manage configuration profiles (owner/vault/signer).</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>cc-liquid profile [OPTIONS] COMMAND [ARGS]...
-</code></pre></div>
-<p><strong>Options:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>  --help  Show this message and exit.
-</code></pre></div>
-<h4 id="cc-liquid-profile-list">cc-liquid profile list</h4>
-<p>List available profiles from YAML and highlight the active one.</p>
-<p><strong>Usage:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>cc-liquid profile list [OPTIONS]
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>cc-liquid profile [OPTIONS] COMMAND [ARGS]...
 </code></pre></div>
 <p><strong>Options:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>  --help  Show this message and exit.
 </code></pre></div>
-<h4 id="cc-liquid-profile-show">cc-liquid profile show</h4>
-<p>Show details for a profile (defaults to active).</p>
+<h4 id="cc-liquid-profile-list">cc-liquid profile list</h4>
+<p>List available profiles from YAML and highlight the active one.</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>cc-liquid profile show [OPTIONS] [NAME]
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>cc-liquid profile list [OPTIONS]
 </code></pre></div>
 <p><strong>Options:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>  --help  Show this message and exit.
 </code></pre></div>
-<h4 id="cc-liquid-profile-use">cc-liquid profile use</h4>
-<p>Set active profile and persist to YAML.</p>
+<h4 id="cc-liquid-profile-show">cc-liquid profile show</h4>
+<p>Show details for a profile (defaults to active).</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>cc-liquid profile use [OPTIONS] NAME
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>cc-liquid profile show [OPTIONS] [NAME]
 </code></pre></div>
 <p><strong>Options:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>  --help  Show this message and exit.
 </code></pre></div>
+<h4 id="cc-liquid-profile-use">cc-liquid profile use</h4>
+<p>Set active profile and persist to YAML.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>cc-liquid profile use [OPTIONS] NAME
+</code></pre></div>
+<p><strong>Options:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>  --help  Show this message and exit.
+</code></pre></div>
 <h3 id="cc-liquid-rebalance">cc-liquid rebalance</h3>
 <p>Execute rebalancing based on the configured data source.</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>cc-liquid rebalance [OPTIONS]
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>cc-liquid rebalance [OPTIONS]
 </code></pre></div>
 <p><strong>Options:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>  --skip-confirm  Skip confirmation prompt for executing trades.
-<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>  --set TEXT      Override config values (e.g., --set data.source=numerai
-<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>                  --set portfolio.num_long=10)
-<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a>  --help          Show this message and exit.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>  --skip-confirm  Skip confirmation prompt for executing trades.
+<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>  --set TEXT      Override config values (e.g., --set data.source=numerai
+<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>                  --set portfolio.num_long=10)
+<a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>  --help          Show this message and exit.
 </code></pre></div>
 <h3 id="cc-liquid-run">cc-liquid run</h3>
 <p>Start continuous monitoring and automatic rebalancing with live dashboard.</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>cc-liquid run [OPTIONS]
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>cc-liquid run [OPTIONS]
 </code></pre></div>
 <p><strong>Options:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>  --skip-confirm   Skip confirmation prompt for executing trades.
-<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>  --set TEXT       Override config values (e.g., --set is_testnet=true)
-<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>  --refresh FLOAT  Dashboard update cadence in seconds.  [default: 1.0]
-<a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>  --tmux           Run inside a fixed tmux session (attach if exists, else
-<a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>                   create and run).
-<a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>  --help           Show this message and exit.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>  --skip-confirm   Skip confirmation prompt for executing trades.
+<a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>  --set TEXT       Override config values (e.g., --set is_testnet=true)
+<a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>  --refresh FLOAT  Dashboard update cadence in seconds.  [default: 1.0]
+<a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>  --tmux           Run inside a fixed tmux session (attach if exists, else
+<a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>                   create and run).
+<a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a>  --help           Show this message and exit.
 </code></pre></div>
 
 
