@@ -1055,8 +1055,15 @@ See configuration for defaults and overrides: <a href="../configuration/#data">C
 </code></pre></div>
 <p>This shows your current portfolio state:</p>
 <p><img alt="account" src="../images/account.svg" /></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Errors on this step are most often due to incrorrectly configured/loaded private keys. You may need to ensure your .env is loaded by running:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">export</span><span class="w"> </span><span class="k">$(</span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s1">&#39;^#&#39;</span><span class="w"> </span>.env<span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="k">)</span>
+</code></pre></div></p>
+<p>This command reads your <code>.env</code> file, filters out comments, and exports the variables. You'll need to run it in each new terminal session.</p>
+</div>
 <h2 id="4-plan-and-execute-rebalancing">4) Plan and execute rebalancing</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>cc-liquid<span class="w"> </span>rebalance
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>cc-liquid<span class="w"> </span>rebalance
 </code></pre></div>
 <p>The CLI will display a detailed plan showing:</p>
 <ul>
@@ -1066,68 +1073,60 @@ See configuration for defaults and overrides: <a href="../configuration/#data">C
 </ul>
 <p><img alt="rebalance plan" src="../images/rebalance-plan.svg" /></p>
 <p>After reviewing the plan, you'll be prompted to confirm execution. To skip the confirmation prompt:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>cc-liquid<span class="w"> </span>rebalance<span class="w"> </span>--skip-confirm
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>cc-liquid<span class="w"> </span>rebalance<span class="w"> </span>--skip-confirm
 </code></pre></div>
 <p>You can adjust parameters on the fly:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>cc-liquid<span class="w"> </span>rebalance<span class="w"> </span>--set<span class="w"> </span>portfolio.num_long<span class="o">=</span><span class="m">12</span><span class="w"> </span>--set<span class="w"> </span>portfolio.num_short<span class="o">=</span><span class="m">8</span><span class="w"> </span>--set<span class="w"> </span>portfolio.target_leverage<span class="o">=</span><span class="m">2</span>.0
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>cc-liquid<span class="w"> </span>rebalance<span class="w"> </span>--set<span class="w"> </span>portfolio.num_long<span class="o">=</span><span class="m">12</span><span class="w"> </span>--set<span class="w"> </span>portfolio.num_short<span class="o">=</span><span class="m">8</span><span class="w"> </span>--set<span class="w"> </span>portfolio.target_leverage<span class="o">=</span><span class="m">2</span>.0
 </code></pre></div>
 <h3 id="how-rebalancing-works">How rebalancing works</h3>
 <ol>
 <li>
 <p><strong>Load predictions</strong></p>
-</li>
-<li>
-<p>Downloads latest metamodel from CrowdCent/Numerai (or loads local file)</p>
-</li>
-<li>
-<p>Keeps most recent prediction per asset</p>
+<ul>
+<li>Downloads latest metamodel from CrowdCent/Numerai (or loads local file)</li>
+<li>Keeps most recent prediction per asset</li>
+</ul>
 </li>
 <li>
 <p><strong>Select assets</strong></p>
-</li>
-<li>
-<p>Top <code>num_long</code> assets for long positions (highest predictions)</p>
-</li>
+<ul>
+<li>Top <code>num_long</code> assets for long positions (highest predictions)</li>
 <li>Bottom <code>num_short</code> assets for short positions (lowest predictions)</li>
-<li>
-<p>Filters to only assets tradeable on Hyperliquid</p>
+<li>Filters to only assets tradeable on Hyperliquid</li>
+</ul>
 </li>
 <li>
 <p><strong>Size positions</strong></p>
-</li>
-<li>
-<p>Equal-weight: <code>(account_value × target_leverage) / total_positions</code></p>
-</li>
-<li>
-<p>Warns if position sizes fall below <code>min_trade_value</code></p>
+<ul>
+<li>Equal-weight: <code>(account_value × target_leverage) / total_positions</code></li>
+<li>Warns if position sizes fall below <code>min_trade_value</code></li>
+</ul>
 </li>
 <li>
 <p><strong>Generate trades</strong></p>
-</li>
-<li>
-<p>Calculates delta between current and target positions</p>
-</li>
+<ul>
+<li>Calculates delta between current and target positions</li>
 <li>Rounds sizes to exchange precision (<code>sz_decimals</code>)</li>
-<li>
-<p>Marks trades below minimum as "skipped"</p>
+<li>Marks trades below minimum as "skipped"</li>
+</ul>
 </li>
 <li>
 <p><strong>Execute orders</strong></p>
-</li>
-<li>
-<p>Places market orders with configured <code>slippage_tolerance</code></p>
-</li>
+<ul>
+<li>Places market orders with configured <code>slippage_tolerance</code></li>
 <li>Reports fills, failures, and actual slippage</li>
+</ul>
+</li>
 </ol>
 <p>After execution completes:</p>
 <p><img alt="execution summary" src="../images/execution-summary.svg" /></p>
 <h3 id="flatten-close-all-positions">Flatten (close all positions)</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>cc-liquid<span class="w"> </span>close-all
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>cc-liquid<span class="w"> </span>close-all
 </code></pre></div>
 <p>In the event you want to return your entire portfolio/vault to cash, <code>close-all</code> plans and executes trades to close all trades to 0 notional value. Add <code>--skip-confirm</code> to skip confirmation messages.</p>
 <h2 id="5-continuous-mode-autopilot">5) Continuous mode (autopilot)</h2>
 <p>Schedules execution at <code>portfolio.rebalancing.at_time</code> every <code>every_n_days</code>. See <a href="../autopilot/">Autopilot &amp; Scheduling</a> for details.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>cc-liquid<span class="w"> </span>run<span class="w"> </span>--skip-confirm<span class="w">   </span><span class="c1"># executes automatically on schedule</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>cc-liquid<span class="w"> </span>run<span class="w"> </span>--skip-confirm<span class="w">   </span><span class="c1"># executes automatically on schedule</span>
 </code></pre></div>
 <p>Dashboard/monitor view:</p>
 <p><img alt="dashboard" src="../images/dashboard.svg" /></p>
@@ -1159,7 +1158,7 @@ See configuration for defaults and overrides: <a href="../configuration/#data">C
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 14, 2025 16:12:20 UTC">August 14, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 14, 2025 19:03:33 UTC">August 14, 2025</span>
   </span>
 
     
