@@ -522,9 +522,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-choose-a-data-source" class="md-nav__link">
+  <a href="#2-confirm-profileconfigdata" class="md-nav__link">
     <span class="md-ellipsis">
-      2) Choose a data source
+      2) Confirm profile/config/data
     </span>
   </a>
   
@@ -540,14 +540,23 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-dry-run-a-plan-prompted" class="md-nav__link">
+  <a href="#4-plan-and-execute-rebalancing" class="md-nav__link">
     <span class="md-ellipsis">
-      4) Dry-run a plan (prompted)
+      4) Plan and execute rebalancing
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="4) Dry-run a plan (prompted)">
+    <nav class="md-nav" aria-label="4) Plan and execute rebalancing">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-rebalancing-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      How rebalancing works
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#flatten-close-all-positions" class="md-nav__link">
@@ -603,29 +612,6 @@
   
   <span class="md-ellipsis">
     Configuration
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../how-it-works/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    How it works
     
   </span>
   
@@ -784,6 +770,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://crowdcent.com/about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    About CrowdCent
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -931,9 +940,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-choose-a-data-source" class="md-nav__link">
+  <a href="#2-confirm-profileconfigdata" class="md-nav__link">
     <span class="md-ellipsis">
-      2) Choose a data source
+      2) Confirm profile/config/data
     </span>
   </a>
   
@@ -949,14 +958,23 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-dry-run-a-plan-prompted" class="md-nav__link">
+  <a href="#4-plan-and-execute-rebalancing" class="md-nav__link">
     <span class="md-ellipsis">
-      4) Dry-run a plan (prompted)
+      4) Plan and execute rebalancing
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="4) Dry-run a plan (prompted)">
+    <nav class="md-nav" aria-label="4) Plan and execute rebalancing">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-rebalancing-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      How rebalancing works
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#flatten-close-all-positions" class="md-nav__link">
@@ -1013,41 +1031,106 @@
 
 <p>This walkthrough explains the core flow and safe first steps.</p>
 <h2 id="1-install-and-configure">1) Install and configure</h2>
-<p>Follow <a href="../install-quickstart/">Install &amp; Quick Start</a> to install and create <code>.env</code>. Optionally copy <code>cc-liquid-config.yaml</code> and tune values.</p>
+<p>Follow <a href="../install-quickstart/">the installation guide</a> to install and create <code>.env</code> and <code>cc-liquid-config.yaml</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>cc-liquid
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>cc-liquit<span class="w"> </span>init
+</code></pre></div>
 <div class="admonition tip">
 <p class="admonition-title">Tip: enable tab autocompletion for a smoother CLI experience</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>cc-liquid<span class="w"> </span>completion<span class="w"> </span>install
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>cc-liquid<span class="w"> </span>completion<span class="w"> </span>install
 </code></pre></div>
 </div>
-<h2 id="2-choose-a-data-source">2) Choose a data source</h2>
-<p>Set in <code>cc-liquid-config.yaml</code> or via <code>--set</code>:</p>
+<h2 id="2-confirm-profileconfigdata">2) Confirm profile/config/data</h2>
+<p><div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>cc-liquid<span class="w"> </span>config
+</code></pre></div>
+See configuration for defaults and overrides: <a href="../configuration/#data">Configuration → Data</a></p>
+<p>Set your data source in <code>cc-liquid-config.yaml</code> or via <code>--set data.source=[crowdcent|numerai]</code>:</p>
 <ul>
 <li><code>crowdcent</code>: latest consolidated metamodel from CrowdCent</li>
 <li><code>numerai</code>: Numerai Crypto metamodel</li>
 <li><code>local</code>: your own parquet/csv file</li>
 </ul>
-<p>Examples:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>cc-liquid<span class="w"> </span>download-crowdcent<span class="w"> </span>-o<span class="w"> </span>predictions.parquet
-<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>cc-liquid<span class="w"> </span>download-numerai<span class="w"> </span>-o<span class="w"> </span>predictions.parquet
-</code></pre></div>
-<p>See configuration for column defaults and overrides: <a href="../configuration/#data">Configuration → Data</a></p>
 <h2 id="3-inspect-account-and-positions">3) Inspect account and positions</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>cc-liquid<span class="w"> </span>account
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>cc-liquid<span class="w"> </span>account
 </code></pre></div>
-<h2 id="4-dry-run-a-plan-prompted">4) Dry-run a plan (prompted)</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>cc-liquid<span class="w"> </span>rebalance
+<p>This shows your current portfolio state:</p>
+<p><img alt="account" src="../images/account.svg" /></p>
+<h2 id="4-plan-and-execute-rebalancing">4) Plan and execute rebalancing</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>cc-liquid<span class="w"> </span>rebalance
 </code></pre></div>
-<p>The CLI will display a plan with target positions and trades; confirm to execute. You can adjust on the fly:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>cc-liquid<span class="w"> </span>rebalance<span class="w"> </span>--set<span class="w"> </span>portfolio.num_long<span class="o">=</span><span class="m">12</span><span class="w"> </span>--set<span class="w"> </span>portfolio.num_short<span class="o">=</span><span class="m">8</span><span class="w"> </span>--set<span class="w"> </span>portfolio.target_leverage<span class="o">=</span><span class="m">2</span>.0
+<p>The CLI will display a detailed plan showing:</p>
+<ul>
+<li>Current vs target positions</li>
+<li>Required trades to rebalance</li>
+<li>Portfolio metrics and leverage</li>
+</ul>
+<p><img alt="rebalance plan" src="../images/rebalance-plan.svg" /></p>
+<p>After reviewing the plan, you'll be prompted to confirm execution. To skip the confirmation prompt:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>cc-liquid<span class="w"> </span>rebalance<span class="w"> </span>--skip-confirm
 </code></pre></div>
+<p>You can adjust parameters on the fly:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>cc-liquid<span class="w"> </span>rebalance<span class="w"> </span>--set<span class="w"> </span>portfolio.num_long<span class="o">=</span><span class="m">12</span><span class="w"> </span>--set<span class="w"> </span>portfolio.num_short<span class="o">=</span><span class="m">8</span><span class="w"> </span>--set<span class="w"> </span>portfolio.target_leverage<span class="o">=</span><span class="m">2</span>.0
+</code></pre></div>
+<h3 id="how-rebalancing-works">How rebalancing works</h3>
+<ol>
+<li>
+<p><strong>Load predictions</strong></p>
+</li>
+<li>
+<p>Downloads latest metamodel from CrowdCent/Numerai (or loads local file)</p>
+</li>
+<li>
+<p>Keeps most recent prediction per asset</p>
+</li>
+<li>
+<p><strong>Select assets</strong></p>
+</li>
+<li>
+<p>Top <code>num_long</code> assets for long positions (highest predictions)</p>
+</li>
+<li>Bottom <code>num_short</code> assets for short positions (lowest predictions)</li>
+<li>
+<p>Filters to only assets tradeable on Hyperliquid</p>
+</li>
+<li>
+<p><strong>Size positions</strong></p>
+</li>
+<li>
+<p>Equal-weight: <code>(account_value × target_leverage) / total_positions</code></p>
+</li>
+<li>
+<p>Warns if position sizes fall below <code>min_trade_value</code></p>
+</li>
+<li>
+<p><strong>Generate trades</strong></p>
+</li>
+<li>
+<p>Calculates delta between current and target positions</p>
+</li>
+<li>Rounds sizes to exchange precision (<code>sz_decimals</code>)</li>
+<li>
+<p>Marks trades below minimum as "skipped"</p>
+</li>
+<li>
+<p><strong>Execute orders</strong></p>
+</li>
+<li>
+<p>Places market orders with configured <code>slippage_tolerance</code></p>
+</li>
+<li>Reports fills, failures, and actual slippage</li>
+</ol>
+<p>After execution completes:</p>
+<p><img alt="execution summary" src="../images/execution-summary.svg" /></p>
 <h3 id="flatten-close-all-positions">Flatten (close all positions)</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>cc-liquid<span class="w"> </span>close-all<span class="w"> </span>--skip-confirm
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>cc-liquid<span class="w"> </span>close-all
 </code></pre></div>
-<p>This plans and executes trades to return to cash. Omit <code>--skip-confirm</code> to review first.</p>
+<p>In the event you want to return your entire portfolio/vault to cash, <code>close-all</code> plans and executes trades to close all trades to 0 notional value. Add <code>--skip-confirm</code> to skip confirmation messages.</p>
 <h2 id="5-continuous-mode-autopilot">5) Continuous mode (autopilot)</h2>
-<p>Schedules execution at <code>portfolio.rebalancing.at_time</code> every <code>every_n_days</code>.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>cc-liquid<span class="w"> </span>run<span class="w"> </span>--skip-confirm<span class="w">   </span><span class="c1"># executes automatically on schedule</span>
+<p>Schedules execution at <code>portfolio.rebalancing.at_time</code> every <code>every_n_days</code>. See <a href="../autopilot/">Autopilot &amp; Scheduling</a> for details.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>cc-liquid<span class="w"> </span>run<span class="w"> </span>--skip-confirm<span class="w">   </span><span class="c1"># executes automatically on schedule</span>
 </code></pre></div>
+<p>Dashboard/monitor view:</p>
+<p><img alt="dashboard" src="../images/dashboard.svg" /></p>
 <h2 id="safety-notes">Safety notes</h2>
 <ul>
 <li>Leverage increases liquidation risk; start with 1.0x</li>
@@ -1076,7 +1159,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 13, 2025 16:53:41 UTC">August 13, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 14, 2025 16:12:20 UTC">August 14, 2025</span>
   </span>
 
     

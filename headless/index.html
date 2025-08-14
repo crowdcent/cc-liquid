@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#callback-protocol" class="md-skip">
+        <a href="#architecture" class="md-skip">
           Skip to content
         </a>
       
@@ -513,29 +513,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../how-it-works/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    How it works
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../autopilot/" class="md-nav__link">
         
   
@@ -603,6 +580,15 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture
+    </span>
+  </a>
+  
+</li>
       
         <li class="md-nav__item">
   <a href="#callback-protocol" class="md-nav__link">
@@ -732,6 +718,29 @@
   
   <span class="md-ellipsis">
     Security & Disclaimer
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="https://crowdcent.com/about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    About CrowdCent
     
   </span>
   
@@ -880,6 +889,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Architecture
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#callback-protocol" class="md-nav__link">
     <span class="md-ellipsis">
       Callback protocol
@@ -927,7 +945,15 @@
 
   <h1>Headless & Custom Callbacks</h1>
 
-<p>Use cc-liquid as a library without the CLI UI. The core trading logic is UI-agnostic and driven by callbacks.</p>
+<p>For advanced use cases or building alternative UIs, you can also use cc-liquid as a library without the CLI UI. The core trading logic is UI-agnostic and driven by callbacks. </p>
+<h2 id="architecture">Architecture</h2>
+<p>cc-liquid follows a modular design:</p>
+<ul>
+<li><strong>Data Layer</strong> - Loads predictions from various sources (CrowdCent API, Numerai, local files)</li>
+<li><strong>Strategy Layer</strong> - Selects top/bottom assets and calculates equal-weight position sizes</li>
+<li><strong>Execution Layer</strong> - Interfaces with Hyperliquid via SDK for order management</li>
+<li><strong>Monitoring Layer</strong> - Provides live dashboard and scheduled rebalancing (managed via callbacks and alternative UI code)</li>
+</ul>
 <h2 id="callback-protocol">Callback protocol</h2>
 <ul>
 <li>Implement <code>cc_liquid.callbacks.CCLiquidCallbacks</code> to receive lifecycle events (info/warn/error, trade start/fill/fail, batch complete, confirmation prompts, etc.).</li>
@@ -996,7 +1022,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 13, 2025 16:53:41 UTC">August 13, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 14, 2025 16:12:20 UTC">August 14, 2025</span>
   </span>
 
     

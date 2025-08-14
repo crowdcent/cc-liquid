@@ -2,46 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://crowdcent.github.io/cc-liquid/</loc>
-         <lastmod>2025-08-13</lastmod>
+         <lastmod>2025-08-14</lastmod>
     </url>
     <url>
          <loc>https://crowdcent.github.io/cc-liquid/autopilot/</loc>
-         <lastmod>2025-08-13</lastmod>
+         <lastmod>2025-08-14</lastmod>
     </url>
     <url>
          <loc>https://crowdcent.github.io/cc-liquid/configuration/</loc>
-         <lastmod>2025-08-13</lastmod>
+         <lastmod>2025-08-14</lastmod>
     </url>
     <url>
          <loc>https://crowdcent.github.io/cc-liquid/headless/</loc>
-         <lastmod>2025-08-13</lastmod>
-    </url>
-    <url>
-         <loc>https://crowdcent.github.io/cc-liquid/how-it-works/</loc>
-         <lastmod>2025-08-13</lastmod>
+         <lastmod>2025-08-14</lastmod>
     </url>
     <url>
          <loc>https://crowdcent.github.io/cc-liquid/install-quickstart/</loc>
-         <lastmod>2025-08-13</lastmod>
+         <lastmod>2025-08-14</lastmod>
     </url>
     <url>
          <loc>https://crowdcent.github.io/cc-liquid/security/</loc>
-         <lastmod>2025-08-13</lastmod>
+         <lastmod>2025-08-14</lastmod>
     </url>
     <url>
          <loc>https://crowdcent.github.io/cc-liquid/troubleshooting/</loc>
-         <lastmod>2025-08-13</lastmod>
+         <lastmod>2025-08-14</lastmod>
     </url>
     <url>
          <loc>https://crowdcent.github.io/cc-liquid/walkthrough/</loc>
-         <lastmod>2025-08-13</lastmod>
+         <lastmod>2025-08-14</lastmod>
     </url>
     <url>
          <loc>https://crowdcent.github.io/cc-liquid/api/cli/</loc>
-         <lastmod>2025-08-13</lastmod>
+         <lastmod>2025-08-14</lastmod>
     </url>
     <url>
          <loc>https://crowdcent.github.io/cc-liquid/api/python/</loc>
-         <lastmod>2025-08-13</lastmod>
+         <lastmod>2025-08-14</lastmod>
     </url>
 </urlset>
