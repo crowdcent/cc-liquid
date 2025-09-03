@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../images/favicon.svg">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.17">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.18">
     
     
       
@@ -546,6 +546,29 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backtesting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Backtesting & Optimization
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -807,6 +830,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#cc-liquid-analyze" class="md-nav__link">
+    <span class="md-ellipsis">
+      analyze
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#cc-liquid-close-all" class="md-nav__link">
     <span class="md-ellipsis">
       close-all
@@ -870,6 +902,15 @@
   <a href="#cc-liquid-init" class="md-nav__link">
     <span class="md-ellipsis">
       init
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cc-liquid-optimize" class="md-nav__link">
+    <span class="md-ellipsis">
+      optimize
     </span>
   </a>
   
@@ -1025,6 +1066,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#cc-liquid-analyze" class="md-nav__link">
+    <span class="md-ellipsis">
+      analyze
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#cc-liquid-close-all" class="md-nav__link">
     <span class="md-ellipsis">
       close-all
@@ -1088,6 +1138,15 @@
   <a href="#cc-liquid-init" class="md-nav__link">
     <span class="md-ellipsis">
       init
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cc-liquid-optimize" class="md-nav__link">
+    <span class="md-ellipsis">
+      optimize
     </span>
   </a>
   
@@ -1195,130 +1254,203 @@
 <p><strong>Options:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>  --help  Show this message and exit.
 </code></pre></div>
+<h3 id="cc-liquid-analyze">cc-liquid analyze</h3>
+<p>Run backtest analysis on historical data.</p>
+<p>⚠️ IMPORTANT DISCLAIMER:
+Past performance does not guarantee future results. Backtesting results are
+hypothetical and have inherent limitations. Actual trading results may differ
+significantly. Always consider market conditions, liquidity, and execution costs
+that may not be fully captured in simulations.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>cc-liquid analyze [OPTIONS]
+</code></pre></div>
+<p><strong>Options:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>  --prices TEXT                   Path to price data (parquet file with date,
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>                                  id, close columns)
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>  --start-date [%Y-%m-%d|%Y-%m-%dT%H:%M:%S|%Y-%m-%d %H:%M:%S]
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>                                  Start date for backtest (YYYY-MM-DD)
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>  --end-date [%Y-%m-%d|%Y-%m-%dT%H:%M:%S|%Y-%m-%d %H:%M:%S]
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>                                  End date for backtest (YYYY-MM-DD)
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>  --set TEXT                      Override config values (e.g., --set
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>                                  portfolio.num_long=15 --set
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>                                  data.source=numerai)
+<a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>  --fee-bps FLOAT                 Trading fee in basis points
+<a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>  --slippage-bps FLOAT            Slippage cost in basis points
+<a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>  --prediction-lag INTEGER        Days between prediction date and trading
+<a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>                                  date (default: 1, use higher values to avoid
+<a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>                                  look-ahead bias)
+<a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>  --save-daily TEXT               Save daily results to CSV file
+<a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>  --show-positions                Show detailed position analysis table
+<a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>  --verbose                       Show detailed progress
+<a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>  --help                          Show this message and exit.
+</code></pre></div>
 <h3 id="cc-liquid-close-all">cc-liquid close-all</h3>
 <p>Close all positions and return to cash.</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>cc-liquid close-all [OPTIONS]
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>cc-liquid close-all [OPTIONS]
 </code></pre></div>
 <p><strong>Options:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>  --skip-confirm  Skip confirmation prompt for closing positions.
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>  --set TEXT      Override config values (e.g., --set is_testnet=true)
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>  --force         Force close positions below min notional by composing a two-
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>                  step workaround.
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>  --help          Show this message and exit.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>  --skip-confirm  Skip confirmation prompt for closing positions.
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>  --set TEXT      Override config values (e.g., --set is_testnet=true)
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>  --force         Force close positions below min notional by composing a two-
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>                  step workaround.
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>  --help          Show this message and exit.
 </code></pre></div>
 <h3 id="cc-liquid-completion">cc-liquid completion</h3>
 <p>Shell completion utilities.</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>cc-liquid completion [OPTIONS] COMMAND [ARGS]...
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>cc-liquid completion [OPTIONS] COMMAND [ARGS]...
 </code></pre></div>
 <p><strong>Options:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>  --help  Show this message and exit.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>  --help  Show this message and exit.
 </code></pre></div>
 <h4 id="cc-liquid-completion-install">cc-liquid completion install</h4>
 <p>Install shell completion for the current user.</p>
 <p>Writes the generated completion script to a standard location and, for
 Bash/Zsh, appends a source line to the user's rc file idempotently.</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>cc-liquid completion install [OPTIONS]
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>cc-liquid completion install [OPTIONS]
 </code></pre></div>
 <p><strong>Options:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>  --shell [bash|zsh|fish]  Target shell. Defaults to auto-detect from $SHELL.
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>  --prog-name TEXT         Program name to install completion for (as
-<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>                           installed on PATH).  [default: cc-liquid]
-<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>  --help                   Show this message and exit.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>  --shell [bash|zsh|fish]  Target shell. Defaults to auto-detect from $SHELL.
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>  --prog-name TEXT         Program name to install completion for (as
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>                           installed on PATH).  [default: cc-liquid]
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>  --help                   Show this message and exit.
 </code></pre></div>
 <h3 id="cc-liquid-config">cc-liquid config</h3>
 <p>Show the current configuration.</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>cc-liquid config [OPTIONS]
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>cc-liquid config [OPTIONS]
 </code></pre></div>
 <p><strong>Options:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>  --help  Show this message and exit.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>  --help  Show this message and exit.
 </code></pre></div>
 <h3 id="cc-liquid-download-crowdcent">cc-liquid download-crowdcent</h3>
 <p>Download the CrowdCent meta model.</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>cc-liquid download-crowdcent [OPTIONS]
-</code></pre></div>
-<p><strong>Options:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>  -o, --output TEXT  Output file path (defaults to path in config).
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>  --help             Show this message and exit.
-</code></pre></div>
-<h3 id="cc-liquid-download-numerai">cc-liquid download-numerai</h3>
-<p>Download the Numerai meta model.</p>
-<p><strong>Usage:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>cc-liquid download-numerai [OPTIONS]
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>cc-liquid download-crowdcent [OPTIONS]
 </code></pre></div>
 <p><strong>Options:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>  -o, --output TEXT  Output file path (defaults to path in config).
 <a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>  --help             Show this message and exit.
 </code></pre></div>
+<h3 id="cc-liquid-download-numerai">cc-liquid download-numerai</h3>
+<p>Download the Numerai meta model.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>cc-liquid download-numerai [OPTIONS]
+</code></pre></div>
+<p><strong>Options:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>  -o, --output TEXT  Output file path (defaults to path in config).
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>  --help             Show this message and exit.
+</code></pre></div>
 <h3 id="cc-liquid-init">cc-liquid init</h3>
 <p>Interactive setup wizard for first-time users.</p>
 <p>Guides you through creating config files with validation and helpful defaults.</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>cc-liquid init [OPTIONS]
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>cc-liquid init [OPTIONS]
 </code></pre></div>
 <p><strong>Options:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>  --non-interactive  Skip interactive setup, use defaults
-<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>  --help             Show this message and exit.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>  --non-interactive  Skip interactive setup, use defaults
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>  --help             Show this message and exit.
+</code></pre></div>
+<h3 id="cc-liquid-optimize">cc-liquid optimize</h3>
+<p>Optimize backtest parameters using parallel grid search.</p>
+<p>⚠️ IMPORTANT DISCLAIMER:
+Optimization results are based on historical data and are subject to overfitting.
+Parameters that performed well in the past may not perform well in the future.
+Always use out-of-sample testing and forward walk analysis. Consider that
+optimized parameters may be curve-fit to historical noise rather than true patterns.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>cc-liquid optimize [OPTIONS]
+</code></pre></div>
+<p><strong>Options:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>  --prices TEXT                   Path to price data
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>  --start-date [%Y-%m-%d|%Y-%m-%dT%H:%M:%S|%Y-%m-%d %H:%M:%S]
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>                                  Start date for backtest (YYYY-MM-DD)
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>  --end-date [%Y-%m-%d|%Y-%m-%dT%H:%M:%S|%Y-%m-%d %H:%M:%S]
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>                                  End date for backtest (YYYY-MM-DD)
+<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>  --set TEXT                      Override config values (e.g., --set
+<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>                                  data.source=numerai)
+<a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>  --num-longs TEXT                Comma-separated list of long positions to
+<a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a>                                  test
+<a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a>  --num-shorts TEXT               Comma-separated list of short positions to
+<a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a>                                  test
+<a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a>  --leverages TEXT                Comma-separated list of leverage values to
+<a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a>                                  test
+<a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a>  --rebalance-days TEXT           Comma-separated list of rebalance
+<a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a>                                  frequencies to test
+<a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a>  --metric [sharpe|cagr|calmar]   Optimization metric
+<a id="__codelineno-21-17" name="__codelineno-21-17" href="#__codelineno-21-17"></a>  --max-drawdown FLOAT            Maximum drawdown constraint (e.g., 0.2 for
+<a id="__codelineno-21-18" name="__codelineno-21-18" href="#__codelineno-21-18"></a>                                  20%)
+<a id="__codelineno-21-19" name="__codelineno-21-19" href="#__codelineno-21-19"></a>  --fee-bps FLOAT                 Trading fee in basis points
+<a id="__codelineno-21-20" name="__codelineno-21-20" href="#__codelineno-21-20"></a>  --slippage-bps FLOAT            Slippage cost in basis points
+<a id="__codelineno-21-21" name="__codelineno-21-21" href="#__codelineno-21-21"></a>  --prediction-lag INTEGER        Days between prediction date and trading
+<a id="__codelineno-21-22" name="__codelineno-21-22" href="#__codelineno-21-22"></a>                                  date (default: 1, use higher values to avoid
+<a id="__codelineno-21-23" name="__codelineno-21-23" href="#__codelineno-21-23"></a>                                  look-ahead bias)
+<a id="__codelineno-21-24" name="__codelineno-21-24" href="#__codelineno-21-24"></a>  --top-n INTEGER                 Show top N results
+<a id="__codelineno-21-25" name="__codelineno-21-25" href="#__codelineno-21-25"></a>  --apply-best                    Run full analysis with best parameters
+<a id="__codelineno-21-26" name="__codelineno-21-26" href="#__codelineno-21-26"></a>  --save-results TEXT             Save optimization results to CSV
+<a id="__codelineno-21-27" name="__codelineno-21-27" href="#__codelineno-21-27"></a>  --plot                          Show contour plots of results
+<a id="__codelineno-21-28" name="__codelineno-21-28" href="#__codelineno-21-28"></a>  --max-workers INTEGER           Number of parallel workers (default: auto)
+<a id="__codelineno-21-29" name="__codelineno-21-29" href="#__codelineno-21-29"></a>  --clear-cache                   Clear cached optimization results
+<a id="__codelineno-21-30" name="__codelineno-21-30" href="#__codelineno-21-30"></a>  --verbose                       Show detailed progress
+<a id="__codelineno-21-31" name="__codelineno-21-31" href="#__codelineno-21-31"></a>  --help                          Show this message and exit.
 </code></pre></div>
 <h3 id="cc-liquid-profile">cc-liquid profile</h3>
 <p>Manage configuration profiles (owner/vault/signer).</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>cc-liquid profile [OPTIONS] COMMAND [ARGS]...
-</code></pre></div>
-<p><strong>Options:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>  --help  Show this message and exit.
-</code></pre></div>
-<h4 id="cc-liquid-profile-list">cc-liquid profile list</h4>
-<p>List available profiles from YAML and highlight the active one.</p>
-<p><strong>Usage:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>cc-liquid profile list [OPTIONS]
-</code></pre></div>
-<p><strong>Options:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>  --help  Show this message and exit.
-</code></pre></div>
-<h4 id="cc-liquid-profile-show">cc-liquid profile show</h4>
-<p>Show details for a profile (defaults to active).</p>
-<p><strong>Usage:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>cc-liquid profile show [OPTIONS] [NAME]
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>cc-liquid profile [OPTIONS] COMMAND [ARGS]...
 </code></pre></div>
 <p><strong>Options:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>  --help  Show this message and exit.
 </code></pre></div>
-<h4 id="cc-liquid-profile-use">cc-liquid profile use</h4>
-<p>Set active profile and persist to YAML.</p>
+<h4 id="cc-liquid-profile-list">cc-liquid profile list</h4>
+<p>List available profiles from YAML and highlight the active one.</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>cc-liquid profile use [OPTIONS] NAME
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>cc-liquid profile list [OPTIONS]
 </code></pre></div>
 <p><strong>Options:</strong></p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>  --help  Show this message and exit.
 </code></pre></div>
+<h4 id="cc-liquid-profile-show">cc-liquid profile show</h4>
+<p>Show details for a profile (defaults to active).</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>cc-liquid profile show [OPTIONS] [NAME]
+</code></pre></div>
+<p><strong>Options:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>  --help  Show this message and exit.
+</code></pre></div>
+<h4 id="cc-liquid-profile-use">cc-liquid profile use</h4>
+<p>Set active profile and persist to YAML.</p>
+<p><strong>Usage:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>cc-liquid profile use [OPTIONS] NAME
+</code></pre></div>
+<p><strong>Options:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>  --help  Show this message and exit.
+</code></pre></div>
 <h3 id="cc-liquid-rebalance">cc-liquid rebalance</h3>
 <p>Execute rebalancing based on the configured data source.</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>cc-liquid rebalance [OPTIONS]
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>cc-liquid rebalance [OPTIONS]
 </code></pre></div>
 <p><strong>Options:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>  --skip-confirm  Skip confirmation prompt for executing trades.
-<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>  --set TEXT      Override config values (e.g., --set data.source=numerai
-<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>                  --set portfolio.num_long=10)
-<a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>  --help          Show this message and exit.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>  --skip-confirm  Skip confirmation prompt for executing trades.
+<a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>  --set TEXT      Override config values (e.g., --set data.source=numerai
+<a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>                  --set portfolio.num_long=10)
+<a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>  --help          Show this message and exit.
 </code></pre></div>
 <h3 id="cc-liquid-run">cc-liquid run</h3>
 <p>Start continuous monitoring and automatic rebalancing with live dashboard.</p>
 <p><strong>Usage:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>cc-liquid run [OPTIONS]
+<div class="highlight"><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a>cc-liquid run [OPTIONS]
 </code></pre></div>
 <p><strong>Options:</strong></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>  --skip-confirm   Skip confirmation prompt for executing trades.
-<a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>  --set TEXT       Override config values (e.g., --set is_testnet=true)
-<a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>  --refresh FLOAT  Dashboard update cadence in seconds.  [default: 1.0]
-<a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>  --tmux           Run inside a fixed tmux session (attach if exists, else
-<a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>                   create and run).
-<a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a>  --help           Show this message and exit.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>  --skip-confirm   Skip confirmation prompt for executing trades.
+<a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>  --set TEXT       Override config values (e.g., --set is_testnet=true)
+<a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a>  --refresh FLOAT  Dashboard update cadence in seconds.  [default: 1.0]
+<a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a>  --tmux           Run inside a fixed tmux session (attach if exists, else
+<a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a>                   create and run).
+<a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a>  --help           Show this message and exit.
 </code></pre></div>
 
 
@@ -1409,7 +1541,8 @@ Bash/Zsh, appends a source line to the user's rc file idempotently.</p>
   
 </div>
       
-        <div class="md-social">
+        
+<div class="md-social">
   
     
     

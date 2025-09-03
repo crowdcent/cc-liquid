@@ -12,13 +12,13 @@
         <meta name="author" content="CrowdCent">
       
       
-        <link rel="canonical" href="https://crowdcent.github.io/cc-liquid/configuration/">
+        <link rel="canonical" href="https://crowdcent.github.io/cc-liquid/backtesting/">
       
       
-        <link rel="prev" href="../walkthrough/">
+        <link rel="prev" href="../headless/">
       
       
-        <link rel="next" href="../autopilot/">
+        <link rel="next" href="../troubleshooting/">
       
       
       <link rel="icon" href="../images/favicon.svg">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Configuration - cc-liquid</title>
+        <title>Backtesting & Optimization - cc-liquid</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#environment-variables-env" class="md-skip">
+        <a href="#quick-start" class="md-skip">
           Skip to content
         </a>
       
@@ -120,7 +120,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Configuration
+              Backtesting & Optimization
             
           </span>
         </div>
@@ -487,30 +487,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    Configuration
-    
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
         
   
   
@@ -521,129 +501,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#environment-variables-env" class="md-nav__link">
-    <span class="md-ellipsis">
-      Environment variables (.env)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#yaml-cc-liquid-configyaml" class="md-nav__link">
-    <span class="md-ellipsis">
-      YAML (cc-liquid-config.yaml)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#profiles-network-credentials" class="md-nav__link">
-    <span class="md-ellipsis">
-      Profiles, network &amp; credentials
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#data" class="md-nav__link">
-    <span class="md-ellipsis">
-      Data
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Data">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#crowdcent" class="md-nav__link">
-    <span class="md-ellipsis">
-      crowdcent
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#numerai" class="md-nav__link">
-    <span class="md-ellipsis">
-      numerai
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#local" class="md-nav__link">
-    <span class="md-ellipsis">
-      local
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#portfolio" class="md-nav__link">
-    <span class="md-ellipsis">
-      Portfolio
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#execution" class="md-nav__link">
-    <span class="md-ellipsis">
-      Execution
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cli-overrides" class="md-nav__link">
-    <span class="md-ellipsis">
-      CLI overrides
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#cli-helpers" class="md-nav__link">
-    <span class="md-ellipsis">
-      CLI helpers
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -699,10 +556,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../backtesting/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Backtesting & Optimization
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -713,6 +590,234 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick start
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Quick start">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-backtest" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic backtest
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parameter-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameter optimization
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#analyze-command" class="md-nav__link">
+    <span class="md-ellipsis">
+      Analyze command
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Analyze command">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic usage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Output metrics
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optimize-command" class="md-nav__link">
+    <span class="md-ellipsis">
+      Optimize command
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Optimize command">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-usage_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic usage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optimization-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Optimization metrics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parallel-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parallel execution
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Caching
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#applying-best-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Applying best parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data requirements
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#price-data-raw_dataparquet" class="md-nav__link">
+    <span class="md-ellipsis">
+      Price data (raw_data.parquet)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-data-sources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom data sources
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cost-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cost analysis
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#red-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      Red flags
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -981,64 +1086,28 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#environment-variables-env" class="md-nav__link">
+  <a href="#quick-start" class="md-nav__link">
     <span class="md-ellipsis">
-      Environment variables (.env)
+      Quick start
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#yaml-cc-liquid-configyaml" class="md-nav__link">
-    <span class="md-ellipsis">
-      YAML (cc-liquid-config.yaml)
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#profiles-network-credentials" class="md-nav__link">
-    <span class="md-ellipsis">
-      Profiles, network &amp; credentials
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#data" class="md-nav__link">
-    <span class="md-ellipsis">
-      Data
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Data">
+    <nav class="md-nav" aria-label="Quick start">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#crowdcent" class="md-nav__link">
+  <a href="#basic-backtest" class="md-nav__link">
     <span class="md-ellipsis">
-      crowdcent
+      Basic backtest
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#numerai" class="md-nav__link">
+  <a href="#parameter-optimization" class="md-nav__link">
     <span class="md-ellipsis">
-      numerai
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#local" class="md-nav__link">
-    <span class="md-ellipsis">
-      local
+      Parameter optimization
     </span>
   </a>
   
@@ -1050,36 +1119,177 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#portfolio" class="md-nav__link">
+  <a href="#analyze-command" class="md-nav__link">
     <span class="md-ellipsis">
-      Portfolio
+      Analyze command
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Analyze command">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic usage
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#execution" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#parameters" class="md-nav__link">
     <span class="md-ellipsis">
-      Execution
+      Parameters
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#cli-overrides" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#output-metrics" class="md-nav__link">
     <span class="md-ellipsis">
-      CLI overrides
+      Output metrics
     </span>
   </a>
   
 </li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
         <li class="md-nav__item">
-  <a href="#cli-helpers" class="md-nav__link">
+  <a href="#optimize-command" class="md-nav__link">
     <span class="md-ellipsis">
-      CLI helpers
+      Optimize command
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Optimize command">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-usage_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic usage
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parameters_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parameters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optimization-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Optimization metrics
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#parallel-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      Parallel execution
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Caching
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#applying-best-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Applying best parameters
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data requirements
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Data requirements">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#price-data-raw_dataparquet" class="md-nav__link">
+    <span class="md-ellipsis">
+      Price data (raw_data.parquet)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Advanced usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-data-sources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Custom data sources
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cost-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cost analysis
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#red-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      Red flags
     </span>
   </a>
   
@@ -1104,131 +1314,332 @@
   
 
 
-  <h1>Configuration</h1>
+  <h1>Backtesting & Optimization</h1>
 
-<p>cc-liquid loads configuration from <code>cc-liquid-config.yaml</code> and environment variables. Addresses, profile selection, and portfolio parameters live in the config YAML; secrets (private keys, API keys) should live in <code>.env</code>. You can override any setting via <code>--set</code> when running the CLI commands.</p>
-<h2 id="environment-variables-env">Environment variables (.env)</h2>
-<p>Your env file, which should only store secrets/keys should look like this:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>CROWDCENT_API_KEY=zzxFake.CrowdCentKey1234567890   # (needed for CrowdCent metamodel source)
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>HYPERLIQUID_PRIVATE_KEY=0xdeadbeefdeadbeefdeadbeefdeadbeefdead  # (default signer key variable name)
-</code></pre></div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<ul>
-<li>
-<p>You can change the default signer key variable name and provide additional, profile-specific signer keys you can reference via <code>signer_env</code> in YAML, (e.g.:<code>HYPER_AGENT_KEY_PERSONAL</code>, <code>HYPER_AGENT_KEY_VAULT</code>)</p>
-</li>
-<li>
-<p>Do not put addresses in <code>.env</code>; keep owner/vault addresses in the configuration YAML file.</p>
-</li>
-</ul>
-</div>
 <div class="admonition warning">
-<p class="admonition-title">Loading .env variables</p>
-<p>When <code>cc-liquid</code> is installed as a CLI tool (e.g., via <code>uv tool install</code>), it may not automatically load variables from <code>.env</code>. If you encounter errors about missing keys, you must load them manually in your shell session:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">export</span><span class="w"> </span><span class="k">$(</span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s1">&#39;^#&#39;</span><span class="w"> </span>.env<span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="k">)</span>
-</code></pre></div></p>
+<p class="admonition-title">Critical Disclaimer</p>
+<p><strong>Past performance does not guarantee future results.</strong> Backtesting results are hypothetical and have inherent limitations:</p>
+<ul>
+<li><strong>Overfitting Risk</strong>: Parameters that perform well historically may fail in live trading</li>
+<li><strong>Market Dynamics</strong>: Conditions, liquidity, and correlations change over time</li>
+<li><strong>Execution Reality</strong>: Slippage, fees, and market impact may exceed modeled estimates</li>
+<li><strong>Survivorship Bias</strong>: Historical data may exclude delisted/failed assets</li>
+<li><strong>Data Mining</strong>: Testing multiple strategies increases the chance of finding spurious patterns</li>
+</ul>
+<p>Always validate strategies with out-of-sample data, paper trading, and start with minimal capital when going live.</p>
 </div>
-<h2 id="yaml-cc-liquid-configyaml">YAML (<code>cc-liquid-config.yaml</code>)</h2>
-<p>Your yaml file, in the root of where you call <code>cc-liquid</code> should look like this:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">is_testnet</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nt">active_profile</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">default</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nt">profiles</span><span class="p">:</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">  </span><span class="nt">default</span><span class="p">:</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0xYourMain</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span><span class="nt">vault</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">null</span><span class="w">                 </span><span class="c1"># omit or null for personal portfolio</span>
-<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="nt">signer_env</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HYPERLIQUID_PRIVATE_KEY</span>
-<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="w">  </span><span class="nt">my-vault</span><span class="p">:</span>
-<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="w">    </span><span class="nt">owner</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0xYourMain</span><span class="w">           </span><span class="c1"># optional, informational</span>
-<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="w">    </span><span class="nt">vault</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0xVaultAddress</span>
-<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="w">    </span><span class="nt">signer_env</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HYPERLIQUID_AGENT_KEY_VAULT</span>
-<a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>
-<a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
-<a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="nt">data</span><span class="p">:</span>
-<a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="w">  </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">crowdcent | numerai | local</span>
-<a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="w">  </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">predictions.parquet</span>
-<a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a><span class="w">  </span><span class="nt">date_column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">release_date | date</span>
-<a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="w">  </span><span class="nt">asset_id_column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">id | symbol</span>
-<a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="w">  </span><span class="nt">prediction_column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pred_10d | meta_model</span>
-<a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>
-<a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="nt">portfolio</span><span class="p">:</span>
-<a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="w">  </span><span class="nt">num_long</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
-<a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="w">  </span><span class="nt">num_short</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
-<a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a><span class="w">  </span><span class="nt">target_leverage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
-<a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a><span class="w">  </span><span class="nt">rebalancing</span><span class="p">:</span>
-<a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a><span class="w">    </span><span class="nt">every_n_days</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
-<a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a><span class="w">    </span><span class="nt">at_time</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;18:15&quot;</span><span class="w">   </span><span class="c1"># HH:MM (UTC)</span>
-<a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>
-<a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a><span class="nt">execution</span><span class="p">:</span>
-<a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="w">  </span><span class="nt">slippage_tolerance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.005</span>
-<a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a><span class="w">  </span><span class="nt">min_trade_value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10.0</span>
-</code></pre></div></p>
-<h2 id="profiles-network-credentials">Profiles, network &amp; credentials</h2>
-<ul>
-<li><code>profiles</code> define who you trade for and which key signs.</li>
-<li><code>owner</code>: portfolio owner (used for Info queries when <code>vault</code> not set)</li>
-<li><code>vault</code>: optional; when set, becomes the portfolio owner for Info and Exchange endpoint includes <code>vaultAddress</code></li>
-<li><code>signer_env</code>: name of env var holding the private key for signing</li>
-<li><code>active_profile</code> selects the default profile, override with <code>set --active_profile</code> at runtime</li>
-<li><code>is_testnet: true</code> switches from mainnet to testnet</li>
-</ul>
-<p>See more on how to generate Hyperliquid API wallets and private keys for safety: https://hyperliquid.gitbook.io/hyperliquid-docs/for-developers/api/nonces-and-api-wallets</p>
-<h2 id="data">Data</h2>
-<p>Source types; columns can be overridden):</p>
-<h3 id="crowdcent"><a href="https://crowdcent.com/challenge/hyperliquid-ranking/meta-model/">crowdcent</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>cc-liquid<span class="w"> </span>rebalance<span class="w"> </span>--set<span class="w"> </span>data.source<span class="o">=</span>crowdcent
-</code></pre></div>
-<p>Defaults: <code>date_column=release_date</code>, <code>asset_id_column=id</code>, <code>prediction_column=pred_10d</code>, <code>path=predictions.parquet</code></p>
-<h3 id="numerai"><a href="https://crypto.numer.ai/meta-model">numerai</a></h3>
-<p>Ensure you have installed extras: <code>uv pip install cc-liquid[numerai]</code></p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>cc-liquid<span class="w"> </span>rebalance<span class="w"> </span>--set<span class="w"> </span>data.source<span class="o">=</span>numerai
-</code></pre></div>
-<p>Defaults: <code>date_column=date</code>, <code>asset_id_column=symbol</code>, <code>prediction_column=meta_model</code>, <code>path=predictions.parquet</code></p>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>Running commands with <code>--set data.source=numerai</code> can auto-apply column defaults for the Numerai metamodel.</p>
+<p>Test your strategies on historical data before risking real capital. cc-liquid provides powerful backtesting tools to analyze performance and optimize parameters.</p>
+<div class="admonition important">
+<p class="admonition-title">Data Requirements</p>
+<p><strong>You need to bring your own datasets for backtesting.</strong> cc-liquid requires two data files:</p>
+<ol>
+<li><strong>Historical price data</strong> (<code>raw_data.parquet</code>) - Daily closing prices for all assets</li>
+<li><strong>Historical predictions</strong> (<code>predictions.parquet</code>) - Your prediction scores/signals for each asset</li>
+</ol>
+<p>See <a href="#data-requirements">Data requirements</a> section below for detailed format specifications.</p>
 </div>
-<h3 id="local">local</h3>
-<p>Bring your own Parquet/CSV:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>cc-liquid<span class="w"> </span>rebalance<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="w">  </span>--set<span class="w"> </span>data.source<span class="o">=</span><span class="nb">local</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="w">  </span>--set<span class="w"> </span>data.path<span class="o">=</span>my_preds.parquet<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="w">  </span>--set<span class="w"> </span>data.date_column<span class="o">=</span>dt<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="w">  </span>--set<span class="w"> </span>data.asset_id_column<span class="o">=</span>ticker<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="w">  </span>--set<span class="w"> </span>data.prediction_column<span class="o">=</span>score
+<h2 id="quick-start">Quick start</h2>
+<h3 id="basic-backtest">Basic backtest</h3>
+<p>Once you have prepared your data files, run a backtest with your current configuration:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Ensure you have these files in your working directory:</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="c1"># - raw_data.parquet (price history)  </span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># - predictions.parquet (your signals)</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>cc-liquid<span class="w"> </span>analyze
 </code></pre></div>
-<p>Column rules:</p>
-<ul>
-<li><code>date_column</code>: latest row per asset is used</li>
-<li><code>asset_id_column</code>: must match Hyperliquid symbols; unmatched are skipped</li>
-<li><code>prediction_column</code>: ranking for longs/shorts grouped by date</li>
-</ul>
-<h2 id="portfolio">Portfolio</h2>
-<ul>
-<li><code>num_long</code> / <code>num_short</code>: counts for top/bottom selections</li>
-<li><code>target_leverage</code>: scales notional per-position like <code>(account_value * target_leverage) / (num_long + num_short)</code>.</li>
-<li><code>rebalancing.every_n_days</code> / <code>rebalancing.at_time</code> (UTC)</li>
-</ul>
-<h2 id="execution">Execution</h2>
-<ul>
-<li><code>slippage_tolerance</code>: used for market orders</li>
-<li><code>min_trade_value</code>: trades below this absolute USD delta are skipped</li>
-</ul>
-<h2 id="cli-overrides">CLI overrides</h2>
-<p>Examples:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>cc-liquid<span class="w"> </span>run<span class="w"> </span>--set<span class="w"> </span><span class="nv">active_portfolio</span><span class="o">=</span>default
+<p>This uses price data from <code>raw_data.parquet</code> (must exist), predictions from <code>predictions.parquet</code> or your configured data source, and portfolio settings from <code>cc-liquid-config.yaml</code>.</p>
+<h3 id="parameter-optimization">Parameter optimization</h3>
+<p>Find optimal portfolio parameters using grid search:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>cc-liquid<span class="w"> </span>optimize
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>cc-liquid<span class="w"> </span>rebalance<span class="w"> </span>--set<span class="w"> </span>data.source<span class="o">=</span>numerai<span class="w"> </span>--set<span class="w"> </span>portfolio.target_leverage<span class="o">=</span><span class="m">2</span>.0<span class="w"> </span>--set<span class="w"> </span>portfolio.num_long<span class="o">=</span><span class="m">12</span>
+<h2 id="analyze-command">Analyze command</h2>
+<p>The <code>analyze</code> command runs a single backtest with specified parameters.</p>
+<h3 id="basic-usage">Basic usage</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Use config defaults</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>cc-liquid<span class="w"> </span>analyze
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Override specific parameters</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>cc-liquid<span class="w"> </span>analyze<span class="w"> </span>--set<span class="w"> </span>portfolio.num_long<span class="o">=</span><span class="m">15</span><span class="w"> </span>--set<span class="w"> </span>portfolio.num_short<span class="o">=</span><span class="m">5</span><span class="w"> </span>--set<span class="w"> </span>portfolio.target_leverage<span class="o">=</span><span class="m">2</span>.0
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># Custom date range</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>cc-liquid<span class="w"> </span>analyze<span class="w"> </span>--start-date<span class="w"> </span><span class="m">2024</span>-01-01<span class="w"> </span>--end-date<span class="w"> </span><span class="m">2024</span>-06-30
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+<a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="c1"># Switch prediction column and rebalancing parameters</span>
+<a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>cc-liquid<span class="w"> </span>analyze<span class="w"> </span>--set<span class="w"> </span>data.prediction_column<span class="o">=</span>pred_10d<span class="w"> </span>--set<span class="w"> </span>portfolio.rebalancing.every_n_days<span class="o">=</span><span class="m">10</span>
+<a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>
+<a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="c1"># Show position details and save daily results</span>
+<a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>cc-liquid<span class="w"> </span>analyze<span class="w"> </span>--show-positions<span class="w"> </span>--save-daily<span class="w"> </span>results.csv
 </code></pre></div>
-<p>Nested keys use dot-notation. Types are inferred (int/float/bool/str).</p>
-<p>Smart defaults when switching <code>data.source</code> are applied unless explicitly overridden.</p>
-<h2 id="cli-helpers">CLI helpers</h2>
+<h3 id="parameters">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--prices</code></td>
+<td><code>raw_data.parquet</code></td>
+<td>Path to historical price data</td>
+</tr>
+<tr>
+<td><code>--start-date</code></td>
+<td>Auto</td>
+<td>Backtest start date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code>--end-date</code></td>
+<td>Auto</td>
+<td>Backtest end date (YYYY-MM-DD)</td>
+</tr>
+<tr>
+<td><code>--set</code></td>
+<td>None</td>
+<td>Override config values (e.g., <code>--set portfolio.num_long=15</code>)</td>
+</tr>
+<tr>
+<td><code>--fee-bps</code></td>
+<td>2.5</td>
+<td>Trading fees in basis points</td>
+</tr>
+<tr>
+<td><code>--slippage-bps</code></td>
+<td>5.0</td>
+<td>Slippage costs in basis points</td>
+</tr>
+<tr>
+<td><code>--show-positions</code></td>
+<td>False</td>
+<td>Show detailed position data</td>
+</tr>
+<tr>
+<td><code>--save-daily</code></td>
+<td>None</td>
+<td>Save daily returns to CSV</td>
+</tr>
+<tr>
+<td><code>--verbose</code></td>
+<td>False</td>
+<td>Show detailed progress</td>
+</tr>
+</tbody>
+</table>
+<h3 id="output-metrics">Output metrics</h3>
+<p>The backtest displays comprehensive performance metrics including total return and CAGR, volatility and max drawdown, risk-adjusted metrics (Sharpe, Sortino, Calmar ratios), trading statistics (win rate, turnover), and final equity value.</p>
+<p>Example output:</p>
+<p><img alt="backtest-results" src="../images/backtest-results.png" /></p>
+<h2 id="optimize-command">Optimize command</h2>
+<div class="admonition danger">
+<p class="admonition-title">Optimization Warning</p>
+<p>Parameter optimization is particularly susceptible to overfitting. The more parameters and combinations you test, the higher the risk of finding parameters that only work historically. Always reserve out-of-sample data for validation, test parameter stability across different periods, be skeptical of unrealistic returns, and consider transaction costs and market impact.</p>
+</div>
+<p>The <code>optimize</code> command runs parallel grid search to find optimal parameters.</p>
+<h3 id="basic-usage_1">Basic usage</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Requires raw_data.parquet and predictions.parquet to exist</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="c1"># Default optimization</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>cc-liquid<span class="w"> </span>optimize
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># Custom parameter ranges</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>cc-liquid<span class="w"> </span>optimize<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="w">  </span>--num-longs<span class="w"> </span><span class="s2">&quot;10,20,30&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="w">  </span>--num-shorts<span class="w"> </span><span class="s2">&quot;0,5,10&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">  </span>--leverages<span class="w"> </span><span class="s2">&quot;1.0,2.0,3.0&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="w">  </span>--rebalance-days<span class="w"> </span><span class="s2">&quot;7,14,21&quot;</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="c1"># Optimize for specific metric</span>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>cc-liquid<span class="w"> </span>optimize<span class="w"> </span>--metric<span class="w"> </span>calmar
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="c1"># Apply drawdown constraint</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>cc-liquid<span class="w"> </span>optimize<span class="w"> </span>--max-drawdown<span class="w"> </span><span class="m">0</span>.20<span class="w">  </span><span class="c1"># Max 20% drawdown</span>
+<a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>
+<a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="c1"># Run best parameters immediately</span>
+<a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>cc-liquid<span class="w"> </span>optimize<span class="w"> </span>--apply-best
+</code></pre></div>
+<h3 id="parameters_1">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--prices</code></td>
+<td><code>raw_data.parquet</code></td>
+<td>Path to historical price data</td>
+</tr>
+<tr>
+<td><code>--set</code></td>
+<td>None</td>
+<td>Override config values (e.g., <code>--set data.source=numerai</code>)</td>
+</tr>
+<tr>
+<td><code>--num-longs</code></td>
+<td>"5,10,15,20"</td>
+<td>Long positions to test</td>
+</tr>
+<tr>
+<td><code>--num-shorts</code></td>
+<td>"5,10,15,20"</td>
+<td>Short positions to test</td>
+</tr>
+<tr>
+<td><code>--leverages</code></td>
+<td>"1.0,1.5,2.0"</td>
+<td>Leverage levels to test</td>
+</tr>
+<tr>
+<td><code>--rebalance-days</code></td>
+<td>"5,10,15"</td>
+<td>Rebalance frequencies to test</td>
+</tr>
+<tr>
+<td><code>--metric</code></td>
+<td>sharpe</td>
+<td>Optimization target: sharpe, cagr, calmar</td>
+</tr>
+<tr>
+<td><code>--max-drawdown</code></td>
+<td>None</td>
+<td>Maximum drawdown constraint</td>
+</tr>
+<tr>
+<td><code>--top-n</code></td>
+<td>20</td>
+<td>Show top N results</td>
+</tr>
+<tr>
+<td><code>--apply-best</code></td>
+<td>False</td>
+<td>Run full analysis with best params</td>
+</tr>
+<tr>
+<td><code>--save-results</code></td>
+<td>None</td>
+<td>Save results to CSV</td>
+</tr>
+<tr>
+<td><code>--plot</code></td>
+<td>False</td>
+<td>Show contour plots</td>
+</tr>
+<tr>
+<td><code>--max-workers</code></td>
+<td>Auto</td>
+<td>Parallel workers (default: CPU count)</td>
+</tr>
+<tr>
+<td><code>--clear-cache</code></td>
+<td>False</td>
+<td>Clear optimization cache</td>
+</tr>
+<tr>
+<td><code>--verbose</code></td>
+<td>False</td>
+<td>Show detailed progress</td>
+</tr>
+</tbody>
+</table>
+<h3 id="optimization-metrics">Optimization metrics</h3>
+<p>Choose your optimization target based on your goals: <strong>sharpe</strong> for best risk-adjusted returns (default), <strong>cagr</strong> for maximum absolute returns, or <strong>calmar</strong> for best returns relative to drawdown.</p>
+<h3 id="parallel-execution">Parallel execution</h3>
+<p>The optimizer uses multiprocessing to test parameter combinations in parallel. It automatically detects CPU cores (capped at 24), caches results to speed up repeated runs, and shows real-time progress with best parameters found.</p>
+<p>Example output:</p>
+<p><img alt="optimization-results" src="../images/optimization-results.png" /></p>
+<h3 id="caching">Caching</h3>
+<p>Results are cached in <code>.cc_liquid_optimizer_cache.json</code> to speed up repeated optimizations and preserve results across sessions. Clear with the <code>--clear-cache</code> flag when needed.</p>
+<h3 id="applying-best-parameters">Applying best parameters</h3>
+<p>After optimization, apply the best parameters:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Option 1: Run immediately</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>cc-liquid<span class="w"> </span>optimize<span class="w"> </span>--apply-best
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Option 2: Update config manually</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1"># Copy best parameters from output to cc-liquid-config.yaml</span>
+</code></pre></div>
+<h2 id="data-requirements">Data requirements</h2>
+<div class="admonition warning">
+<p class="admonition-title">Bring Your Own Data</p>
+<p>cc-liquid does not provide historical data. You must source your own price history and prediction signals for backtesting.</p>
+</div>
+<h3 id="price-data-raw_dataparquet">Price data (<code>raw_data.parquet</code>)</h3>
+<p>Historical daily price data for all assets you want to trade. This file must contain:</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Type</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>date</code></td>
+<td>datetime</td>
+<td>Price observation date</td>
+<td>2024-01-15</td>
+</tr>
+<tr>
+<td><code>id</code></td>
+<td>string</td>
+<td>Asset identifier (must match Hyperliquid symbols)</td>
+<td>"BTC", "ETH", "SOL"</td>
+</tr>
+<tr>
+<td><code>close</code></td>
+<td>float</td>
+<td>Closing price in USD</td>
+<td>42500.00</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example structure:</strong>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># DataFrame should look like:</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1">#        date    id      close</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1"># 0  2024-01-01  BTC   42000.00</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># 1  2024-01-01  ETH    2250.00</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="c1"># 2  2024-01-01  SOL      95.50</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="c1"># 3  2024-01-02  BTC   43500.00</span>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1"># ...</span>
+</code></pre></div></p>
+<p><strong>Data requirements:</strong></p>
 <ul>
-<li><code>cc-liquid profile list | show | use &lt;name&gt;</code> – manage profiles</li>
+<li>Must cover the full backtest period for all assets</li>
+<li>Daily frequency (one price per asset per day)</li>
+<li>Asset IDs must exactly match Hyperliquid ticker symbols</li>
+<li>Prices should be in USD</li>
+<li>Can include more assets than you have predictions for (extras will be ignored)</li>
 </ul>
+<h2 id="advanced-usage">Advanced usage</h2>
+<h3 id="custom-data-sources">Custom data sources</h3>
+<p>Test with different prediction files or prediction timeframes:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Test Numerai predictions</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>cc-liquid<span class="w"> </span>analyze<span class="w"> </span>--set<span class="w"> </span>data.source<span class="o">=</span>numerai
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Test 10d predictions</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>cc-liquid<span class="w"> </span>analyze<span class="w"> </span>--set<span class="w"> </span>data.prediction_column<span class="o">=</span>pred_10d
+</code></pre></div>
+<h3 id="cost-analysis">Cost analysis</h3>
+<p>Adjust trading costs:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>cc-liquid<span class="w"> </span>analyze<span class="w"> </span>--fee-bps<span class="w"> </span><span class="m">5</span><span class="w"> </span>--slippage-bps<span class="w"> </span><span class="m">10</span>
+</code></pre></div>
+<h2 id="red-flags">Red flags</h2>
+<p>Watch for signs of overfitting:</p>
+<ul>
+<li>Sharpe ratio &gt; 3 (too good to be true?)</li>
+<li>Performance degrades sharply outside optimum</li>
+<li>Large discrepancy between periods</li>
+<li>Performance doesn't generalize when adding prediction-lags</li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Disclaimer</p>
+<p>Past performance does not guarantee future results. Backtests are simplified models that may not capture all market dynamics, execution challenges, or black swan events.</p>
+</div>
 
 
 
@@ -1251,7 +1662,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 14, 2025 19:03:33 UTC">August 14, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 3, 2025 20:24:32 UTC">September 3, 2025</span>
   </span>
 
     
@@ -1261,7 +1672,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 13, 2025 16:53:41 UTC">August 13, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 3, 2025 20:24:32 UTC">September 3, 2025</span>
   </span>
 
     
