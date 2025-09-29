@@ -12,13 +12,13 @@
         <meta name="author" content="CrowdCent">
       
       
-        <link rel="canonical" href="https://crowdcent.github.io/cc-liquid/autopilot/">
+        <link rel="canonical" href="https://crowdcent.github.io/cc-liquid/portfolio-weighting/">
       
       
-        <link rel="prev" href="../portfolio-weighting/">
+        <link rel="prev" href="../configuration/">
       
       
-        <link rel="next" href="../headless/">
+        <link rel="next" href="../autopilot/">
       
       
       <link rel="icon" href="../images/favicon.svg">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Autopilot & Scheduling - cc-liquid</title>
+        <title>Portfolio Weighting - cc-liquid</title>
       
     
     
@@ -82,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#run-autopilot" class="md-skip">
+        <a href="#portfolio-weighting-schemes" class="md-skip">
           Skip to content
         </a>
       
@@ -120,7 +120,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Autopilot & Scheduling
+              Portfolio Weighting
             
           </span>
         </div>
@@ -510,29 +510,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../portfolio-weighting/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    Portfolio Weighting
-    
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -542,13 +519,15 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
   
   
   <span class="md-ellipsis">
-    Autopilot & Scheduling
+    Portfolio Weighting
     
   </span>
   
@@ -561,7 +540,7 @@
   
   
   <span class="md-ellipsis">
-    Autopilot & Scheduling
+    Portfolio Weighting
     
   </span>
   
@@ -574,6 +553,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -582,20 +563,101 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#run-autopilot" class="md-nav__link">
+  <a href="#visual-overview" class="md-nav__link">
     <span class="md-ellipsis">
-      Run autopilot
+      Visual Overview
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Visual Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-schemes-impact-on-position-sizing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example schemes impact on position sizing
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#schedule" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#concentration-effects" class="md-nav__link">
     <span class="md-ellipsis">
-      Schedule
+      Concentration Effects
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#yaml-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      YAML Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cli-override" class="md-nav__link">
+    <span class="md-ellipsis">
+      CLI Override
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#weighting-schemes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Weighting Schemes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Weighting Schemes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#equal-weight-default" class="md-nav__link">
+    <span class="md-ellipsis">
+      Equal Weight (Default)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rank-power" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rank Power
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -603,6 +665,29 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../autopilot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Autopilot & Scheduling
+    
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -909,6 +994,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -917,20 +1004,101 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#run-autopilot" class="md-nav__link">
+  <a href="#visual-overview" class="md-nav__link">
     <span class="md-ellipsis">
-      Run autopilot
+      Visual Overview
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Visual Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-schemes-impact-on-position-sizing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example schemes impact on position sizing
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#schedule" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#concentration-effects" class="md-nav__link">
     <span class="md-ellipsis">
-      Schedule
+      Concentration Effects
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#yaml-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      YAML Configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cli-override" class="md-nav__link">
+    <span class="md-ellipsis">
+      CLI Override
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#weighting-schemes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Weighting Schemes
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Weighting Schemes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#equal-weight-default" class="md-nav__link">
+    <span class="md-ellipsis">
+      Equal Weight (Default)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rank-power" class="md-nav__link">
+    <span class="md-ellipsis">
+      Rank Power
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -953,47 +1121,51 @@
   
 
 
-  <h1>Autopilot & Scheduling</h1>
-
-<p>Autopilot runs a live dashboard and executes rebalances on your schedule.</p>
-<h2 id="run-autopilot">Run autopilot</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>cc-liquid<span class="w"> </span>run<span class="w"> </span>--skip-confirm
-</code></pre></div>
-<p>Live dashboard (monitor):</p>
-<p><img alt="dashboard" src="../images/dashboard.svg" /></p>
-<p>Flags:</p>
+<h1 id="portfolio-weighting-schemes">Portfolio Weighting Schemes</h1>
+<p>cc-liquid supports rank power position sizing methods to go beyond equal weighting, allowing you to concentrate capital in your highest-conviction positions.</p>
+<h2 id="visual-overview">Visual Overview</h2>
+<h3 id="example-schemes-impact-on-position-sizing">Example schemes impact on position sizing</h3>
+<p><img alt="Portfolio Weighting Grid" src="../assets/weighting_schemes_grid.png" /></p>
+<p>The grid above shows how three different weighting schemes distribute capital across long and short positions in various portfolio configurations. Notice how rank power creates concentration in top-ranked positions while maintaining the target leverage.</p>
+<h3 id="concentration-effects">Concentration Effects</h3>
+<p><img alt="Concentration Curves" src="../assets/concentration_curves.png" /></p>
+<p>These curves demonstrate how the rank power parameter controls concentration:</p>
 <ul>
-<li><code>--skip-confirm</code>: execute without confirmation when due</li>
-<li><code>--tmux</code>: run monitor within a tmux session/window</li>
-<li><code>--set</code>: override config at runtime</li>
-<li><code>--refresh</code>: UI refresh cadence in seconds (default 1.0)</li>
+<li><strong>Power = 0</strong> (equal weight): All positions get the same allocation</li>
+<li><strong>Power = 0.5-1.0</strong>: Mild concentration favoring top positions  </li>
+<li><strong>Power = 1.5-2.0</strong>: Moderate concentration</li>
+<li><strong>Power = 3.0+</strong>: Heavy concentration in top few positions</li>
 </ul>
-<div class="admonition tip">
-<p class="admonition-title">Run inside tmux (advanced)</p>
-<p>For long-running sessions, you can run the dashboard in a fixed tmux session. This will attach to the session if it already exists, or create it and start the loop if not.</p>
-<p>Start (or attach) with uv:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>uv<span class="w"> </span>run<span class="w"> </span>cc-liquid<span class="w"> </span>run<span class="w"> </span>--tmux<span class="w"> </span>--skip-confirm
+<h2 id="configuration">Configuration</h2>
+<h3 id="yaml-configuration">YAML Configuration</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nt">portfolio</span><span class="p">:</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="w">  </span><span class="nt">num_long</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nt">num_short</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="w">  </span><span class="nt">target_leverage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4.0</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="w">  </span><span class="nt">weighting_scheme</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rank_power</span><span class="w">  </span><span class="c1"># Options: equal, rank_power</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">  </span><span class="nt">rank_power</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.5</span><span class="w">               </span><span class="c1"># Used when scheme is rank_power (default: 1.5)</span>
 </code></pre></div>
-<ul>
-<li>Detach with Ctrl-B and continue using your machine. </li>
-<li>Re-attach later: <code>tmux attach -t cc-liquid</code> or <code>cc-liquid run --tmux</code></li>
-<li>Stop the loop with Ctrl-C. The session stays open until you exit/kill it.</li>
-</ul>
-</div>
-<h2 id="schedule">Schedule</h2>
-<p>Configure in <a href="../configuration/#yaml-cc-liquid-configyaml"><code>cc-liquid-config.yaml</code></a>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">portfolio</span><span class="p">:</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nt">rebalancing</span><span class="p">:</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nt">every_n_days</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="nt">at_time</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;18:15&quot;</span><span class="w">   </span><span class="c1"># UTC</span>
+<h3 id="cli-override">CLI Override</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Backtest with rank-weighted positions</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>uv<span class="w"> </span>run<span class="w"> </span>-m<span class="w"> </span>cc_liquid.cli<span class="w"> </span>analyze<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span>--set<span class="w"> </span>portfolio.weighting_scheme<span class="o">=</span>rank_power<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span>--set<span class="w"> </span>portfolio.rank_power<span class="o">=</span><span class="m">1</span>.5
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c1"># Live trading with concentration</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>uv<span class="w"> </span>run<span class="w"> </span>-m<span class="w"> </span>cc_liquid.cli<span class="w"> </span>rebalance<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">  </span>--set<span class="w"> </span>portfolio.weighting_scheme<span class="o">=</span>rank_power<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">  </span>--set<span class="w"> </span>portfolio.rank_power<span class="o">=</span><span class="m">2</span>.0
 </code></pre></div>
-<p>The next time is computed from the last successful rebalance timestamp, stored in <code>.cc_liquid_state.json</code>.</p>
-<p>State details:</p>
-<ul>
-<li>The file stores <code>last_rebalance_date</code> as ISO-8601 UTC.</li>
-<li>If no state is present, the next run is scheduled for today at <code>portfolio.rebalancing.at_time</code> (or immediately if already past).</li>
-<li>Each successful cycle updates the timestamp.</li>
-</ul>
+<h2 id="weighting-schemes">Weighting Schemes</h2>
+<h3 id="equal-weight-default">Equal Weight (Default)</h3>
+<p>Every position gets an equal share of the allocated capital. Simple and diversified.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nt">weighting_scheme</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">equal</span>
+</code></pre></div>
+<h3 id="rank-power">Rank Power</h3>
+<p>Positions are weighted by <code>(rank/n)^power</code>. Higher-ranked positions (stronger signals) get more capital.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nt">weighting_scheme</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rank_power</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nt">rank_power</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span>
+</code></pre></div>
 
 
 
@@ -1016,7 +1188,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 14, 2025 16:12:20 UTC">August 14, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 29, 2025 16:57:00 UTC">September 29, 2025</span>
   </span>
 
     
@@ -1026,7 +1198,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 13, 2025 16:53:41 UTC">August 13, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 29, 2025 16:57:00 UTC">September 29, 2025</span>
   </span>
 
     
