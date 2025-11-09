@@ -23,4 +23,6 @@ Key Screens:
     - Settings: Configuration management
 """
 
-__all__ = []
+from cc_flow.ui.app import CCLiquidApp
+
+__all__ = ["CCLiquidApp"]
