@@ -89,6 +89,21 @@ Show history screen. Bound to `h` key.
 
 Show config screen. Bound to `c` key.
 
+##### `action_show_help()` (async)
+
+Show context-aware help modal. Bound to `?` key.
+
+Displays a help modal with content specific to the current screen, including:
+- Global keyboard shortcuts
+- Screen-specific features and workflow
+- General usage tips
+
+**Example**:
+```python
+# Triggered by pressing '?' key
+await app.action_show_help()
+```
+
 ---
 
 ## Screens
@@ -839,6 +854,74 @@ if symbol:
 - `Enter`: Submit input (returns value)
 - `Escape`: Cancel (returns None)
 - `Tab`: Move between input and buttons
+
+---
+
+### HelpModal
+
+Context-aware help dialog with keyboard shortcuts and usage guide.
+
+**Module**: `cc_flow.ui.widgets.modals`
+
+```python
+class HelpModal(ModalScreen[None]):
+    """Context-aware help dialog with keyboard shortcuts and usage guide."""
+```
+
+#### Attributes
+
+| Attribute | Type | Description |
+|-----------|------|-------------|
+| `current_screen` | str | Name of currently active screen |
+| `title` | str | Modal title (default: "Help") |
+
+#### Methods
+
+##### `__init__(current_screen="dashboard", title="Help", **kwargs)`
+
+Initialize help modal.
+
+**Parameters**:
+- `current_screen` (str): Name of currently active screen (default: "dashboard")
+- `title` (str): Modal title (default: "Help")
+- `**kwargs`: Additional arguments
+
+**Returns**: None (dismisses without returning value)
+
+**Example**:
+```python
+# Show help for current screen
+await self.app.push_screen_wait(
+    HelpModal(current_screen="trading")
+)
+```
+
+#### Features
+
+- **Contextual Content**: Help adapts to the current screen
+- **Scrollable**: Long content can be scrolled with arrow keys
+- **Comprehensive**: Includes global shortcuts, screen-specific help, and tips
+- **Rich Markup**: Color-coded sections for visual hierarchy
+
+#### Screen-Specific Help Provided
+
+- **dashboard**: Auto-refresh features, monitoring capabilities
+- **trading**: Rebalance workflow, execution steps
+- **account**: Account metrics, margin details
+- **backtest**: Parameters, metrics, result interpretation
+- **optimize**: Grid search, parameter ranges
+- **history**: Date filtering, performance analysis
+- **config**: Settings overview, profile management
+
+#### Keybindings
+
+- `Enter`: Dismiss modal
+- `Escape`: Dismiss modal
+- `Arrow keys`: Scroll content
+
+#### Global Access
+
+The help modal is globally accessible via the `?` key binding in the main application and provides context-specific help for whatever screen is currently active.
 
 ---
 

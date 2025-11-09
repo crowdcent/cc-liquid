@@ -415,3 +415,267 @@ class InputModal(ModalScreen[str | None]):
         if event.key == "escape":
             log.debug(f"InputModal: User cancelled via Escape - {self.title}")
             self.dismiss(None)
+
+
+class HelpModal(ModalScreen[None]):
+    """Context-aware help dialog with keyboard shortcuts and usage guide.
+
+    This modal displays help information relevant to the current screen,
+    including keyboard shortcuts, screen-specific functionality, and
+    general usage tips. The content adapts based on which screen is active.
+
+    Attributes:
+        current_screen: Name of the currently active screen
+        title: Modal title (default: "Help")
+
+    Keybindings:
+        - Escape: Dismiss modal
+        - Enter: Dismiss modal
+        - Arrow keys: Scroll content
+
+    Example:
+        >>> await self.app.push_screen_wait(
+        ...     HelpModal(current_screen="dashboard")
+        ... )
+    """
+
+    def __init__(
+        self,
+        current_screen: str = "dashboard",
+        title: str = "Help",
+        **kwargs,
+    ) -> None:
+        """Initialize help modal.
+
+        Args:
+            current_screen: Name of currently active screen
+            title: Modal title (default: "Help")
+            **kwargs: Additional arguments passed to ModalScreen
+        """
+        super().__init__(**kwargs)
+        self.current_screen = current_screen
+        self.title = title
+        log.debug(f"HelpModal opened for screen: {current_screen}")
+
+    def compose(self) -> ComposeResult:
+        """Compose the modal UI.
+
+        Yields:
+            Container with help content including keyboard shortcuts,
+            screen-specific help, and general tips
+        """
+        from textual.containers import VerticalScroll
+
+        help_content = self._get_help_content()
+
+        with Container(id="help-modal"):
+            yield Label(self.title, id="modal-title")
+            with VerticalScroll(id="help-content"):
+                yield Label(help_content, markup=True)
+            yield Button("Close (Esc)", id="btn-close", variant="primary")
+
+    def _get_help_content(self) -> str:
+        """Generate contextual help content based on current screen.
+
+        Returns:
+            Formatted help text with markup
+        """
+        # Global keyboard shortcuts
+        global_shortcuts = """[bold cyan]Global Keyboard Shortcuts[/bold cyan]
+
+[yellow]?[/yellow]  Show this help menu
+[yellow]q[/yellow]  Quit application
+[yellow]d[/yellow]  Dashboard screen
+[yellow]t[/yellow]  Trading screen
+[yellow]a[/yellow]  Account screen
+[yellow]b[/yellow]  Backtest screen
+[yellow]o[/yellow]  Optimize screen
+[yellow]h[/yellow]  History screen
+[yellow]c[/yellow]  Config screen
+"""
+
+        # Screen-specific help
+        screen_help = self._get_screen_specific_help()
+
+        # General tips
+        general_tips = """
+[bold cyan]General Tips[/bold cyan]
+
+• Use Tab to navigate between interactive elements
+• Press Escape to close modals and return to previous screen
+• Most tables support sorting by clicking column headers
+• Refresh buttons reload data from the exchange
+• All monetary values are in USD unless otherwise noted
+"""
+
+        # Combine all sections
+        return f"{global_shortcuts}\n{screen_help}\n{general_tips}"
+
+    def _get_screen_specific_help(self) -> str:
+        """Get help content specific to the current screen.
+
+        Returns:
+            Formatted screen-specific help text
+        """
+        screen_helps = {
+            "dashboard": """[bold cyan]Dashboard Screen[/bold cyan]
+
+[bold]Purpose:[/bold] Real-time portfolio monitoring with auto-refresh
+
+[bold]Features:[/bold]
+• Account summary showing value, PnL, and leverage
+• Live positions table with entry/mark prices and unrealized PnL
+• Next rebalance countdown
+• Open orders count
+• Auto-refreshes every 2 seconds
+
+[bold]Actions:[/bold]
+• View positions sorted by PnL
+• Monitor account health in real-time
+• Track next scheduled rebalance""",
+            "trading": """[bold cyan]Trading Screen[/bold cyan]
+
+[bold]Purpose:[/bold] Manual portfolio rebalancing
+
+[bold]Workflow:[/bold]
+1. Click "Plan Rebalance" to generate trade plan
+2. Review proposed trades in the table
+3. Click "Execute Plan" to confirm
+4. View execution results
+
+[bold]Features:[/bold]
+• Preview trades before execution
+• See estimated fees and notional values
+• Confirmation modal for safety
+• Detailed execution summary
+
+[bold]Tips:[/bold]
+• Always review the trade plan carefully
+• Check slippage tolerance in config
+• Ensure sufficient margin before executing""",
+            "account": """[bold cyan]Account Screen[/bold cyan]
+
+[bold]Purpose:[/bold] Detailed account metrics and positions
+
+[bold]Features:[/bold]
+• Comprehensive account metrics
+• Margin breakdown with percentages
+• Extended positions table with liquidation prices
+• Manual refresh capability
+
+[bold]Actions:[/bold]
+[yellow]r[/yellow]  Refresh account data
+• View detailed margin usage
+• Monitor liquidation prices
+• Check withdrawable balance""",
+            "backtest": """[bold cyan]Backtest Screen[/bold cyan]
+
+[bold]Purpose:[/bold] Historical strategy testing
+
+[bold]Features:[/bold]
+• Configure backtest parameters (dates, positions, leverage)
+• Run simulations on historical data
+• View performance metrics (Sharpe, Sortino, Calmar)
+• Risk analysis (drawdown, volatility, turnover)
+
+[bold]Parameters:[/bold]
+• Start/End Date: Historical period to test
+• Num Long/Short: Number of positions per side
+• Target Leverage: Portfolio leverage multiplier
+• Rebalance Days: Frequency of rebalancing
+
+[bold]Tips:[/bold]
+• Longer periods provide more reliable results
+• Beware of overfitting to historical data
+• Consider transaction costs in results""",
+            "optimize": """[bold cyan]Optimize Screen[/bold cyan]
+
+[bold]Purpose:[/bold] Parameter optimization via grid search
+
+[bold]Features:[/bold]
+• Define parameter ranges (CSV format)
+• Select optimization metric (Sharpe, Sortino, Calmar)
+• Run parallel grid search
+• View ranked results
+
+[bold]Parameters:[/bold]
+• Num Long/Short Range: e.g., "5,10,15"
+• Leverage Range: e.g., "1.0,1.5,2.0"
+• Rank Power Range: e.g., "0.0,0.5,1.0"
+
+[bold]Tips:[/bold]
+• Start with small ranges to test quickly
+• Use out-of-sample data for validation
+• Higher Sharpe doesn't always mean better live performance""",
+            "history": """[bold cyan]History Screen[/bold cyan]
+
+[bold]Purpose:[/bold] Trade execution history and analysis
+
+[bold]Features:[/bold]
+• Filter by date range
+• View all historical fills
+• Performance summaries
+• Trade statistics
+
+[bold]Actions:[/bold]
+• Enter start/end dates (YYYY-MM-DD format)
+• Click "Refresh" to load filtered history
+• Review execution quality and fees
+• Export capabilities (if available)
+
+[bold]Tips:[/bold]
+• Use date filters to narrow large datasets
+• Check execution prices vs. planned prices
+• Monitor fee percentages""",
+            "config": """[bold cyan]Config Screen[/bold cyan]
+
+[bold]Purpose:[/bold] Configuration viewing and management
+
+[bold]Features:[/bold]
+• View current settings across all sections
+• Profile information
+• Data source configuration
+• Portfolio construction settings
+• Execution parameters
+• Rebalancing schedule
+• Risk management (stop loss)
+
+[bold]Actions:[/bold]
+[yellow]r[/yellow]  Refresh configuration
+• Review current profile
+• Check data source settings
+• Verify portfolio parameters
+
+[bold]Tips:[/bold]
+• Configuration changes may require app restart
+• Always backup config before major changes
+• Test config changes on testnet first""",
+        }
+
+        return screen_helps.get(
+            self.current_screen,
+            "[bold cyan]Screen Help[/bold cyan]\n\nNo specific help available for this screen.",
+        )
+
+    def on_button_pressed(self, _event: Button.Pressed) -> None:
+        """Handle Close button press.
+
+        Args:
+            _event: The button pressed event (unused)
+
+        Dismisses the modal.
+        """
+        log.debug(f"HelpModal dismissed for screen: {self.current_screen}")
+        self.dismiss()
+
+    def on_key(self, event: Key) -> None:
+        """Handle keyboard events.
+
+        Args:
+            event: The key event
+
+        Enter or Escape dismisses the modal.
+        """
+        if event.key in ("enter", "escape"):
+            log.debug(f"HelpModal dismissed via {event.key} for screen: {self.current_screen}")
+            self.dismiss()

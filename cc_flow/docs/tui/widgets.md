@@ -9,7 +9,7 @@ cc-flow provides six main widget categories:
 1. **Data Display**: PortfolioTable, MetricsPanel, OrderBookWidget
 2. **Visualization**: ChartWidget
 3. **Interactive**: TradePlanWidget
-4. **Dialogs**: ConfirmModal, ErrorModal, InfoModal, InputModal
+4. **Dialogs**: ConfirmModal, ErrorModal, InfoModal, InputModal, HelpModal
 
 All widgets follow the brutalist design philosophy with high-contrast colors and functional layouts.
 
@@ -492,7 +492,7 @@ chart.plot_equity_curve(empty_df)  # Shows "No data to plot"
 
 ## Modals
 
-Four types of modal dialogs for user interaction: ConfirmModal, ErrorModal, InfoModal, and InputModal.
+Five types of modal dialogs for user interaction: ConfirmModal, ErrorModal, InfoModal, InputModal, and HelpModal.
 
 ### ConfirmModal
 
@@ -647,6 +647,75 @@ else:
 - Enter: Submit input (returns value)
 - Escape: Cancel (returns None)
 - Tab: Move between input field and buttons
+
+---
+
+### HelpModal
+
+Context-aware help dialog with keyboard shortcuts and usage guide.
+
+**Visual Example**
+```
+┌─────────────────── Help ───────────────────────┐
+│                                                 │
+│  [Scrollable Content]                           │
+│                                                 │
+│  Global Keyboard Shortcuts                      │
+│  ?  Show this help menu                         │
+│  q  Quit application                            │
+│  d  Dashboard screen                            │
+│  ...                                            │
+│                                                 │
+│  Dashboard Screen                               │
+│  Purpose: Real-time portfolio monitoring...     │
+│                                                 │
+│  General Tips                                   │
+│  • Use Tab to navigate...                       │
+│                                                 │
+│           [ Close (Esc) ]                       │
+│                                                 │
+└─────────────────────────────────────────────────┘
+```
+
+**Usage**
+```python
+from cc_flow.ui.widgets.modals import HelpModal
+
+# Show help for current screen
+await self.app.push_screen_wait(
+    HelpModal(current_screen="dashboard")
+)
+
+# The modal automatically shows:
+# 1. Global keyboard shortcuts
+# 2. Help specific to the current screen
+# 3. General usage tips
+```
+
+**Features**
+- **Contextual**: Help content adapts to current screen
+- **Comprehensive**: Includes shortcuts, workflow, and tips
+- **Scrollable**: Long content can be scrolled with arrow keys
+- **Color-coded**: Uses Rich markup for visual hierarchy
+- **Accessible**: Can be triggered from any screen with `?` key
+
+**Screen-Specific Content**
+The HelpModal provides tailored help for each screen:
+- **Dashboard**: Auto-refresh, monitoring features
+- **Trading**: Rebalance workflow, execution steps
+- **Account**: Metrics, margin details, liquidation prices
+- **Backtest**: Parameters, metrics, interpretation tips
+- **Optimize**: Grid search, parameter ranges, metric selection
+- **History**: Date filtering, performance analysis
+- **Config**: Settings overview, profile management
+
+**Keybindings**
+- Escape: Dismiss modal
+- Enter: Dismiss modal
+- Arrow keys: Scroll content
+
+**Global Access**
+The help modal is bound globally to `?` in the main app and can be accessed from any screen without interrupting your workflow.
 
 ---
 

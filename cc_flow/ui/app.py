@@ -60,6 +60,7 @@ class CCLiquidApp(App):
         Binding("o", "show_optimize", "Optimize"),
         Binding("h", "show_history", "History"),
         Binding("c", "show_config", "Config"),
+        Binding("?", "show_help", "Help"),
         Binding("q", "quit", "Quit", priority=True),
     ]
 
@@ -157,6 +158,13 @@ class CCLiquidApp(App):
         log.info("Switching to config")
         self.current_screen = "config"
         self.push_screen(ConfigScreen(self.config))
+
+    async def action_show_help(self) -> None:
+        """Show context-aware help modal."""
+        from cc_flow.ui.widgets.modals import HelpModal
+
+        log.info(f"Showing help for screen: {self.current_screen}")
+        await self.push_screen_wait(HelpModal(current_screen=self.current_screen))
 
     def on_mount(self) -> None:
         """Called when app is mounted.

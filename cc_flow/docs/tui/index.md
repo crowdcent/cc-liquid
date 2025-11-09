@@ -32,6 +32,7 @@ The TUI uses single-key navigation for quick access to all screens:
 | `o` | Optimize | Grid search for optimal parameters |
 | `h` | History | Trade history and performance analysis |
 | `c` | Config | Configuration viewing and editing |
+| `?` | Help | Context-aware help menu with keyboard shortcuts |
 | `q` | Quit | Exit the application |
 
 ## Available Screens
@@ -84,6 +85,15 @@ Configuration management:
 - Edit configuration values
 - Profile management
 - Validation and save
+
+### Help (`?`)
+Context-aware help menu:
+- Shows help relevant to current screen
+- Global keyboard shortcuts reference
+- Screen-specific features and workflow
+- General usage tips
+- Scrollable content for detailed help
+- Accessible from any screen
 
 ## Key Components
 
