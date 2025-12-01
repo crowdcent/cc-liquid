@@ -12,13 +12,13 @@
         <meta name="author" content="CrowdCent">
       
       
-        <link rel="canonical" href="https://crowdcent.github.io/cc-liquid/walkthrough/">
+        <link rel="canonical" href="https://crowdcent.github.io/cc-liquid/rolling-rebalancing/">
       
       
-        <link rel="prev" href="../install-quickstart/">
+        <link rel="prev" href="../portfolio-weighting/">
       
       
-        <link rel="next" href="../configuration/">
+        <link rel="next" href="../autopilot/">
       
       
         
@@ -29,7 +29,7 @@
     
     
       
-        <title>User Guide - cc-liquid</title>
+        <title>Rolling Rebalancing - cc-liquid</title>
       
     
     
@@ -84,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#1-install-and-configure" class="md-skip">
+        <a href="#rolling-vintage-rebalancing" class="md-skip">
           Skip to content
         </a>
       
@@ -122,7 +122,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              User Guide
+              Rolling Rebalancing
             
           </span>
         </div>
@@ -494,35 +494,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Walkthrough
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../walkthrough/" class="md-nav__link">
         
   
   
@@ -538,129 +513,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#1-install-and-configure" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        1) Install and configure
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-confirm-profileconfigdata" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2) Confirm profile/config/data
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-inspect-account-and-positions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3) Inspect account and positions
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-backtest-before-going-live" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4) Backtest before going live
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-plan-and-execute-rebalancing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5) Plan and execute rebalancing
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="5) Plan and execute rebalancing">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#how-rebalancing-works" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        How rebalancing works
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#flatten-close-all-positions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Flatten (close all positions)
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-continuous-mode-autopilot" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5) Continuous mode (autopilot)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#safety-notes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Safety notes
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -726,10 +578,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../rolling-rebalancing/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rolling Rebalancing
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -745,6 +624,293 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#why-use-rolling-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why Use Rolling Mode?
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Why Use Rolling Mode?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#time-diversification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Time Diversification
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#matches-prediction-horizon" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Matches Prediction Horizon
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reduced-turnover" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reduced Turnover
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How It Works
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How It Works">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-vintage-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Vintage Model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#target-sum-calculation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Target-Sum Calculation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unit-based-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unit-Based Tracking
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cold-start-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cold Start Options
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cold Start Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gradual-ramp-up-seed_full-false" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gradual Ramp-Up (seed_full: false)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#immediate-full-deployment-seed_full-true" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Immediate Full Deployment (seed_full: true)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cli-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI Usage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CLI Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rebalance-with-rolling-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rebalance with Rolling Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#view-active-vintages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        View Active Vintages
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backtest-rolling-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backtest Rolling Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#position-sizing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Position Sizing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Position Sizing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#minimum-account-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minimum Account Size
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#edge-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparing-full-vs-rolling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparing Full vs Rolling
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1132,6 +1298,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -1140,66 +1308,22 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1-install-and-configure" class="md-nav__link">
+  <a href="#why-use-rolling-mode" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1) Install and configure
+        Why Use Rolling Mode?
       
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#2-confirm-profileconfigdata" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        2) Confirm profile/config/data
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#3-inspect-account-and-positions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        3) Inspect account and positions
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#4-backtest-before-going-live" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        4) Backtest before going live
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#5-plan-and-execute-rebalancing" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        5) Plan and execute rebalancing
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="5) Plan and execute rebalancing">
+    <nav class="md-nav" aria-label="Why Use Rolling Mode?">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#how-rebalancing-works" class="md-nav__link">
+  <a href="#time-diversification" class="md-nav__link">
     <span class="md-ellipsis">
       
-        How rebalancing works
+        Time Diversification
       
     </span>
   </a>
@@ -1207,10 +1331,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#flatten-close-all-positions" class="md-nav__link">
+  <a href="#matches-prediction-horizon" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Flatten (close all positions)
+        Matches Prediction Horizon
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reduced-turnover" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reduced Turnover
       
     </span>
   </a>
@@ -1223,10 +1358,205 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#5-continuous-mode-autopilot" class="md-nav__link">
+  <a href="#how-it-works" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5) Continuous mode (autopilot)
+        How It Works
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How It Works">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-vintage-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Vintage Model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#target-sum-calculation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Target-Sum Calculation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unit-based-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Unit-Based Tracking
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cold-start-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cold Start Options
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cold Start Options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gradual-ramp-up-seed_full-false" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gradual Ramp-Up (seed_full: false)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#immediate-full-deployment-seed_full-true" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Immediate Full Deployment (seed_full: true)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cli-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI Usage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CLI Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rebalance-with-rolling-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rebalance with Rolling Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#view-active-vintages" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        View Active Vintages
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backtest-rolling-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backtest Rolling Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#position-sizing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Position Sizing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Position Sizing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#minimum-account-size" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minimum Account Size
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#edge-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Edge Cases
       
     </span>
   </a>
@@ -1234,10 +1564,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#safety-notes" class="md-nav__link">
+  <a href="#comparing-full-vs-rolling" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Safety notes
+        Comparing Full vs Rolling
       
     </span>
   </a>
@@ -1264,147 +1594,252 @@
   
 
 
-  <h1>Walkthrough</h1>
-
-<p>This walkthrough explains the core flow and safe first steps.</p>
-<h2 id="1-install-and-configure">1) Install and configure</h2>
-<p>Follow <a href="../install-quickstart/">the installation guide</a> to install and create <code>.env</code> and <code>cc-liquid-config.yaml</code>.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>uv<span class="w"> </span>tool<span class="w"> </span>install<span class="w"> </span>cc-liquid
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>cc-liquit<span class="w"> </span>init
+<h1 id="rolling-vintage-rebalancing">Rolling Vintage Rebalancing</h1>
+<p>Rolling rebalancing is a time-diversified trading strategy that spreads position entries across multiple days. Instead of rebalancing the entire portfolio at once, it creates daily "vintages" - each containing a fraction of the target allocation.</p>
+<h2 id="why-use-rolling-mode">Why Use Rolling Mode?</h2>
+<h3 id="time-diversification">Time Diversification</h3>
+<p>In full mode, you rebalance everything on a single day. If that day happens to be a local peak (for longs) or trough (for shorts), your entire portfolio suffers. Rolling mode spreads entries across N days, reducing timing risk.</p>
+<h3 id="matches-prediction-horizon">Matches Prediction Horizon</h3>
+<p>If your predictions have a 30-day forward horizon (like <code>pred_30d</code>), each prediction captures expected alpha over 30 days. After 30 days, that prediction has "expired" - the alpha window has closed. Rolling mode naturally aligns with this by closing positions after <code>rolling_days</code>.</p>
+<h3 id="reduced-turnover">Reduced Turnover</h3>
+<p>When the same asset appears in consecutive vintages, the system automatically nets the trades. Instead of closing and reopening, it only trades the difference.</p>
+<h2 id="how-it-works">How It Works</h2>
+<h3 id="the-vintage-model">The Vintage Model</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Day 1:  Create Vintage_1 with 1/30 of target allocation
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>Day 2:  Create Vintage_2 with 1/30 of target allocation
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>...
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>Day 30: Create Vintage_30 with 1/30 of target allocation
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        → Portfolio now at full allocation
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>Day 31: Vintage_1 expires (positions close)
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        Create Vintage_31 (new positions open)
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        → Steady state: 1/30 expires, 1/30 opens daily
 </code></pre></div>
-<div class="admonition tip">
-<p class="admonition-title">Tip: enable tab autocompletion for a smoother CLI experience</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>cc-liquid<span class="w"> </span>completion<span class="w"> </span>install
-</code></pre></div>
-</div>
-<h2 id="2-confirm-profileconfigdata">2) Confirm profile/config/data</h2>
-<p><div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>cc-liquid<span class="w"> </span>config
-</code></pre></div>
-See configuration for defaults and overrides: <a href="../configuration/#data">Configuration → Data</a></p>
-<p>Set your data source in <code>cc-liquid-config.yaml</code> or via <code>--set data.source=[crowdcent|numerai]</code>:</p>
+<h3 id="target-sum-calculation">Target-Sum Calculation</h3>
+<p>The portfolio's target position is the sum of all active vintage positions:</p>
+<table>
+<thead>
+<tr>
+<th>Vintage</th>
+<th>BTC</th>
+<th>ETH</th>
+<th>SOL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Day 1</td>
+<td>0.01</td>
+<td>-0.5</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Day 2</td>
+<td>0.02</td>
+<td>—</td>
+<td>10.0</td>
+</tr>
+<tr>
+<td>Day 3</td>
+<td>—</td>
+<td>-0.3</td>
+<td>5.0</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>0.03</strong></td>
+<td><strong>-0.8</strong></td>
+<td><strong>15.0</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The system then calculates: <code>Trade = Target - Current Wallet</code> for each asset.</p>
+<h3 id="unit-based-tracking">Unit-Based Tracking</h3>
+<p>Vintages store asset quantities (units), not USD values. This prevents drift issues:</p>
 <ul>
-<li><code>crowdcent</code>: latest consolidated metamodel from CrowdCent</li>
-<li><code>numerai</code>: Numerai Crypto metamodel</li>
-<li><code>local</code>: your own parquet/csv file</li>
+<li>You buy 0.1 BTC at <span class="arithmatex">\(50k (\)</span>5,000)</li>
+<li>BTC rises to $100k (now worth $10,000)</li>
+<li>When vintage expires, you sell 0.1 BTC (the original units)</li>
+<li>No leftover position from price appreciation</li>
 </ul>
-<h2 id="3-inspect-account-and-positions">3) Inspect account and positions</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>cc-liquid<span class="w"> </span>account
+<h2 id="configuration">Configuration</h2>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nt">portfolio</span><span class="p">:</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nt">num_long</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">  </span><span class="nt">num_short</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">  </span><span class="nt">target_leverage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3.0</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">  </span><span class="nt">rebalancing</span><span class="p">:</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rolling</span><span class="w">           </span><span class="c1"># Enable rolling mode</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="nt">rolling_days</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span><span class="w">        </span><span class="c1"># Match to prediction horizon</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">    </span><span class="nt">seed_full</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w">         </span><span class="c1"># Full deployment from day 1</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">    </span><span class="nt">at_time</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;18:15&quot;</span><span class="w">        </span><span class="c1"># Daily rebalance time (UTC)</span>
 </code></pre></div>
-<p>This shows your current portfolio state:</p>
-<p><img alt="account" src="../images/account.svg" /></p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Errors on this step are most often due to incrorrectly configured/loaded private keys. You may need to ensure your .env is loaded by running:</p>
-<p><div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">UV_ENV_FILE</span><span class="o">=</span>.env
-</code></pre></div>
-OR</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">export</span><span class="w"> </span><span class="k">$(</span>grep<span class="w"> </span>-v<span class="w"> </span><span class="s1">&#39;^#&#39;</span><span class="w"> </span>.env<span class="w"> </span><span class="p">|</span><span class="w"> </span>xargs<span class="k">)</span>
-</code></pre></div>
-<p>This command reads your <code>.env</code> file, filters out comments, and exports the variables. You'll need to run it in each new terminal session.</p>
-</div>
-<h2 id="4-backtest-before-going-live">4) Backtest before going live</h2>
-<div class="admonition warning">
-<p class="admonition-title">Backtesting Limitations</p>
-<p>Remember that backtesting has inherent limitations. Past performance does not guarantee future results. Results are hypothetical and may not account for all real-world factors. Historical data and simulations may contain inaccuracies. Always validate with paper trading before using real capital.</p>
-</div>
-<div class="admonition important">
-<p class="admonition-title">Data Required</p>
-<p>You need to provide your own historical data files for backtesting:
-- <code>raw_data.parquet</code> - Historical price data
-- <code>predictions.parquet</code> - Your prediction signals</p>
-<p>See the <a href="../backtesting/#data-requirements">Backtesting documentation</a> for detailed format requirements.</p>
-</div>
-<p>Before trading with real funds, test your strategy on historical data:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Ensure you have prepared the required data files first</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>cc-liquid<span class="w"> </span>analyze
-</code></pre></div>
-<p><img alt="backtest results" src="../images/backtest-results.png" /></p>
-<p>Find optimal parameters:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Grid search optimization</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>cc-liquid<span class="w"> </span>optimize
-</code></pre></div>
-<p><img alt="optimization results" src="../images/optimization-results.png" /></p>
-<p>The optimizer tests combinations of:</p>
+<h3 id="key-parameters">Key Parameters</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mode</code></td>
+<td><code>"full"</code> (default) or <code>"rolling"</code></td>
+</tr>
+<tr>
+<td><code>rolling_days</code></td>
+<td>Vintage lifespan. Match to prediction horizon.</td>
+</tr>
+<tr>
+<td><code>seed_full</code></td>
+<td>If true, seeds all vintages on first run using historical predictions. If false, gradually ramps up.</td>
+</tr>
+<tr>
+<td><code>every_n_days</code></td>
+<td>Ignored in rolling mode (always daily)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="cold-start-options">Cold Start Options</h2>
+<h3 id="gradual-ramp-up-seed_full-false">Gradual Ramp-Up (seed_full: false)</h3>
 <ul>
-<li>Position counts (long/short)</li>
-<li>Leverage levels</li>
-<li>Rebalance frequencies</li>
+<li>Day 1: 1/30 of target leverage</li>
+<li>Day 15: 50% of target leverage</li>
+<li>Day 30: Full target leverage</li>
+<li>Day 31+: Steady state</li>
 </ul>
-<h2 id="5-plan-and-execute-rebalancing">5) Plan and execute rebalancing</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>cc-liquid<span class="w"> </span>rebalance
+<p><strong>Pros</strong>: Conservative, reduces timing risk on deployment
+<strong>Cons</strong>: Underinvested for first N days</p>
+<h3 id="immediate-full-deployment-seed_full-true">Immediate Full Deployment (seed_full: true)</h3>
+<ul>
+<li>Day 1: System loads last 30 days of predictions</li>
+<li>Creates 30 vintages with staggered "birth dates"</li>
+<li>Immediately at full target leverage</li>
+<li>Day 2: Oldest vintage expires, new one opens</li>
+</ul>
+<p><strong>Pros</strong>: Fully invested from day 1, time-diversified from start
+<strong>Cons</strong>: Requires historical prediction data</p>
+<h2 id="cli-usage">CLI Usage</h2>
+<h3 id="rebalance-with-rolling-mode">Rebalance with Rolling Mode</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Use config settings</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>cc-liquid<span class="w"> </span>rebalance
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Override mode from CLI</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>cc-liquid<span class="w"> </span>rebalance<span class="w"> </span>--set<span class="w"> </span>portfolio.rebalancing.mode<span class="o">=</span>rolling
 </code></pre></div>
-<p>The CLI will display a detailed plan showing:</p>
-<ul>
-<li>Current vs target positions</li>
-<li>Required trades to rebalance</li>
-<li>Portfolio metrics and leverage</li>
-</ul>
-<p><img alt="rebalance plan" src="../images/rebalance-plan.svg" /></p>
-<p>After reviewing the plan, you'll be prompted to confirm execution. To skip the confirmation prompt:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>cc-liquid<span class="w"> </span>rebalance<span class="w"> </span>--skip-confirm
+<h3 id="view-active-vintages">View Active Vintages</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>cc-liquid<span class="w"> </span>vintages
 </code></pre></div>
-<p>You can adjust parameters on the fly:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>cc-liquid<span class="w"> </span>rebalance<span class="w"> </span>--set<span class="w"> </span>portfolio.num_long<span class="o">=</span><span class="m">12</span><span class="w"> </span>--set<span class="w"> </span>portfolio.num_short<span class="o">=</span><span class="m">8</span><span class="w"> </span>--set<span class="w"> </span>portfolio.target_leverage<span class="o">=</span><span class="m">2</span>.0
+<p>Output:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>┌──────────────────────────────────────────────────────────┐
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>│               Active Vintages (30-day rolling)           │
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>├────────────┬─────┬────────────┬───────────┬─────────────┤
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>│ Birth Date │ Age │ Expires In │ Positions │ Value       │
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>├────────────┼─────┼────────────┼───────────┼─────────────┤
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>│ 2024-11-01 │ 29d │ 1d         │ 4         │ $1,234.56   │
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>│ 2024-11-02 │ 28d │ 2d         │ 4         │ $1,345.67   │
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>│ ...        │ ... │ ...        │ ...       │ ...         │
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>│ 2024-11-30 │ 0d  │ 30d        │ 4         │ $1,456.78   │
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>└────────────┴─────┴────────────┴───────────┴─────────────┘
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>Total vintage value: $42,000.00
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>Active vintages: 30 of 30
+</code></pre></div></p>
+<h3 id="backtest-rolling-mode">Backtest Rolling Mode</h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Use config mode</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>cc-liquid<span class="w"> </span>analyze
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Override from CLI using --set</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>cc-liquid<span class="w"> </span>analyze<span class="w"> </span>--set<span class="w"> </span>portfolio.rebalancing.mode<span class="o">=</span>rolling<span class="w"> </span>--set<span class="w"> </span>portfolio.rebalancing.rolling_days<span class="o">=</span><span class="m">30</span>
+<a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
+<a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="c1"># Compare strategies</span>
+<a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>cc-liquid<span class="w"> </span>analyze<span class="w"> </span>--set<span class="w"> </span>portfolio.rebalancing.mode<span class="o">=</span>full<span class="w">    </span><span class="c1"># Then compare to:</span>
+<a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>cc-liquid<span class="w"> </span>analyze<span class="w"> </span>--set<span class="w"> </span>portfolio.rebalancing.mode<span class="o">=</span>rolling
 </code></pre></div>
-<h3 id="how-rebalancing-works">How rebalancing works</h3>
-<ol>
-<li>
-<p><strong>Load predictions</strong></p>
+<h2 id="position-sizing">Position Sizing</h2>
+<p>With rolling mode, each vintage contains <code>1/rolling_days</code> of the target allocation:</p>
 <ul>
-<li>Downloads latest metamodel from CrowdCent/Numerai (or loads local file)</li>
-<li>Keeps most recent prediction per asset</li>
+<li><strong>Total positions</strong>: <code>num_long + num_short = 120</code></li>
+<li><strong>Rolling days</strong>: <code>30</code></li>
+<li><strong>Positions per vintage</strong>: <code>120 / 30 = 4</code> (2 long, 2 short)</li>
+<li><strong>Leverage per vintage</strong>: <code>target_leverage / 30</code></li>
 </ul>
-</li>
-<li>
-<p><strong>Select assets</strong></p>
-<ul>
-<li>Top <code>num_long</code> assets for long positions (highest predictions)</li>
-<li>Bottom <code>num_short</code> assets for short positions (lowest predictions)</li>
-<li>Filters to only assets tradeable on Hyperliquid</li>
-</ul>
-</li>
-<li>
-<p><strong>Size positions</strong></p>
-<ul>
-<li>Equal-weight: <code>(account_value × target_leverage) / total_positions</code></li>
-<li>Warns if position sizes fall below <code>min_trade_value</code></li>
-</ul>
-</li>
-<li>
-<p><strong>Generate trades</strong></p>
-<ul>
-<li>Calculates delta between current and target positions</li>
-<li>Rounds sizes to exchange precision (<code>sz_decimals</code>)</li>
-<li>Marks trades below minimum as "skipped"</li>
-</ul>
-</li>
-<li>
-<p><strong>Execute orders</strong></p>
-<ul>
-<li>Market orders: uses <code>slippage_tolerance</code> for aggressive pricing (away from mid)</li>
-<li>Limit orders: uses <code>limit_price_offset</code> for passive pricing (at or inside mid)</li>
-<li>Reports fills, failures, and actual slippage</li>
-</ul>
-</li>
-</ol>
-<p>After execution completes:</p>
-<p><img alt="execution summary" src="../images/execution-summary.svg" /></p>
-<h3 id="flatten-close-all-positions">Flatten (close all positions)</h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>cc-liquid<span class="w"> </span>close-all
+<h3 id="minimum-account-size">Minimum Account Size</h3>
+<p>Ensure your account can support the vintage granularity:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Daily allocation = Account Value / rolling_days
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>Per-position size = Daily allocation / (num_positions_per_vintage)
 </code></pre></div>
-<p>In the event you want to return your entire portfolio/vault to cash, <code>close-all</code> plans and executes trades to close all trades to 0 notional value. Add <code>--skip-confirm</code> to skip confirmation messages.</p>
-<h2 id="5-continuous-mode-autopilot">5) Continuous mode (autopilot)</h2>
-<p>Schedules execution at <code>portfolio.rebalancing.at_time</code> every <code>every_n_days</code>. See <a href="../autopilot/">Autopilot &amp; Scheduling</a> for details.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>cc-liquid<span class="w"> </span>run<span class="w"> </span>--skip-confirm<span class="w">   </span><span class="c1"># executes automatically on schedule</span>
-</code></pre></div>
-<p>Dashboard/monitor view:</p>
-<p><img alt="dashboard" src="../images/dashboard.svg" /></p>
-<h2 id="safety-notes">Safety notes</h2>
-<ul>
-<li>Leverage increases liquidation risk; start with 1.0x</li>
-<li>Ensure <code>execution.min_trade_value</code> and slippage are appropriate</li>
-<li>Use Hyperliquid testnet first (<code>--set is_testnet=true</code>)</li>
-</ul>
+<p>If per-position size falls below <code>min_trade_value</code> ($10), trades will be skipped.</p>
+<p><strong>Example</strong>: With $10,000 account, 30-day rolling, 4 positions per vintage:
+- Daily allocation: $333
+- Per position: $83 ✓ (above minimum)</p>
+<p>With $1,000 account:
+- Daily allocation: $33
+- Per position: $8.25 ✗ (below minimum, trades may fail)</p>
+<h2 id="edge-cases">Edge Cases</h2>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Handling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Missed rebalance day</td>
+<td>Target-sum self-corrects on next run</td>
+</tr>
+<tr>
+<td>Stale predictions</td>
+<td>Warning if latest prediction &gt; 1 day old</td>
+</tr>
+<tr>
+<td>Asset delisted</td>
+<td>Skipped in target sum, position closes naturally</td>
+</tr>
+<tr>
+<td>Manual intervention</td>
+<td>Target-diff approach handles any wallet state</td>
+</tr>
+</tbody>
+</table>
+<h2 id="comparing-full-vs-rolling">Comparing Full vs Rolling</h2>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Full Mode</th>
+<th>Rolling Mode</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Timing Risk</td>
+<td>Higher (single entry point)</td>
+<td>Lower (spread across N days)</td>
+</tr>
+<tr>
+<td>Turnover</td>
+<td>Higher (full rebalance)</td>
+<td>Lower (only 1/N changes daily)</td>
+</tr>
+<tr>
+<td>Complexity</td>
+<td>Simple</td>
+<td>Requires state tracking</td>
+</tr>
+<tr>
+<td>Cold Start</td>
+<td>Immediate full deployment</td>
+<td>Gradual or seeded</td>
+</tr>
+<tr>
+<td>Best For</td>
+<td>Infrequent rebalancing</td>
+<td>Daily trading with horizon-matched predictions</td>
+</tr>
+</tbody>
+</table>
 
 
 
@@ -1427,7 +1862,7 @@ OR</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 17, 2025 14:09:12 UTC">October 17, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="December 1, 2025 19:35:49 UTC">December 1, 2025</span>
   </span>
 
     
@@ -1437,7 +1872,7 @@ OR</p>
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 13, 2025 16:53:41 UTC">August 13, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="December 1, 2025 19:35:49 UTC">December 1, 2025</span>
   </span>
 
     
