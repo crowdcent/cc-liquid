@@ -198,13 +198,13 @@ def init_cmd(non_interactive: bool):
                 {
                     "date_column": "date",
                     "asset_id_column": "symbol",
-                    "prediction_column": "meta_model",
+                    "prediction_column": "prediction",
                 }
                 if data_source == "numerai"
                 else {
                     "date_column": "release_date",
                     "asset_id_column": "id",
-                    "prediction_column": "pred_10d",
+                    "prediction_column": "pred_30d",
                 }
             ),
         },
@@ -566,6 +566,74 @@ def cancel_orders(coin, skip_confirm):
 
 
 @cli.command()
+def vintages():
+    """Show active vintages in rolling rebalance mode.
+
+    Displays the "layers" of the portfolio - each vintage represents
+    positions opened on a specific date that will expire after rolling_days.
+    """
+    console = Console()
+
+    # Check if rolling mode is configured
+    if config.portfolio.rebalancing.mode != "rolling":
+        console.print(
+            "[yellow]Rolling mode is not enabled. "
+            "Set portfolio.rebalancing.mode=rolling in config.[/yellow]"
+        )
+        return
+
+    trader = CCLiquid(config, callbacks=RichCLICallbacks())
+
+    try:
+        summary = trader.get_vintages_summary()
+
+        if not summary:
+            console.print(
+                "[yellow]No active vintages. Run 'cc-liquid rebalance' first.[/yellow]"
+            )
+            return
+
+        from rich.table import Table
+
+        rolling_days = config.portfolio.rebalancing.rolling_days
+
+        table = Table(
+            title=f"Active Vintages ({rolling_days}-day rolling)",
+            show_header=True,
+            header_style="bold cyan",
+        )
+        table.add_column("Birth Date", style="cyan")
+        table.add_column("Age", justify="right")
+        table.add_column("Expires In", justify="right")
+        table.add_column("Positions", justify="right")
+        table.add_column("Value", justify="right")
+
+        total_value = 0.0
+        for v in summary:
+            age_str = f"{v['age_days']}d"
+            expires_str = f"{v['expires_in_days']}d"
+            if v["expires_in_days"] <= 1:
+                expires_str = f"[yellow]{expires_str}[/yellow]"
+
+            table.add_row(
+                v["date"],
+                age_str,
+                expires_str,
+                str(v["num_positions"]),
+                f"${v['value_usd']:,.2f}",
+            )
+            total_value += v["value_usd"]
+
+        console.print(table)
+        console.print(f"\n[cyan]Total vintage value: ${total_value:,.2f}[/cyan]")
+        console.print(f"[dim]Active vintages: {len(summary)} of {rolling_days}[/dim]")
+
+    except Exception as e:
+        console.print(f"[red]✗ Error:[/red] {e}")
+        raise
+
+
+@cli.command()
 @click.option("--days", type=int, help="Show fills from last N days")
 @click.option("--start", help="Start date (YYYY-MM-DD)")
 @click.option("--end", help="End date (YYYY-MM-DD)")
@@ -898,8 +966,8 @@ def rebalance(skip_confirm, set_overrides, cancel_open_orders):
         else:
             callbacks.info("No open orders to cancel")
 
-    # Preview plan first (no execution)
-    plan = trader.plan_rebalance()
+    # Preview plan first (no execution) - dispatch based on mode
+    plan = trader.plan_rebalance_auto()
 
     # Check for open orders if not already cancelled
     if not cancel_open_orders and plan.get("open_orders"):
@@ -917,7 +985,7 @@ def rebalance(skip_confirm, set_overrides, cancel_open_orders):
             if result.get("status") == "ok":
                 callbacks.info(f"✓ Cancelled {len(open_orders)} order(s)")
                 # Re-plan after cancelling orders
-                plan = trader.plan_rebalance()
+                plan = trader.plan_rebalance_auto()
             else:
                 callbacks.warn(f"Failed to cancel orders: {result}")
 
@@ -1129,6 +1197,10 @@ def analyze(
     # Now use the config value (which may have been overridden)
     predictions = config.data.path
 
+    # Determine effective mode and rolling days
+    if config.portfolio.rebalancing.mode == "rolling":
+        console.print(f"[cyan]Using rolling mode with {config.portfolio.rebalancing.rolling_days}-day vintages[/cyan]\n")
+
     # Create backtest config using the updated config values
     bt_config = BacktestConfig(
         prices_path=prices,
@@ -1146,6 +1218,9 @@ def analyze(
         rank_power=config.portfolio.rank_power,
         rebalance_every_n_days=config.portfolio.rebalancing.every_n_days,
         prediction_lag_days=prediction_lag,
+        mode=config.portfolio.rebalancing.mode,
+        rolling_days=config.portfolio.rebalancing.rolling_days,
+        seed_full=config.portfolio.rebalancing.seed_full,
         fee_bps=fee_bps,
         slippage_bps=slippage_bps,
         verbose=verbose,
@@ -1357,6 +1432,9 @@ def optimize(
         end_date=end_date,
         rank_power=config.portfolio.rank_power,
         prediction_lag_days=prediction_lag,
+        mode=config.portfolio.rebalancing.mode,
+        rolling_days=config.portfolio.rebalancing.rolling_days,
+        seed_full=config.portfolio.rebalancing.seed_full,
         fee_bps=fee_bps,
         slippage_bps=slippage_bps,
         verbose=verbose,
@@ -1471,6 +1549,9 @@ def optimize(
                     rebalance_every_n_days=best_params["rebalance_every_n_days"],
                     rank_power=best_params["rank_power"],
                     prediction_lag_days=prediction_lag,
+                    mode=config.portfolio.rebalancing.mode,
+                    rolling_days=config.portfolio.rebalancing.rolling_days,
+                    seed_full=config.portfolio.rebalancing.seed_full,
                     fee_bps=fee_bps,
                     slippage_bps=slippage_bps,
                     verbose=False,
@@ -1655,7 +1736,7 @@ def run_live_cli(
                             "\n[bold yellow]-- Scheduled rebalance started --[/bold yellow]"
                         )
                         # Preview plan
-                        plan = trader.plan_rebalance()
+                        plan = trader.plan_rebalance_auto()
                         all_trades = plan["trades"] + plan["skipped_trades"]
                         callbacks.show_trade_plan(
                             plan["target_positions"],
@@ -1682,18 +1763,20 @@ def run_live_cli(
                         last_rebalance_date = datetime.now(timezone.utc)
                         trader.save_state(last_rebalance_date)
 
-                        console.input(
-                            "\n[bold green]✓ Rebalance cycle finished. Press [bold]Enter[/bold] to resume dashboard...[/bold green]"
-                        )
+                        if not skip_confirm:
+                            console.input(
+                                "\n[bold green]✓ Rebalance cycle finished. Press [bold]Enter[/bold] to resume dashboard...[/bold green]"
+                            )
 
                     except Exception as e:
                         console.print(
                             f"\n[bold red]✗ Rebalancing failed:[/bold red] {e}"
                         )
                         traceback.print_exc()
-                        console.input(
-                            "\n[yellow]Press [bold]Enter[/bold] to resume dashboard...[/yellow]"
-                        )
+                        if not skip_confirm:
+                            console.input(
+                                "\n[yellow]Press [bold]Enter[/bold] to resume dashboard...[/yellow]"
+                            )
                     finally:
                         # Resume the live dashboard
                         live.start()

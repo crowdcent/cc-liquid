@@ -217,6 +217,27 @@ Historical daily price data for all assets you want to trade. This file must con
 - Prices should be in USD
 - Can include more assets than you have predictions for (extras will be ignored)
 
+## Rolling Mode Backtesting
+
+Test the rolling vintage strategy against full rebalancing:
+
+```bash
+# Backtest with rolling mode
+cc-liquid analyze --mode rolling --rolling-days 30
+
+# Compare strategies
+cc-liquid analyze --mode full    # Full rebalance every N days
+cc-liquid analyze --mode rolling # Daily vintages, 30-day holding period
+```
+
+Rolling mode creates daily "vintages" - each containing 1/N of target allocation. Positions close after `rolling_days`. This provides time-diversification by spreading entries across the holding period.
+
+Match `rolling_days` to your prediction horizon:
+- `pred_30d` → `rolling-days 30`
+- `pred_10d` → `rolling-days 10`
+
+See [Rolling Rebalancing](rolling-rebalancing.md) for detailed explanation.
+
 ## Advanced usage
 
 ### Custom data sources

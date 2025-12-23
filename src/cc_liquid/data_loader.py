@@ -93,7 +93,7 @@ class DataLoader:
         download_path: str | None = None,
         date_col: str = "release_date",
         id_col: str = "id",
-        pred_col: str = "pred_10d",
+        pred_col: str = "pred_30d",
     ) -> pl.DataFrame:
         """
         Download and load the CrowdCent meta model.
@@ -134,7 +134,7 @@ class DataLoader:
         download_path: str | None = None,
         date_col: str = "date",
         id_col: str = "symbol",
-        pred_col: str = "meta_model",
+        pred_col: str = "prediction",
     ) -> pl.DataFrame:
         """
         Download and load the Numerai crypto meta model.
@@ -160,7 +160,7 @@ class DataLoader:
         if download_path is None:
             download_path = "predictions.parquet"
 
-        api.download_dataset("v1.0/historical_meta_models.parquet", download_path)
+        api.download_dataset("v2.0/historical_meta_models.parquet", download_path)
 
         return DataLoader.from_file(
             path=download_path, date_col=date_col, id_col=id_col, pred_col=pred_col

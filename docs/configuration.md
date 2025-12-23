@@ -60,8 +60,11 @@ portfolio:
     pct: 0.17                  # 17% from entry price
     slippage: 0.05             # 5% slippage tolerance
   rebalancing:
-    every_n_days: 10
-    at_time: "18:15"   # HH:MM (UTC)
+    mode: full              # "full" or "rolling"
+    every_n_days: 10        # For full mode only
+    at_time: "18:15"        # HH:MM (UTC)
+    rolling_days: 30        # Vintage lifespan only for rolling mode
+    seed_full: false        # Seed historical vintages on first run
 
 execution:
   slippage_tolerance: 0.005      # Market orders: aggressive pricing (default: 0.005)
@@ -132,7 +135,37 @@ Column rules:
 - `num_long` / `num_short`: counts for top/bottom selections
 - `target_leverage`: scales notional per-position like `(account_value * target_leverage) / (num_long + num_short)`.
 - `rank_power`: concentration parameter (0.0 = equal weight, default; higher = more concentration in top-ranked positions) - see [Portfolio Weighting](portfolio-weighting.md)
-- `rebalancing.every_n_days` / `rebalancing.at_time` (UTC)
+
+### Rebalancing Modes
+
+Two rebalancing strategies are available:
+
+**Full Mode** (`mode: full`, default):
+Rebalances the entire portfolio on a schedule.
+
+- `every_n_days`: how often to rebalance (default: 10)
+- `at_time`: time of day to rebalance (UTC, default: 18:15)
+
+**Rolling Mode** (`mode: rolling`):
+Creates daily "vintages" - each day opens 1/N of target positions, and positions close after N days. This provides time-diversification by spreading entries across the holding period.
+
+- `rolling_days`: vintage lifespan (default: 30). Match this to your prediction horizon (e.g., `pred_30d` → 30 days)
+- `seed_full`: if true, seeds all vintages from historical predictions on first run for immediate full deployment. If false (default), gradually ramps up over `rolling_days` days.
+- `every_n_days`: ignored in rolling mode (always operates daily)
+
+Example rolling mode config:
+
+```yaml
+portfolio:
+  num_long: 60
+  num_short: 60
+  rebalancing:
+    mode: rolling
+    rolling_days: 30    # Match to pred_30d
+    seed_full: true     # Full deployment from day 1
+```
+
+View active vintages with `cc-liquid vintages`.
 
 ### Stop Loss Protection
 
@@ -261,3 +294,6 @@ Smart defaults when switching `data.source` are applied unless explicitly overri
 - `cc-liquid cancel-orders [--coin SYMBOL]` – cancel open orders
 - `cc-liquid apply-stops` – manually apply stop losses to all open positions
 - `cc-liquid history [--days N | --start DATE --end DATE]` – view trade history and fees
+- `cc-liquid vintages` – view active vintages in rolling mode
+- `cc-liquid rebalance --mode rolling` – override rebalance mode
+- `cc-liquid analyze --mode rolling --rolling-days 30` – backtest with rolling mode

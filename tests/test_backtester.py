@@ -45,6 +45,7 @@ def test_backtester_run_basic(tmp_path):  # noqa: D103
     config = BacktestConfig(
         prices_path=prices_path,
         predictions_path=preds_path,
+        pred_value_column="pred_10d",
         start_date=datetime(2023, 1, 2),
         end_date=datetime(2023, 1, 3),
         num_long=1,
@@ -117,6 +118,7 @@ def test_backtest_optimizer_run_single_backtest(tmp_path):
     base_config = BacktestConfig(
         prices_path=prices_path,
         predictions_path=preds_path,
+        pred_value_column="pred_10d",
         start_date=datetime(2023, 1, 2),
         end_date=datetime(2023, 1, 3),
         num_long=1,

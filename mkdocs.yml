@@ -46,6 +46,7 @@ nav:
           - Walkthrough: walkthrough.md
           - Configuration: configuration.md
           - Portfolio Weighting: portfolio-weighting.md
+          - Rolling Rebalancing: rolling-rebalancing.md
           - Autopilot & Scheduling: autopilot.md
           - Headless & Custom Callbacks: headless.md
           - Backtesting & Optimization: backtesting.md

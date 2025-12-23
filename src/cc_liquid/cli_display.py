@@ -521,7 +521,7 @@ def create_config_tree_table(config_dict: dict) -> Table:
         ("[bold]DATA SOURCE[/bold]", ""),
         ("├─ Provider", f"[{source_color}]{source}[/{source_color}]"),
         ("├─ Path", data_config.get("path", "predictions.parquet")),
-        ("└─ Prediction", data_config.get("prediction_column", "pred_10d")),
+        ("└─ Prediction", data_config.get("prediction_column", "pred_30d")),
         ("", ""),
         ("[bold]PORTFOLIO[/bold]", ""),
         ("├─ Long Positions", f"[green]{portfolio_config.get('num_long', 10)}[/green]"),
@@ -542,9 +542,15 @@ def create_config_tree_table(config_dict: dict) -> Table:
             ("│  └─ Slippage", f"{slippage:.0f}%"),
         ])
     
+    # Determine frequency string based on mode
+    if rebalancing.get("mode") == "rolling":
+        freq_str = "Daily (rolling)"
+    else:
+        freq_str = f"Every {rebalancing.get('every_n_days', 10)} days"
+
     rows.extend([
         ("└─ Rebalancing", ""),
-        ("   ├─ Frequency", f"Every {rebalancing.get('every_n_days', 10)} days"),
+        ("   ├─ Frequency", freq_str),
         ("   └─ Time (UTC)", rebalancing.get("at_time", "18:15")),
         ("", ""),
         ("[bold]EXECUTION[/bold]", ""),

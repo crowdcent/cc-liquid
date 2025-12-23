@@ -428,6 +428,12 @@ class CCLiquid:
             "open_orders": open_orders,
         }
 
+    def plan_rebalance_auto(self, predictions: pl.DataFrame | None = None) -> dict:
+        """Plan rebalance using configured mode (full or rolling)."""
+        if self.config.portfolio.rebalancing.mode == "rolling":
+            return self.plan_rolling_rebalance(predictions)
+        return self.plan_rebalance(predictions)
+
     def execute_plan(self, plan: dict) -> dict:
         """Execute a precomputed plan, returning structured results."""
         trades: list[dict] = plan.get("trades", [])
@@ -499,9 +505,27 @@ class CCLiquid:
             "leverage": leverage,
         }
 
-    def _get_target_positions(self, predictions: pl.DataFrame) -> dict[str, float]:
-        """Calculate target notionals using configurable weighting scheme."""
+    def _get_target_positions(
+        self,
+        predictions: pl.DataFrame,
+        *,
+        override_num_long: int | None = None,
+        override_num_short: int | None = None,
+        override_leverage: float | None = None,
+        quiet: bool = False,
+    ) -> dict[str, float]:
+        """Calculate target notionals using configurable weighting scheme.
 
+        Args:
+            predictions: DataFrame with predictions
+            override_num_long: Override config num_long (for rolling mode)
+            override_num_short: Override config num_short (for rolling mode)
+            override_leverage: Override config target_leverage (for rolling mode)
+            quiet: If True, suppress info callbacks (for rolling mode)
+
+        Returns:
+            Dict mapping asset to target USD notional (signed: positive=long, negative=short)
+        """
         latest_predictions = self._get_latest_predictions(predictions)
         tradeable_predictions = self._filter_tradeable_predictions(latest_predictions)
 
@@ -513,10 +537,10 @@ class CCLiquid:
 
         sorted_preds = tradeable_predictions.sort(pred_col, descending=True)
 
-        num_long = self.config.portfolio.num_long
-        num_short = self.config.portfolio.num_short
+        num_long = override_num_long if override_num_long is not None else self.config.portfolio.num_long
+        num_short = override_num_short if override_num_short is not None else self.config.portfolio.num_short
 
-        if sorted_preds.height < num_long + num_short:
+        if sorted_preds.height < num_long + num_short and not quiet:
             self.callbacks.warn(
                 f"Limited tradeable assets: {sorted_preds.height} available; "
                 f"requested {num_long} longs and {num_short} shorts"
@@ -532,15 +556,16 @@ class CCLiquid:
         )
 
         account_value = self.get_account_value()
-        target_leverage = self.config.portfolio.target_leverage
+        target_leverage = override_leverage if override_leverage is not None else self.config.portfolio.target_leverage
         total_positions = len(long_assets) + len(short_assets)
 
         if total_positions == 0 or account_value <= 0 or target_leverage <= 0:
             return {}
 
-        self.callbacks.info(
-            f"Target gross leverage: {target_leverage:.2f}x across {total_positions} positions"
-        )
+        if not quiet:
+            self.callbacks.info(
+                f"Target gross leverage: {target_leverage:.2f}x across {total_positions} positions"
+            )
 
         weights = weights_from_ranks(
             latest_preds=tradeable_predictions.select([id_col, pred_col]),
@@ -563,7 +588,7 @@ class CCLiquid:
             for asset, weight in target_positions.items()
             if abs(weight) < min_notional
         ]
-        if undersized:
+        if undersized and not quiet:
             self.callbacks.warn(
                 "Some target positions fall below minimum notional: "
                 + ", ".join(sorted(undersized))
@@ -1046,7 +1071,9 @@ class CCLiquid:
             )
             return today_at if now_utc < today_at else now_utc
 
-        next_date = last_rebalance_date.date() + timedelta(days=cfg.every_n_days)
+        # Rolling mode = daily; full mode = every_n_days
+        interval = 1 if cfg.mode == "rolling" else cfg.every_n_days
+        next_date = last_rebalance_date.date() + timedelta(days=interval)
         return datetime.combine(next_date, rebalance_time, tzinfo=timezone.utc)
 
     def _load_state(self) -> datetime | None:
@@ -1072,19 +1099,296 @@ class CCLiquid:
         import json
 
         state_file = ".cc_liquid_state.json"
+        # Preserve existing vintages when saving
+        existing_vintages = self._load_vintages()
+        state = {"last_rebalance_date": last_rebalance_date.isoformat()}
+        if existing_vintages:
+            state["vintages"] = existing_vintages
         with open(state_file, "w") as f:
-            json.dump({"last_rebalance_date": last_rebalance_date.isoformat()}, f)
+            json.dump(state, f)
+
+    def _load_vintages(self) -> dict[str, dict[str, float]]:
+        """Load vintages from state file.
+
+        Returns:
+            Dict mapping date string (YYYY-MM-DD) to {asset: units} dict.
+            Units are signed: positive=long, negative=short.
+        """
+        import json
+        import os
+
+        state_file = ".cc_liquid_state.json"
+        if not os.path.exists(state_file):
+            return {}
+
+        try:
+            with open(state_file) as f:
+                state = json.load(f)
+                return state.get("vintages", {})
+        except Exception as e:
+            self.logger.warning(f"Could not load vintages from state: {e}")
+            return {}
+
+    def _save_vintages(self, vintages: dict[str, dict[str, float]]) -> None:
+        """Save vintages to state file, preserving other state."""
+        import json
+        import os
+
+        state_file = ".cc_liquid_state.json"
+
+        # Load existing state to preserve other fields
+        existing_state = {}
+        if os.path.exists(state_file):
+            try:
+                with open(state_file) as f:
+                    existing_state = json.load(f)
+            except Exception:
+                pass
+
+        existing_state["vintages"] = vintages
+        with open(state_file, "w") as f:
+            json.dump(existing_state, f)
+
+    def _prune_expired_vintages(
+        self, vintages: dict[str, dict[str, float]], today: datetime, rolling_days: int
+    ) -> dict[str, dict[str, float]]:
+        """Remove vintages older than rolling_days."""
+        from datetime import date as date_type
+
+        if isinstance(today, datetime):
+            today_date = today.date()
+        else:
+            today_date = today
+
+        cutoff = today_date - timedelta(days=rolling_days)
+
+        pruned = {}
+        for date_str, positions in vintages.items():
+            vintage_date = date_type.fromisoformat(date_str)
+            if vintage_date > cutoff:
+                pruned[date_str] = positions
+
+        return pruned
+
+    def plan_rolling_rebalance(self, predictions: pl.DataFrame | None = None) -> dict:
+        """Compute a rolling rebalance plan using vintage-based position management.
+
+        In rolling mode:
+        - Each day creates a "vintage" with 1/N of target allocation
+        - Vintages expire after rolling_days
+        - Final portfolio = sum of all active vintage positions
+        - Trade = diff between target sum and current positions
+
+        Returns:
+            Plan dict compatible with execute_plan()
+        """
+        rolling_days = self.config.portfolio.rebalancing.rolling_days
+        seed_full = self.config.portfolio.rebalancing.seed_full
+        today = datetime.now(timezone.utc)
+        today_str = today.date().isoformat()
+
+        # Check for open orders (warning if present)
+        open_orders = self.get_open_orders()
+        if open_orders:
+            self.callbacks.warn(
+                f"Found {len(open_orders)} open order(s). These may conflict with rebalancing."
+            )
+
+        # Load predictions if not provided
+        if predictions is None:
+            self.callbacks.info("Loading predictions...")
+            predictions = self._load_predictions()
+
+            if predictions is None or predictions.is_empty():
+                self.callbacks.error("No predictions available, cannot rebalance")
+                return {
+                    "target_positions": {},
+                    "trades": [],
+                    "skipped_trades": [],
+                    "account_value": 0.0,
+                    "leverage": self.config.portfolio.target_leverage,
+                    "open_orders": open_orders,
+                    "vintages": {},
+                }
+
+        # Load and prune existing vintages
+        vintages = self._load_vintages()
+        vintages = self._prune_expired_vintages(vintages, today, rolling_days)
+
+        # If no vintages and seed_full enabled, seed from historical predictions
+        if not vintages and seed_full:
+            self.callbacks.info(f"Seeding {rolling_days} vintages from historical predictions...")
+            vintages = self._seed_vintages_from_history(predictions, today, rolling_days)
+        else:
+            # Create today's vintage (if not already created today)
+            if today_str not in vintages:
+                self.callbacks.info(f"Creating vintage for {today_str}...")
+                new_vintage = self._create_daily_vintage(predictions, rolling_days)
+                if new_vintage:
+                    vintages[today_str] = new_vintage
+
+        # Aggregate all vintages to get global target (in units)
+        global_target_units = self._aggregate_vintages(vintages)
+
+        # Convert to USD for trade calculation
+        all_mids = self.info.all_mids()
+        global_target_usd = {}
+        for coin, units in global_target_units.items():
+            if coin in all_mids:
+                price = float(all_mids[coin])
+                global_target_usd[coin] = units * price
+
+        # Get current positions and calculate trades
+        current_positions = self.get_positions()
+        trades, skipped_trades = self._calculate_trades(global_target_usd, current_positions)
+
+        # Save updated vintages
+        self._save_vintages(vintages)
+
+        account_value = self.get_account_value()
+        return {
+            "target_positions": global_target_usd,
+            "trades": trades,
+            "skipped_trades": skipped_trades,
+            "account_value": account_value,
+            "leverage": self.config.portfolio.target_leverage,
+            "open_orders": open_orders,
+            "vintages": vintages,
+            "active_vintage_count": len(vintages),
+        }
+
+    def _create_daily_vintage(
+        self, predictions: pl.DataFrame, rolling_days: int
+    ) -> dict[str, float]:
+        """Create a single vintage from today's predictions.
+
+        Returns:
+            Dict mapping asset to signed units (positive=long, negative=short)
+        """
+        # Scale parameters for single vintage
+        # Note: We do NOT scale num_long/num_short. Each vintage should be a slice of the FULL strategy.
+        # If full strategy wants top 10, each vintage should buy 1/30th of the top 10.
+        scaled_leverage = self.config.portfolio.target_leverage / rolling_days
+        
+        # Get target USD values using scaled leverage but FULL counts
+        vintage_targets_usd = self._get_target_positions(
+            predictions,
+            override_leverage=scaled_leverage,
+            quiet=True,
+        )
+
+        if not vintage_targets_usd:
+            return {}
+
+        # Convert USD to units for storage
+        all_mids = self.info.all_mids()
+        vintage_units = {}
+        for coin, usd_val in vintage_targets_usd.items():
+            if coin in all_mids:
+                price = float(all_mids[coin])
+                if price > 0:
+                    vintage_units[coin] = usd_val / price
+
+        return vintage_units
+
+    def _seed_vintages_from_history(
+        self, predictions: pl.DataFrame, today: datetime, rolling_days: int
+    ) -> dict[str, dict[str, float]]:
+        """Create N vintages from historical predictions for immediate full deployment.
+
+        This provides time-diversification from day 1 instead of gradual ramp-up.
+        """
+        date_col = self.config.data.date_column
+        today_date = today.date()
+
+        # Get unique prediction dates, sorted descending
+        pred_dates = (
+            predictions.select(pl.col(date_col).dt.date().alias("pred_date"))
+            .unique()
+            .sort("pred_date", descending=True)
+        )
+        available_dates = pred_dates["pred_date"].to_list()
+
+        vintages = {}
+
+        for i in range(min(rolling_days, len(available_dates))):
+            # Synthetic vintage date: stagger backwards from today
+            vintage_date = today_date - timedelta(days=i)
+            vintage_date_str = vintage_date.isoformat()
+
+            # Get predictions from this historical date
+            pred_date = available_dates[i]
+            day_preds = predictions.filter(
+                pl.col(date_col).dt.date() == pred_date
+            )
+
+            if day_preds.is_empty():
+                continue
+
+            # Create vintage for this day
+            vintage = self._create_daily_vintage(day_preds, rolling_days)
+            if vintage:
+                vintages[vintage_date_str] = vintage
+                self.callbacks.info(f"  Seeded vintage {vintage_date_str} from {pred_date}")
+
+        self.callbacks.info(f"Seeded {len(vintages)} vintages")
+        return vintages
+
+    def _aggregate_vintages(
+        self, vintages: dict[str, dict[str, float]]
+    ) -> dict[str, float]:
+        """Sum all vintage positions to get global target in units."""
+        global_target = {}
+        for vintage in vintages.values():
+            for coin, units in vintage.items():
+                global_target[coin] = global_target.get(coin, 0.0) + units
+        return global_target
+
+    def get_vintages_summary(self) -> list[dict[str, Any]]:
+        """Get summary of active vintages for display."""
+        vintages = self._load_vintages()
+        if not vintages:
+            return []
+
+        all_mids = self.info.all_mids()
+        today = datetime.now(timezone.utc).date()
+        rolling_days = self.config.portfolio.rebalancing.rolling_days
+
+        summary = []
+        for date_str, positions in sorted(vintages.items()):
+            from datetime import date as date_type
+            vintage_date = date_type.fromisoformat(date_str)
+            age = (today - vintage_date).days
+            expires_in = rolling_days - age
+
+            # Calculate vintage value
+            total_value = 0.0
+            for coin, units in positions.items():
+                if coin in all_mids:
+                    price = float(all_mids[coin])
+                    total_value += abs(units * price)
+
+            summary.append({
+                "date": date_str,
+                "age_days": age,
+                "expires_in_days": expires_in,
+                "num_positions": len(positions),
+                "value_usd": total_value,
+            })
+
+        return summary
 
     def get_open_orders(self) -> list[dict[str, Any]]:
         """Get current open orders.
 
         Returns:
-            List of open orders with details like coin, size, limit price, side, etc.
+            List of open orders with details like coin, size, limit price, side,
+            orderType, isTrigger, triggerPx, etc.
         """
         owner = self.config.HYPERLIQUID_VAULT_ADDRESS or self.config.HYPERLIQUID_ADDRESS
         if not owner:
             raise ValueError("Missing portfolio owner address")
-        return self.info.open_orders(owner)
+        return self.info.frontend_open_orders(owner)
 
     def cancel_open_orders(self, coin: str | None = None) -> dict[str, Any]:
         """Cancel open orders, optionally filtered by coin.
@@ -1174,16 +1478,8 @@ class CCLiquid:
         if not open_orders:
             return {"status": "ok", "response": "No open orders", "cancelled": 0}
         
-        # Filter for TP/SL orders - check both nested structure and direct
-        tpsl_orders = []
-        for o in open_orders:
-            order_type = o.get("orderType", {})
-            # Check if it's a trigger order (TP/SL)
-            if isinstance(order_type, dict) and "trigger" in order_type:
-                tpsl_orders.append(o)
-            # Also check string format if API returns it differently
-            elif isinstance(order_type, str) and "trigger" in order_type.lower():
-                tpsl_orders.append(o)
+        # Filter for TP/SL orders using the isTrigger field from frontend_open_orders
+        tpsl_orders = [o for o in open_orders if o.get("isTrigger")]
         
         if not tpsl_orders:
             self.callbacks.info(f"No existing TP/SL orders to cancel (found {len(open_orders)} other orders)")

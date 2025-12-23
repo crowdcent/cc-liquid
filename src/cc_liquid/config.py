@@ -18,15 +18,18 @@ class DataSourceConfig:
     path: str = "predictions.parquet"
     date_column: str = "release_date"
     asset_id_column: str = "id"
-    prediction_column: str = "pred_10d"
+    prediction_column: str = "pred_30d"
 
 
 @dataclass
 class RebalancingConfig:
     """Rebalancing schedule configuration."""
 
-    every_n_days: int = 10  # How often to rebalance (in days)
+    every_n_days: int = 10  # How often to rebalance (in days). Ignored in rolling mode.
     at_time: str = "18:15"  # What time to rebalance (UTC)
+    mode: str = "rolling"  # "full" (rebalance entire portfolio) or "rolling" (daily vintages)
+    rolling_days: int = 30  # Vintage lifespan in days. Match to prediction horizon.
+    seed_full: bool = True  # If true, seed with historical predictions on first run
 
 
 @dataclass
@@ -382,7 +385,7 @@ def _apply_data_source_defaults(overrides, applied):
         "numerai": {
             "date_column": "date",
             "asset_id_column": "symbol",
-            "prediction_column": "meta_model",
+            "prediction_column": "prediction",
         },
         "crowdcent": {
             "date_column": "release_date",

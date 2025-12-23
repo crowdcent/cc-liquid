@@ -41,7 +41,7 @@ class BacktestConfig:
     # Prediction columns (will be taken from DataSourceConfig in CLI)
     pred_date_column: str = "release_date"
     pred_id_column: str = "id"
-    pred_value_column: str = "pred_10d"
+    pred_value_column: str = "pred_30d"
 
     # Data provider (e.g., crowdcent, numerai, local)
     data_provider: str | None = None
@@ -60,6 +60,9 @@ class BacktestConfig:
     # Rebalancing
     rebalance_every_n_days: int = 10
     prediction_lag_days: int = 1  # Use T-lag signals to trade at T
+    mode: str = "full"  # "full" or "rolling"
+    rolling_days: int = 30  # Vintage lifespan for rolling mode
+    seed_full: bool = False  # If true, seed vintages on first day (rolling mode)
 
     # Costs (in basis points)
     fee_bps: float = 4.0  # Trading fee
@@ -121,15 +124,21 @@ class Backtester:
         last_cutoff = max(valid_dates) - timedelta(days=self.config.prediction_lag_days)
         predictions_long = predictions_long.filter(pl.col("pred_date") <= last_cutoff)
 
-        # 5. Determine rebalance schedule
+        # 5. Determine rebalance schedule (for full mode)
         rebalance_dates = self._compute_rebalance_dates(valid_dates)
 
-        # 6. Run simulation
-        result = self._simulate(
-            returns_wide=returns_wide,
-            predictions_long=predictions_long,
-            rebalance_dates=rebalance_dates,
-        )
+        # 6. Run simulation (dispatch based on mode)
+        if self.config.mode == "rolling":
+            result = self._simulate_rolling(
+                returns_wide=returns_wide,
+                predictions_long=predictions_long,
+            )
+        else:
+            result = self._simulate(
+                returns_wide=returns_wide,
+                predictions_long=predictions_long,
+                rebalance_dates=rebalance_dates,
+            )
 
         # 7. Compute statistics
         stats = self._compute_stats(result["daily"])
@@ -360,6 +369,7 @@ class Backtester:
 
             # Calculate portfolio return using old weights (positions held from previous close)
             portfolio_return = 0.0
+            prev_equity = equity
 
             if current_weights:
                 for asset, weight in current_weights.items():
@@ -368,13 +378,8 @@ class Backtester:
                         if asset_return is not None and not math.isnan(asset_return):
                             portfolio_return += weight * asset_return
 
-            # Update equity with returns
-            equity *= 1 + portfolio_return
-
-            # Track peak and drawdown
-            if equity > peak_equity:
-                peak_equity = equity
-            drawdown = (equity - peak_equity) / peak_equity if peak_equity > 0 else 0
+            # Apply market return first
+            equity_after_return = prev_equity * (1 + portfolio_return)
 
             # Check if we need to rebalance
             turnover = 0.0
@@ -423,8 +428,8 @@ class Backtester:
                 total_cost_bps = self.config.fee_bps + self.config.slippage_bps
                 cost = turnover * (total_cost_bps / 10_000)
 
-                # Deduct rebalancing costs from equity
-                equity *= 1 - cost
+                # Deduct rebalancing costs from equity after market move
+                equity = equity_after_return * (1 - cost)
 
                 # Store position snapshot
                 for asset, weight in new_weights.items():
@@ -434,12 +439,23 @@ class Backtester:
 
                 # Update weights for next period (take effect at next close)
                 current_weights = new_weights.copy()
+            else:
+                # No rebalance; equity is just after market move
+                equity = equity_after_return
+
+            # Track peak and drawdown AFTER all effects (returns + costs)
+            if equity > peak_equity:
+                peak_equity = equity
+            drawdown = (equity - peak_equity) / peak_equity if peak_equity > 0 else 0
+
+            # Net daily return including costs
+            net_return = (equity / prev_equity) - 1.0
 
             # Store daily results
             daily_results.append(
                 {
                     "date": date,
-                    "returns": portfolio_return,
+                    "returns": net_return,
                     "equity": equity,
                     "drawdown": drawdown,
                     "turnover": turnover,
@@ -453,6 +469,209 @@ class Backtester:
         )
 
         return {"daily": daily_df, "positions": positions_df}
+
+    def _simulate_rolling(
+        self,
+        returns_wide: pl.DataFrame,
+        predictions_long: pl.DataFrame,
+    ) -> dict:
+        """Run backtest simulation with rolling vintage strategy.
+
+        In rolling mode:
+        - Each day creates a new vintage with 1/N of target allocation
+        - Vintages expire after rolling_days
+        - Current weights = sum of all active vintage weights
+        """
+        rolling_days = self.config.rolling_days
+        seed_full = self.config.seed_full
+
+        # Initialize tracking variables
+        equity = self.config.start_capital
+        peak_equity = equity
+
+        daily_results = []
+        position_snapshots = []
+
+        # Vintages: date -> {asset: weight}
+        vintages: dict[datetime, dict[str, float]] = {}
+
+        # Previous day's summed weights for turnover calculation
+        prev_weights: dict[str, float] = {}
+
+        # Get all dates from returns
+        all_dates = returns_wide["date"].to_list()
+
+        for i, date in enumerate(all_dates):
+            prev_equity = equity
+
+            # --- 1. Prune expired vintages ---
+            cutoff = date - timedelta(days=rolling_days)
+            vintages = {d: v for d, v in vintages.items() if d > cutoff}
+
+            # --- 2. Create today's vintage (or seed on first day) ---
+            cutoff_date = date - timedelta(days=self.config.prediction_lag_days)
+
+            # Get available assets (those with returns today)
+            returns_row = returns_wide.filter(pl.col("date") == date)
+            available_assets = set()
+            for col in returns_row.columns:
+                if col != "date":
+                    val = returns_row[col][0]
+                    if val is not None and not math.isnan(val):
+                        available_assets.add(col)
+
+            # Seed on first day if enabled and no vintages yet
+            if i == 0 and seed_full and not vintages:
+                vintages = self._seed_vintages_for_backtest(
+                    predictions_long, date, available_assets, rolling_days
+                )
+            elif date not in vintages:
+                # Create today's vintage
+                new_vintage = self._create_backtest_vintage(
+                    predictions_long, cutoff_date, available_assets, rolling_days
+                )
+                if new_vintage:
+                    vintages[date] = new_vintage
+
+            # --- 3. Sum vintages to get current weights ---
+            current_weights: dict[str, float] = {}
+            for v in vintages.values():
+                for asset, weight in v.items():
+                    current_weights[asset] = current_weights.get(asset, 0) + weight
+
+            # --- 4. Calculate portfolio return using current weights ---
+            portfolio_return = 0.0
+            if current_weights:
+                for asset, weight in current_weights.items():
+                    if asset in returns_row.columns:
+                        asset_return = returns_row[asset][0]
+                        if asset_return is not None and not math.isnan(asset_return):
+                            portfolio_return += weight * asset_return
+
+            # Apply market return first
+            equity_after_return = prev_equity * (1 + portfolio_return)
+
+            # --- 5. Calculate turnover ---
+            all_assets = set(prev_weights.keys()) | set(current_weights.keys())
+            turnover = 0.0
+            for asset in all_assets:
+                old_w = prev_weights.get(asset, 0.0)
+                new_w = current_weights.get(asset, 0.0)
+                turnover += abs(new_w - old_w)
+
+            # Apply trading costs if there's turnover
+            if turnover > 0:
+                total_cost_bps = self.config.fee_bps + self.config.slippage_bps
+                cost = turnover * (total_cost_bps / 10_000)
+                equity = equity_after_return * (1 - cost)
+            else:
+                equity = equity_after_return
+
+            # Store position snapshot
+            for asset, weight in current_weights.items():
+                position_snapshots.append(
+                    {"date": date, "id": asset, "weight": weight}
+                )
+
+            # Update prev_weights for next iteration
+            prev_weights = current_weights.copy()
+
+            # Track peak and drawdown
+            if equity > peak_equity:
+                peak_equity = equity
+            drawdown = (equity - peak_equity) / peak_equity if peak_equity > 0 else 0
+
+            # Net daily return including costs
+            net_return = (equity / prev_equity) - 1.0
+
+            daily_results.append(
+                {
+                    "date": date,
+                    "returns": net_return,
+                    "equity": equity,
+                    "drawdown": drawdown,
+                    "turnover": turnover,
+                }
+            )
+
+        # Convert to DataFrames
+        daily_df = pl.DataFrame(daily_results)
+        positions_df = (
+            pl.DataFrame(position_snapshots) if position_snapshots else pl.DataFrame()
+        )
+
+        return {"daily": daily_df, "positions": positions_df}
+
+    def _create_backtest_vintage(
+        self,
+        predictions: pl.DataFrame,
+        cutoff_date: datetime,
+        available_assets: set[str],
+        rolling_days: int,
+    ) -> dict[str, float]:
+        """Create a single vintage with scaled weights for backtest."""
+        # Scale leverage only (counts remain full for correct diversification)
+        scaled_leverage = self.config.target_leverage / rolling_days
+        
+        # Use full counts
+        num_long = self.config.num_long
+        num_short = self.config.num_short
+
+        # Get asset selection
+        long_assets, short_assets, latest_preds = self._select_assets(
+            predictions, cutoff_date, available_assets
+        )
+
+        # Limit to config counts
+        long_assets = long_assets[:num_long]
+        short_assets = short_assets[:num_short]
+
+        total_positions = len(long_assets) + len(short_assets)
+        if total_positions == 0 or len(latest_preds) == 0:
+            return {}
+
+        # Get weights with scaled leverage
+        weights = weights_from_ranks(
+            latest_preds=latest_preds,
+            id_col="id",
+            pred_col="pred",
+            long_assets=long_assets,
+            short_assets=short_assets,
+            target_gross=scaled_leverage,
+            power=self.config.rank_power,
+        )
+
+        return weights
+
+    def _seed_vintages_for_backtest(
+        self,
+        predictions: pl.DataFrame,
+        start_date: datetime,
+        available_assets: set[str],
+        rolling_days: int,
+    ) -> dict[datetime, dict[str, float]]:
+        """Seed vintages for backtest using historical predictions."""
+        vintages: dict[datetime, dict[str, float]] = {}
+
+        # Get unique prediction dates
+        pred_dates = sorted(
+            predictions["pred_date"].unique().to_list(),
+            reverse=True
+        )
+
+        for i in range(min(rolling_days, len(pred_dates))):
+            # Synthetic vintage date (staggered back from start)
+            vintage_date = start_date - timedelta(days=i)
+            pred_date = pred_dates[i]
+
+            # Create vintage using this prediction date
+            vintage = self._create_backtest_vintage(
+                predictions, pred_date, available_assets, rolling_days
+            )
+            if vintage:
+                vintages[vintage_date] = vintage
+
+        return vintages
 
     def _compute_stats(self, daily: pl.DataFrame) -> dict[str, float]:
         """Compute summary statistics from daily results."""
@@ -615,6 +834,9 @@ class BacktestOptimizer:
             target_leverage=params["leverage"],
             rebalance_every_n_days=params["rebalance_days"],
             prediction_lag_days=self.base_config.prediction_lag_days,
+            mode=params.get("mode", self.base_config.mode),
+            rolling_days=params.get("rolling_days", self.base_config.rolling_days),
+            seed_full=self.base_config.seed_full,
             fee_bps=self.base_config.fee_bps,
             slippage_bps=self.base_config.slippage_bps,
             start_capital=self.base_config.start_capital,
