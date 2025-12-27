@@ -1,0 +1,483 @@
+/* cc-liquid Brutalist Theme
+ * High-contrast, functional design
+ * Colors: Cyan (#62e4fb), Deep Purple (#4152A8), Dark Abyss (#001926)
+ *
+ * Design Philosophy:
+ * - Stark, brutal aesthetics with high contrast
+ * - Functional over decorative
+ * - Edward Tufte-inspired data density
+ */
+
+/* === Global Styles === */
+
+Screen {
+    background: #001926;
+}
+
+Header {
+    background: #4152A8;
+    color: #62e4fb;
+}
+
+Footer {
+    background: #002030;
+    color: #62e4fb;
+}
+
+/* === Panels and Containers === */
+
+.panel {
+    background: #002030;
+    border: solid #62e4fb;
+    padding: 1;
+    margin: 1;
+}
+
+.section-title {
+    text-style: bold;
+    color: #62e4fb;
+    background: #4152A8;
+    padding: 0 1;
+}
+
+.screen-title {
+    text-style: bold;
+    color: #62e4fb;
+    background: #4152A8;
+    padding: 0 1;
+    margin-bottom: 1;
+}
+
+/* === Color Classes === */
+
+.success {
+    color: #00ff00;
+}
+
+.error {
+    color: #ff0000;
+}
+
+.warning {
+    color: #ffaa00;
+}
+
+.info {
+    color: #62e4fb;
+}
+
+/* === Buttons === */
+
+Button {
+    background: #4152A8;
+    color: #62e4fb;
+    border: solid #62e4fb;
+}
+
+Button:hover {
+    background: #62e4fb;
+    color: #001926;
+}
+
+Button:disabled {
+    background: #002030;
+    color: #666666;
+    border: solid #444444;
+}
+
+/* === DataTables === */
+
+DataTable {
+    background: #001926;
+}
+
+DataTable > .datatable--header {
+    background: #4152A8;
+    color: #62e4fb;
+    text-style: bold;
+}
+
+DataTable > .datatable--cursor {
+    background: #002030;
+}
+
+DataTable > .datatable--odd-row {
+    background: #001926;
+}
+
+DataTable > .datatable--even-row {
+    background: #001520;
+}
+
+/* === Inputs === */
+
+Input {
+    background: #002030;
+    color: #62e4fb;
+    border: solid #62e4fb;
+}
+
+Input:focus {
+    border: thick #62e4fb;
+}
+
+Label {
+    color: #62e4fb;
+}
+
+/* Dashboard Screen */
+
+#dashboard {
+    layout: grid;
+    grid-size: 2 2;
+    grid-gutter: 1;
+    padding: 1;
+}
+
+.section-title {
+    text-style: bold;
+    color: #62e4fb;
+    background: #4152A8;
+    padding: 0 1;
+}
+
+#account-summary {
+    padding: 1;
+    color: #62e4fb;
+}
+
+#positions-table {
+    height: 100%;
+}
+
+DataTable > .datatable--header {
+    background: #4152A8;
+    color: #62e4fb;
+}
+
+DataTable > .datatable--cursor {
+    background: #002030;
+}
+
+/* Trading Screen */
+
+#trading {
+    layout: vertical;
+    padding: 1;
+}
+
+.button-row {
+    height: auto;
+    padding: 1;
+}
+
+.button-row > Button {
+    margin-right: 2;
+}
+
+#trades-table {
+    min-height: 20;
+}
+
+#results-panel {
+    margin-top: 1;
+}
+
+#plan-status {
+    padding: 1;
+    color: #62e4fb;
+}
+
+#execution-summary {
+    padding: 1;
+    color: #62e4fb;
+}
+
+/* Confirmation Modal */
+
+#confirm-modal {
+    width: 60;
+    height: auto;
+    background: #002030;
+    border: solid #62e4fb;
+    padding: 2;
+}
+
+#confirm-message {
+    padding: 1;
+    text-align: center;
+    color: #62e4fb;
+}
+
+/* Account Screen */
+
+#account {
+    layout: vertical;
+    padding: 1;
+}
+
+#account > Button {
+    width: 20;
+    margin: 1;
+}
+
+#account-metrics {
+    padding: 1;
+    color: #62e4fb;
+}
+
+#margin-breakdown {
+    padding: 1;
+    color: #62e4fb;
+}
+
+#positions-detail-table {
+    min-height: 15;
+}
+
+/* History Screen */
+
+#history {
+    layout: vertical;
+    padding: 1;
+}
+
+#date-filters {
+    layout: horizontal;
+    height: auto;
+    padding: 1;
+}
+
+#date-filters > Input {
+    width: 20;
+    margin-right: 2;
+}
+
+#date-filters > Label {
+    margin-right: 1;
+    padding-top: 1;
+    color: #62e4fb;
+}
+
+#history-summary {
+    padding: 1;
+    color: #62e4fb;
+}
+
+#history-table {
+    min-height: 20;
+}
+
+/* Backtest Screen */
+
+#backtest {
+    layout: vertical;
+    padding: 1;
+}
+
+#config-grid {
+    grid-size: 2;
+    grid-gutter: 1;
+    padding: 1;
+}
+
+#config-grid > Label {
+    text-align: right;
+    padding-right: 1;
+}
+
+#config-grid > Input {
+    width: 30;
+}
+
+#performance-metrics, #risk-metrics {
+    padding: 1;
+    color: #62e4fb;
+}
+
+/* Optimize Screen */
+
+#optimize {
+    layout: vertical;
+    padding: 1;
+}
+
+#param-ranges-grid {
+    grid-size: 2;
+    grid-gutter: 1;
+    padding: 1;
+}
+
+#param-ranges-grid > Label {
+    text-align: right;
+    padding-right: 1;
+    color: #62e4fb;
+}
+
+#param-ranges-grid > Input {
+    width: 30;
+}
+
+#metric-container {
+    layout: horizontal;
+    height: auto;
+    padding: 1;
+}
+
+#metric-container > Label {
+    padding-right: 1;
+    padding-top: 1;
+    color: #62e4fb;
+}
+
+#metric-select {
+    width: 30;
+}
+
+#run-optimization {
+    width: 25;
+    margin: 1;
+}
+
+#optimization-status {
+    padding: 1;
+    color: #62e4fb;
+}
+
+#results-table {
+    min-height: 15;
+}
+
+.screen-title {
+    text-style: bold;
+    color: #62e4fb;
+    background: #4152A8;
+    padding: 0 1;
+    margin-bottom: 1;
+}
+
+/* === Config Screen === */
+
+#config-screen {
+    layout: vertical;
+    padding: 1;
+}
+
+.config-section {
+    margin: 1;
+    padding: 1;
+    border: solid #62e4fb;
+    background: #002030;
+}
+
+.config-label {
+    color: #62e4fb;
+    text-style: bold;
+}
+
+.config-value {
+    color: #ffffff;
+    padding-left: 2;
+}
+
+#btn-refresh {
+    width: 30;
+    margin: 1;
+}
+
+/* === Modal Styles === */
+
+#confirmation-modal, #result-modal {
+    width: 60;
+    height: auto;
+    background: #002030;
+    border: thick #62e4fb;
+    padding: 2;
+}
+
+#modal-title {
+    text-style: bold;
+    color: #62e4fb;
+    text-align: center;
+    padding: 1;
+}
+
+#modal-message {
+    color: #ffffff;
+    text-align: center;
+    padding: 1 2;
+}
+
+#modal-details {
+    color: #aaaaaa;
+    text-align: center;
+    padding: 1 2;
+}
+
+#modal-buttons {
+    align: center middle;
+    height: auto;
+    padding: 1;
+}
+
+#modal-buttons > Button {
+    margin: 0 1;
+}
+
+.success-modal {
+    border: thick #00ff00;
+}
+
+.error-modal {
+    border: thick #ff0000;
+}
+
+#btn-yes {
+    background: #00aa00;
+}
+
+#btn-yes:hover {
+    background: #00ff00;
+    color: #001926;
+}
+
+#btn-no {
+    background: #aa0000;
+}
+
+#btn-no:hover {
+    background: #ff0000;
+    color: #001926;
+}
+
+#btn-ok {
+    background: #4152A8;
+    color: #62e4fb;
+}
+
+/* === Widget Styles === */
+
+/* Trade Plan Widget */
+TradePlanWidget {
+    layout: vertical;
+}
+
+/* Order Book Widget */
+OrderBookWidget {
+    layout: horizontal;
+}
+
+.order-book-side {
+    width: 50%;
+}
+
+/* Config Screen */
+#config {
+    layout: vertical;
+    padding: 1;
+}
+
+#config-display {
+    padding: 1;
+    color: #62e4fb;
+}

@@ -1,0 +1,73 @@
+# Rolling + Take Profit Strategy Configuration
+# Combines time diversification with profit taking
+
+is_testnet: false
+active_profile: default
+
+profiles:
+  default:
+    owner: 0xYourAddress
+    vault: null
+    signer_env: HYPERLIQUID_PRIVATE_KEY
+
+data:
+  source: numerai
+  prediction_column: meta_model
+
+portfolio:
+  strategy:
+    name: rolling_with_take_profit
+
+    # Shared parameters
+    num_long: 40
+    num_short: 40
+    target_leverage: 3.0
+    rank_power: 1.5
+
+    # Strategy parameters
+    params:
+      rolling_days: 30
+      seed_full: true
+      pnl_threshold_pct: 0.20  # Take profit at 20%
+
+    # Component configuration (fully explicit)
+    components:
+      signal_generator:
+        type: TopNSignals
+        num_long: 40
+        num_short: 40
+
+      entry_manager:
+        type: VintageEntry
+        rolling_days: 30
+        seed_full: true
+
+      exit_rules:
+        # Positions exit if EITHER:
+        # 1. Vintage expires (handled by entry manager)
+        # 2. Profit threshold hit (take profit)
+        - type: TakeProfitExit
+          threshold_pct: 0.20
+
+      position_sizer:
+        type: RankPowerSizer
+        rank_power: 1.5
+
+      state_manager:
+        type: VintageState
+        state_file: .cc-liquid-rolling-tp-state.json
+
+    # Rebalancing (daily for rolling)
+    rebalancing:
+      at_time: "18:15"
+
+  stop_loss:
+    sides: both
+    pct: 0.15    # Native stop loss as final safety net
+    slippage: 0.05
+
+execution:
+  order_type: market
+  time_in_force: Ioc
+  slippage_tolerance: 0.005
+  min_trade_value: 10.0

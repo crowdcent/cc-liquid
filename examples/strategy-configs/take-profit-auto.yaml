@@ -1,0 +1,64 @@
+# Take Profit Auto Strategy Configuration
+# Automatically close positions at profit threshold and reopen with new signals
+
+is_testnet: false
+active_profile: default
+
+profiles:
+  default:
+    owner: 0xYourAddress
+    vault: null
+    signer_env: HYPERLIQUID_PRIVATE_KEY
+
+data:
+  source: numerai
+  prediction_column: meta_model
+
+portfolio:
+  strategy:
+    name: take_profit_auto
+
+    # Shared parameters
+    num_long: 15
+    num_short: 15
+    target_leverage: 2.5
+    rank_power: 2.0  # Higher concentration (fewer positions)
+
+    # Take profit parameters
+    params:
+      pnl_threshold_pct: 0.15  # Close at 15% profit
+      rebalance_time: "18:15"  # Check daily
+
+    # Component configuration
+    components:
+      signal_generator:
+        type: TopNSignals
+
+      entry_manager:
+        type: ImmediateEntry
+
+      exit_rules:
+        - type: TakeProfitExit
+          threshold_pct: 0.15  # 15% profit
+
+      position_sizer:
+        type: RankPowerSizer
+
+      state_manager:
+        type: NoOpState
+
+    # Rebalancing schedule
+    rebalancing:
+      every_n_days: 1  # Check daily for take profit
+      at_time: "18:15"
+
+  stop_loss:
+    sides: both  # Also use native stop losses
+    pct: 0.10    # Tighter stop (10%)
+    slippage: 0.05
+
+execution:
+  order_type: market
+  time_in_force: Ioc
+  slippage_tolerance: 0.005
+  min_trade_value: 10.0

@@ -1,0 +1,63 @@
+# Full Mode Strategy Configuration
+# Complete portfolio rebalance on schedule
+
+is_testnet: false
+active_profile: default
+
+profiles:
+  default:
+    owner: 0xYourAddress
+    vault: null
+    signer_env: HYPERLIQUID_PRIVATE_KEY
+
+data:
+  source: numerai
+  path: predictions.parquet
+  date_column: date
+  asset_id_column: symbol
+  prediction_column: meta_model
+
+portfolio:
+  strategy:
+    # Strategy name (maps to factory function)
+    name: full_mode
+
+    # Shared parameters (used by all strategies)
+    num_long: 20
+    num_short: 20
+    target_leverage: 2.0
+    rank_power: 1.5  # Moderate concentration
+
+    # Component configuration (optional - uses defaults if omitted)
+    components:
+      signal_generator:
+        type: TopNSignals
+        # num_long/num_short inherited from above
+
+      entry_manager:
+        type: ImmediateEntry
+
+      exit_rules: []  # Full rebalance replaces all positions
+
+      position_sizer:
+        type: RankPowerSizer
+        # rank_power inherited from above
+
+      state_manager:
+        type: NoOpState
+
+    # Rebalancing schedule (for full mode)
+    rebalancing:
+      every_n_days: 10
+      at_time: "18:15"  # UTC
+
+  stop_loss:
+    sides: none
+    pct: 0.17
+    slippage: 0.05
+
+execution:
+  order_type: market
+  time_in_force: Ioc
+  slippage_tolerance: 0.005
+  min_trade_value: 10.0
