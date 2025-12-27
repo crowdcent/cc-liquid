@@ -1,0 +1,80 @@
+# Advanced Composite Strategy Configuration
+# Custom composition with multiple exit rules
+
+is_testnet: false
+active_profile: default
+
+profiles:
+  default:
+    owner: 0xYourAddress
+    vault: null
+    signer_env: HYPERLIQUID_PRIVATE_KEY
+
+data:
+  source: crowdcent
+  prediction_column: pred_30d
+
+portfolio:
+  strategy:
+    # Custom strategy name (requires factory function)
+    name: take_profit_with_stop_loss
+
+    # Shared parameters
+    num_long: 20
+    num_short: 20
+    target_leverage: 2.0
+    rank_power: 2.0  # High concentration
+
+    # Strategy-specific parameters
+    params:
+      take_profit_pct: 0.15  # 15% profit target
+      stop_loss_pct: 0.10    # 10% stop loss
+
+    # Explicit component configuration
+    components:
+      signal_generator:
+        type: TopNSignals
+        num_long: 20
+        num_short: 20
+
+      entry_manager:
+        type: ImmediateEntry
+
+      exit_rules:
+        # Multiple exit rules (OR logic: exit if ANY triggers)
+        - type: TakeProfitExit
+          threshold_pct: 0.15  # Close winners at +15%
+
+        - type: StopLossExit
+          threshold_pct: 0.10  # Close losers at -10%
+
+        # Could also add:
+        # - type: TimeBasedExit
+        #   hold_days: 14  # Max hold period
+        #
+        # - type: TrailingStopExit
+        #   trail_pct: 0.08  # Trail 8% from peak
+
+      position_sizer:
+        type: RankPowerSizer
+        rank_power: 2.0
+
+      state_manager:
+        type: NoOpState
+
+    # Rebalancing schedule
+    rebalancing:
+      every_n_days: 1  # Daily check for exits
+      at_time: "18:15"
+
+  # Note: Using both strategy exit rules AND native stop losses
+  # Strategy exits are checked daily at rebalance
+  # Native stops are real-time triggers
+  stop_loss:
+    sides: none  # Disabled (using strategy-based exits instead)
+
+execution:
+  order_type: market
+  time_in_force: Ioc
+  slippage_tolerance: 0.005
+  min_trade_value: 10.0

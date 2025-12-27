@@ -1,0 +1,64 @@
+# Rolling Mode Strategy Configuration
+# Daily vintages with time diversification
+
+is_testnet: false
+active_profile: default
+
+profiles:
+  default:
+    owner: 0xYourAddress
+    vault: null
+    signer_env: HYPERLIQUID_PRIVATE_KEY
+
+data:
+  source: numerai
+  prediction_column: meta_model  # 30-day prediction horizon
+
+portfolio:
+  strategy:
+    name: rolling_mode
+
+    # Shared parameters
+    num_long: 60
+    num_short: 60
+    target_leverage: 3.0
+    rank_power: 1.5
+
+    # Rolling-specific parameters
+    params:
+      rolling_days: 30  # Match prediction horizon
+      seed_full: true   # Full deployment from day 1
+
+    # Component configuration (optional)
+    components:
+      signal_generator:
+        type: TopNSignals
+
+      entry_manager:
+        type: VintageEntry
+        rolling_days: 30  # Inherited from params
+        seed_full: true
+
+      exit_rules: []  # Exits handled by vintage expiry
+
+      position_sizer:
+        type: RankPowerSizer
+
+      state_manager:
+        type: VintageState
+        state_file: .cc-liquid-vintages.json
+
+    # Rebalancing (rolling mode always daily)
+    rebalancing:
+      at_time: "18:15"  # UTC
+
+  stop_loss:
+    sides: both
+    pct: 0.17
+    slippage: 0.05
+
+execution:
+  order_type: market
+  time_in_force: Ioc
+  slippage_tolerance: 0.005
+  min_trade_value: 10.0
