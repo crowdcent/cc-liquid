@@ -638,8 +638,11 @@ def vintages():
 @click.option("--start", help="Start date (YYYY-MM-DD)")
 @click.option("--end", help="End date (YYYY-MM-DD)")
 @click.option("--limit", type=int, default=50, help="Max number of fills to show")
-def history(days, start, end, limit):
-    """Show trade fill history."""
+@click.option("--pnl", is_flag=True, help="Show PNL summary by currency instead of fill history")
+@click.option("--coin", help="Filter fills by specific coin (e.g., BTC, ETH)")
+@click.option("--sort", default="currency", help="Sort order for PNL summary: currency/+currency (A-Z), -currency (Z-A), profit/+profit (desc), -profit (asc)")
+def history(days, start, end, limit, pnl, coin, sort):
+    """Show trade fill history or PNL summary."""
     console = Console()
     trader = CCLiquid(config, callbacks=RichCLICallbacks())
 
@@ -647,6 +650,7 @@ def history(days, start, end, limit):
         # Calculate time range
         start_time = None
         end_time = None
+        has_time_filter = days or start or end
 
         if days:
             end_dt = datetime.now(timezone.utc)
@@ -662,16 +666,43 @@ def history(days, start, end, limit):
                 )
                 end_time = int(end_dt.timestamp() * 1000)
 
-        # Get fills
-        fills = trader.get_fill_history(start_time, end_time)
+        # Get fills (with or without time filter based on user preference)
+        # Default to all-time unless time filters are specified
+        if has_time_filter:
+            fills = trader.get_fill_history(start_time, end_time)
+        else:
+            fills = trader.get_fill_history()
 
         if not fills:
             console.print("[yellow]No fills found[/yellow]")
             return
 
+        # Filter by coin if specified
+        if coin:
+            fills = [f for f in fills if f["coin"].upper() == coin.upper()]
+            if not fills:
+                console.print(f"[yellow]No fills found for {coin.upper()}[/yellow]")
+                return
+
         # Sort by time (most recent first) but don't limit yet
         all_fills = sorted(fills, key=lambda x: x["time"], reverse=True)
         total_fills = len(all_fills)
+
+        # Handle --pnl flag: show PNL summary instead of fill history
+        if pnl:
+            from .trader import aggregate_pnl_by_currency
+            from .cli_display import display_pnl_summary
+
+            # Get current positions for unrealized PNL
+            portfolio = trader.get_portfolio_info()
+            positions = portfolio.positions
+
+            # Aggregate PNL
+            pnl_summary = aggregate_pnl_by_currency(all_fills, positions)
+
+            # Display summary with portfolio balance
+            display_pnl_summary(pnl_summary, console, portfolio.account.account_value, sort_by=sort)
+            return
 
         from rich.table import Table
 
@@ -1027,7 +1058,7 @@ def apply_stops(set_overrides):
         other_skips = [s for s in skipped if "not configured" not in s.get("reason", "")]
         
         # Summary
-        console.print(f"\n[bold cyan]Stop Loss Application Summary[/bold cyan]")
+        console.print("\n[bold cyan]Stop Loss Application Summary[/bold cyan]")
         console.print(f"[green]✓ Applied: {len(applied)}[/green]")
         if side_skips:
             console.print(f"[dim]⊘ Skipped (side filter): {len(side_skips)}[/dim]")
