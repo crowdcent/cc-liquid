@@ -2197,13 +2197,19 @@ def create_ascii_heatmap(pivot_df, longs: list, shorts: list, metric: str) -> st
 
 
 def display_pnl_summary(
-    pnl_summary: dict[str, dict[str, float]], console: Console | None = None
+    pnl_summary: dict[str, dict[str, float]],
+    console: Console | None = None,
+    account_value: float | None = None,
+    sort_by: str = "currency"
 ) -> None:
-    """Display PNL summary table with totals, fees, and volume.
+    """Display PNL summary table with totals, fees, volume, and net profit.
 
     Args:
         pnl_summary: Dictionary mapping currency to realized/unrealized PNL, fees, and volume
         console: Rich Console instance (creates new one if None)
+        account_value: Total portfolio balance (optional)
+        sort_by: Sort order - currency/+currency (A-Z), -currency (Z-A),
+                 profit/+profit (desc), -profit (asc). Default: currency
     """
     if console is None:
         console = Console()
@@ -2222,9 +2228,48 @@ def display_pnl_summary(
     )
 
     table.add_column("CURRENCY", style="cyan", width=12)
-    table.add_column("REALIZED PNL", justify="right", width=15)
-    table.add_column("UNREALIZED PNL", justify="right", width=15)
-    table.add_column("TOTAL PNL", justify="right", width=15)
+    table.add_column("REALIZED PNL", justify="right", width=13)
+    table.add_column("FEES", justify="right", width=10)
+    table.add_column("NET PROFIT", justify="right", width=13)
+    table.add_column("UNREALIZED", justify="right", width=13)
+    table.add_column("TOTAL PNL", justify="right", width=13)
+
+    # Determine sort order based on sort_by parameter
+    # Parse sort_by to extract direction and column
+    reverse = False
+    sort_column = sort_by
+
+    if sort_by.startswith("-"):
+        reverse = True
+        sort_column = sort_by[1:]
+    elif sort_by.startswith("+"):
+        reverse = False
+        sort_column = sort_by[1:]
+
+    # Normalize column name
+    if sort_column in ("currency", "ccy"):
+        # Sort by currency name alphabetically
+        currencies = sorted(pnl_summary.keys(), reverse=reverse)
+    elif sort_column in ("profit", "net_profit", "net"):
+        # Sort by net profit (realized - fees)
+        # Default for profit is descending (highest first) unless explicitly reversed
+        if sort_by in ("profit", "+profit"):
+            # Descending by default for profit
+            currencies = sorted(
+                pnl_summary.keys(),
+                key=lambda c: pnl_summary[c]["realized_pnl"] - pnl_summary[c].get("fees", 0.0),
+                reverse=True
+            )
+        else:
+            # User specified -profit for ascending
+            currencies = sorted(
+                pnl_summary.keys(),
+                key=lambda c: pnl_summary[c]["realized_pnl"] - pnl_summary[c].get("fees", 0.0),
+                reverse=False
+            )
+    else:
+        # Default to alphabetical by currency
+        currencies = sorted(pnl_summary.keys())
 
     # Add rows for each currency
     total_realized = 0.0
@@ -2232,12 +2277,13 @@ def display_pnl_summary(
     total_fees = 0.0
     total_volume = 0.0
 
-    for currency in sorted(pnl_summary.keys()):
+    for currency in currencies:
         data = pnl_summary[currency]
         realized = data["realized_pnl"]
         unrealized = data["unrealized_pnl"]
-        total = realized + unrealized
         fees = data.get("fees", 0.0)
+        net_profit = realized - fees
+        total = net_profit + unrealized
         volume = data.get("volume", 0.0)
 
         total_realized += realized
@@ -2247,33 +2293,44 @@ def display_pnl_summary(
 
         # Style based on profit/loss
         realized_style = "green" if realized >= 0 else "red"
+        net_profit_style = "green" if net_profit >= 0 else "red"
         unrealized_style = "green" if unrealized >= 0 else "red"
         total_style = "green" if total >= 0 else "red"
 
         table.add_row(
             currency,
             f"[{realized_style}]${realized:+,.2f}[/{realized_style}]",
+            f"${fees:,.2f}",
+            f"[{net_profit_style}]${net_profit:+,.2f}[/{net_profit_style}]",
             f"[{unrealized_style}]${unrealized:+,.2f}[/{unrealized_style}]",
             f"[{total_style}]${total:+,.2f}[/{total_style}]",
         )
 
     # Add separator and totals row
     table.add_section()
-    total_total = total_realized + total_unrealized
+    total_net_profit = total_realized - total_fees
+    total_total = total_net_profit + total_unrealized
     total_realized_style = "green" if total_realized >= 0 else "red"
+    total_net_profit_style = "green" if total_net_profit >= 0 else "red"
     total_unrealized_style = "green" if total_unrealized >= 0 else "red"
     total_total_style = "green" if total_total >= 0 else "red"
 
     table.add_row(
         "[bold]TOTAL[/bold]",
         f"[bold {total_realized_style}]${total_realized:+,.2f}[/bold {total_realized_style}]",
+        f"[bold]${total_fees:,.2f}[/bold]",
+        f"[bold {total_net_profit_style}]${total_net_profit:+,.2f}[/bold {total_net_profit_style}]",
         f"[bold {total_unrealized_style}]${total_unrealized:+,.2f}[/bold {total_unrealized_style}]",
         f"[bold {total_total_style}]${total_total:+,.2f}[/bold {total_total_style}]",
     )
 
     console.print(table)
 
-    # Add fee and volume summary below the table (similar to history command)
+    # Add volume and portfolio balance summary below the table
+    summary_parts = [f"Total volume: ${total_volume:,.2f}"]
+    if account_value is not None:
+        summary_parts.append(f"Portfolio balance: ${account_value:,.2f}")
+
     console.print(
-        f"\n[cyan]Total volume: ${total_volume:,.2f}  │  Fees: ${total_fees:,.2f}[/cyan]"
+        f"\n[cyan]{' │ '.join(summary_parts)}[/cyan]"
     )

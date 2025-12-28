@@ -640,7 +640,8 @@ def vintages():
 @click.option("--limit", type=int, default=50, help="Max number of fills to show")
 @click.option("--pnl", is_flag=True, help="Show PNL summary by currency instead of fill history")
 @click.option("--coin", help="Filter fills by specific coin (e.g., BTC, ETH)")
-def history(days, start, end, limit, pnl, coin):
+@click.option("--sort", default="currency", help="Sort order for PNL summary: currency/+currency (A-Z), -currency (Z-A), profit/+profit (desc), -profit (asc)")
+def history(days, start, end, limit, pnl, coin, sort):
     """Show trade fill history or PNL summary."""
     console = Console()
     trader = CCLiquid(config, callbacks=RichCLICallbacks())
@@ -699,8 +700,8 @@ def history(days, start, end, limit, pnl, coin):
             # Aggregate PNL
             pnl_summary = aggregate_pnl_by_currency(all_fills, positions)
 
-            # Display summary
-            display_pnl_summary(pnl_summary, console)
+            # Display summary with portfolio balance
+            display_pnl_summary(pnl_summary, console, portfolio.account.account_value, sort_by=sort)
             return
 
         from rich.table import Table
