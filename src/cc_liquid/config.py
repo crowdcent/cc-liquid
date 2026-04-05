@@ -49,6 +49,8 @@ class PortfolioConfig:
     num_short: int = 10
     target_leverage: float = 1.0  # Position sizing multiplier (1.0 = no leverage)
     rank_power: float = 0.0  # 0.0 = equal weight (default), higher = more concentration
+    weighting_method: str = "rank_power"  # "rank_power" or "hrp"
+    hrp_lookback_days: int = 60  # Trading days of returns used for HRP covariance estimation
     rebalancing: RebalancingConfig = field(default_factory=RebalancingConfig)
     stop_loss: StopLossConfig = field(default_factory=StopLossConfig)
 

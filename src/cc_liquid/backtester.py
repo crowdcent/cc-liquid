@@ -22,7 +22,7 @@ from typing import Any, Literal
 
 import polars as pl
 
-from .portfolio import weights_from_ranks
+from .portfolio import weights_from_ranks, weights_from_hrp
 
 
 @dataclass
@@ -56,6 +56,10 @@ class BacktestConfig:
     target_leverage: float = 3.0  # Sum of abs(weights), matching trader.py
     # Weighting: power=0.0 is equal weight, higher = more concentration
     rank_power: float = 0.0
+
+    # Weighting method: "rank_power" (default) or "hrp"
+    weighting_method: str = "rank_power"
+    hrp_lookback_days: int = 60  # Trading days of returns used for HRP covariance
 
     # Rebalancing
     rebalance_every_n_days: int = 10
@@ -341,6 +345,46 @@ class Backtester:
 
         return long_assets, short_assets, latest_sorted.select(["id", "pred"])
 
+    def _compute_weights(
+        self,
+        long_assets: list[str],
+        short_assets: list[str],
+        latest_preds: pl.DataFrame,
+        target_gross: float,
+        returns_wide: pl.DataFrame | None = None,
+        current_date: datetime | None = None,
+    ) -> dict[str, float]:
+        """Dispatch to the configured weighting method.
+
+        Centralises the rank_power vs HRP decision so both _simulate and
+        _create_backtest_vintage stay clean.
+        """
+        if self.config.weighting_method == "hrp" and returns_wide is not None:
+            # Slice returns up to (but not including) current date to avoid lookahead
+            if current_date is not None:
+                hist = returns_wide.filter(pl.col("date") < current_date)
+            else:
+                hist = returns_wide
+
+            return weights_from_hrp(
+                long_assets=long_assets,
+                short_assets=short_assets,
+                returns_wide=hist,
+                target_gross=target_gross,
+                lookback_days=self.config.hrp_lookback_days,
+            )
+
+        # Default: rank_power
+        return weights_from_ranks(
+            latest_preds=latest_preds,
+            id_col="id",
+            pred_col="pred",
+            long_assets=long_assets,
+            short_assets=short_assets,
+            target_gross=target_gross,
+            power=self.config.rank_power,
+        )
+
     def _simulate(
         self,
         returns_wide: pl.DataFrame,
@@ -406,16 +450,14 @@ class Backtester:
                 total_positions = len(long_assets) + len(short_assets)
 
                 if total_positions > 0 and len(latest_preds) > 0:
-                    weights = weights_from_ranks(
-                        latest_preds=latest_preds,
-                        id_col="id",
-                        pred_col="pred",
+                    new_weights = self._compute_weights(
                         long_assets=long_assets,
                         short_assets=short_assets,
+                        latest_preds=latest_preds,
                         target_gross=self.config.target_leverage,
-                        power=self.config.rank_power,
+                        returns_wide=returns_wide,
+                        current_date=date,
                     )
-                    new_weights = weights
 
                 # Calculate turnover (L1 norm of weight changes)
                 all_assets = set(current_weights.keys()) | set(new_weights.keys())
@@ -528,7 +570,8 @@ class Backtester:
             elif date not in vintages:
                 # Create today's vintage
                 new_vintage = self._create_backtest_vintage(
-                    predictions_long, cutoff_date, available_assets, rolling_days
+                    predictions_long, cutoff_date, available_assets, rolling_days,
+                    returns_wide=returns_wide, current_date=date,
                 )
                 if new_vintage:
                     vintages[date] = new_vintage
@@ -608,6 +651,8 @@ class Backtester:
         cutoff_date: datetime,
         available_assets: set[str],
         rolling_days: int,
+        returns_wide: pl.DataFrame | None = None,
+        current_date: datetime | None = None,
     ) -> dict[str, float]:
         """Create a single vintage with scaled weights for backtest."""
         # Scale leverage only (counts remain full for correct diversification)
@@ -630,15 +675,15 @@ class Backtester:
         if total_positions == 0 or len(latest_preds) == 0:
             return {}
 
-        # Get weights with scaled leverage
-        weights = weights_from_ranks(
-            latest_preds=latest_preds,
-            id_col="id",
-            pred_col="pred",
+        # Get weights via configured method
+        # Note: returns_wide not available here; HRP falls back gracefully via dispatcher
+        weights = self._compute_weights(
             long_assets=long_assets,
             short_assets=short_assets,
+            latest_preds=latest_preds,
             target_gross=scaled_leverage,
-            power=self.config.rank_power,
+            returns_wide=returns_wide,
+            current_date=current_date,
         )
 
         return weights

@@ -1271,7 +1271,10 @@ def create_backtest_config_panel(config) -> Panel:
         "├─ Leverage",
         f"[{leverage_color}]{config.target_leverage:.1f}x[/{leverage_color}]",
     )
-    tree.add_row("└─ Rebalance", f"{config.rebalance_every_n_days}d")
+    tree.add_row("├─ Rebalance", f"{config.rebalance_every_n_days}d")
+    weighting_method = getattr(config, "weighting_method", "rank_power")
+    method_color = "cyan" if weighting_method == "hrp" else "white"
+    tree.add_row("└─ Method", f"[{method_color}]{weighting_method}[/{method_color}]")
     tree.add_row("", "")
 
     # Costs
