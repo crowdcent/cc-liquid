@@ -315,3 +315,166 @@ def _equal_weight(
     for a in short_assets:
         weights[a] = -w
     return weights
+
+
+def weights_from_hrp_lw(
+    long_assets: Sequence[str],
+    short_assets: Sequence[str],
+    returns_wide: pl.DataFrame,
+    target_gross: float,
+    lookback_days: int = 60,
+    shrinkage: float | None = None,
+) -> Dict[str, float]:
+    """HRP with Ledoit-Wolf covariance shrinkage.
+
+    Identical to weights_from_hrp but replaces the sample covariance matrix
+    with a shrunk estimate. Shrinkage pulls the matrix toward the constant
+    correlation model, improving conditioning on short samples.
+
+    Args:
+        shrinkage:  Shrinkage intensity in [0.0, 1.0]. 0.0 = sample covariance
+                    (same as weights_from_hrp). 1.0 = full constant correlation
+                    target. None = analytically estimated (Ledoit-Wolf oracle).
+    """
+    all_assets = list(long_assets) + list(short_assets)
+    if not all_assets or target_gross <= 0:
+        return {}
+
+    available_cols = set(returns_wide.columns) - {"date"}
+    long_valid  = [a for a in long_assets  if a in available_cols]
+    short_valid = [a for a in short_assets if a in available_cols]
+    all_valid   = long_valid + short_valid
+
+    if not all_valid:
+        return {}
+
+    recent = returns_wide.tail(lookback_days).select(all_valid).drop_nulls()
+
+    if len(recent) < 10:
+        return _equal_weight(long_valid, short_valid, target_gross)
+
+    # Use shrunk covariance instead of raw sample
+    cov = _covariance_shrunk(recent, all_valid, shrinkage)
+
+    n_long  = len(long_valid)
+    n_short = len(short_valid)
+    total   = n_long + n_short
+
+    gross_long  = target_gross * (n_long  / total) if total > 0 else 0.0
+    gross_short = target_gross * (n_short / total) if total > 0 else 0.0
+
+    weights: Dict[str, float] = {}
+
+    if long_valid:
+        hrp_long = _hrp_weights(long_valid, cov)
+        for asset, w in hrp_long.items():
+            weights[asset] = +w * gross_long
+
+    if short_valid:
+        hrp_short = _hrp_weights(short_valid, cov)
+        for asset, w in hrp_short.items():
+            weights[asset] = -w * gross_short
+
+    return weights
+
+
+def _covariance_shrunk(
+    returns: pl.DataFrame,
+    assets: list[str],
+    shrinkage: float | None = None,
+) -> Dict[str, Dict[str, float]]:
+    """Sample covariance matrix shrunk toward the constant correlation target.
+
+    The constant correlation target keeps individual asset variances from the
+    sample matrix but replaces all pairwise correlations with their
+    cross-sectional mean. This regularizes the correlation structure while
+    preserving realistic volatility estimates.
+
+    If shrinkage is None, the optimal intensity is estimated analytically
+    using the Ledoit-Wolf formula for the constant correlation target.
+    """
+    n = len(returns)
+    cov_sample = _covariance(returns, assets)
+
+    # Compute sample correlations and their mean
+    p = len(assets)
+    corr_sum = 0.0
+    corr_count = 0
+    for i, a in enumerate(assets):
+        for j, b in enumerate(assets):
+            if i < j:
+                denom = math.sqrt(cov_sample[a][a] * cov_sample[b][b])
+                rho = cov_sample[a][b] / denom if denom > 0 else 0.0
+                corr_sum += rho
+                corr_count += 1
+
+    rho_bar = corr_sum / corr_count if corr_count > 0 else 0.0
+
+    # Build constant correlation target matrix
+    target: Dict[str, Dict[str, float]] = {a: {} for a in assets}
+    for a in assets:
+        for b in assets:
+            if a == b:
+                target[a][b] = cov_sample[a][a]
+            else:
+                target[a][b] = rho_bar * math.sqrt(
+                    cov_sample[a][a] * cov_sample[b][b]
+                )
+
+    # Estimate shrinkage intensity analytically if not provided
+    if shrinkage is None:
+        shrinkage = _ledoit_wolf_intensity(returns, assets, cov_sample, target, n, p)
+
+    shrinkage = max(0.0, min(1.0, shrinkage))
+
+    # Blend: cov_shrunk = (1 - alpha) * cov_sample + alpha * target
+    cov_shrunk: Dict[str, Dict[str, float]] = {a: {} for a in assets}
+    for a in assets:
+        for b in assets:
+            cov_shrunk[a][b] = (
+                (1.0 - shrinkage) * cov_sample[a][b]
+                + shrinkage * target[a][b]
+            )
+
+    return cov_shrunk
+
+
+def _ledoit_wolf_intensity(
+    returns: pl.DataFrame,
+    assets: list[str],
+    cov_sample: Dict[str, Dict[str, float]],
+    target: Dict[str, Dict[str, float]],
+    n: int,
+    p: int,
+) -> float:
+    """Analytically estimate optimal shrinkage intensity (Ledoit-Wolf oracle).
+
+    Minimizes the expected Frobenius distance between the shrunk estimator
+    and the true covariance matrix.
+    """
+    means = {a: sum(returns[a].to_list()) / n for a in assets}
+    data = {a: returns[a].to_list() for a in assets}
+
+    # Numerator: sum of squared sample errors scaled by n
+    pi_hat = 0.0
+    for a in assets:
+        for b in assets:
+            # Asymptotic variance of sample covariance entry
+            vals = [
+                (data[a][k] - means[a]) * (data[b][k] - means[b])
+                - cov_sample[a][b]
+                for k in range(n)
+            ]
+            pi_hat += sum(v ** 2 for v in vals) / n
+
+    # Denominator: squared Frobenius norm of (sample - target)
+    delta_sq = 0.0
+    for a in assets:
+        for b in assets:
+            delta_sq += (cov_sample[a][b] - target[a][b]) ** 2
+
+    if delta_sq == 0.0:
+        return 0.0
+
+    alpha = (pi_hat / n) / delta_sq
+    return max(0.0, min(1.0, alpha))

@@ -1273,7 +1273,7 @@ def create_backtest_config_panel(config) -> Panel:
     )
     tree.add_row("├─ Rebalance", f"{config.rebalance_every_n_days}d")
     weighting_method = getattr(config, "weighting_method", "rank_power")
-    method_color = "cyan" if weighting_method == "hrp" else "white"
+    method_color = "cyan" if weighting_method in ("hrp", "hrp_lw") else "white"
     tree.add_row("└─ Method", f"[{method_color}]{weighting_method}[/{method_color}]")
     tree.add_row("", "")
 

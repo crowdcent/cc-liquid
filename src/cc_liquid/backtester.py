@@ -22,7 +22,7 @@ from typing import Any, Literal
 
 import polars as pl
 
-from .portfolio import weights_from_ranks, weights_from_hrp
+from .portfolio import weights_from_ranks, weights_from_hrp, weights_from_hrp_lw
 
 
 @dataclass
@@ -367,6 +367,20 @@ class Backtester:
                 hist = returns_wide
 
             return weights_from_hrp(
+                long_assets=long_assets,
+                short_assets=short_assets,
+                returns_wide=hist,
+                target_gross=target_gross,
+                lookback_days=self.config.hrp_lookback_days,
+            )
+        
+        if self.config.weighting_method == "hrp_lw" and returns_wide is not None:
+            if current_date is not None:
+                hist = returns_wide.filter(pl.col("date") < current_date)
+            else:
+                hist = returns_wide
+
+            return weights_from_hrp_lw(
                 long_assets=long_assets,
                 short_assets=short_assets,
                 returns_wide=hist,
@@ -829,6 +843,8 @@ class BacktestOptimizer:
                 "slippage_bps": self.base_config.slippage_bps,
                 "start_capital": self.base_config.start_capital,
                 "rank_power": self.base_config.rank_power,
+                "weighting_method": self.base_config.weighting_method,
+                "hrp_lookback_days": self.base_config.hrp_lookback_days,
             },
         }
 
@@ -887,6 +903,8 @@ class BacktestOptimizer:
             start_capital=self.base_config.start_capital,
             verbose=False,
             rank_power=params["rank_power"],
+            weighting_method=self.base_config.weighting_method,
+            hrp_lookback_days=self.base_config.hrp_lookback_days,
         )
 
         try:
