@@ -39,3 +39,6 @@ history/
 *.pem
 private_key*
 wallet_key*
+
+# Local development files
+dev/

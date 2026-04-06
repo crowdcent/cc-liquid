@@ -5,24 +5,32 @@ profiles:
     owner: '0x1234567890abcdef1234567890abcdef12345678'
     vault: null
     signer_env: HYPERLIQUID_PRIVATE_KEY
+
 data:
-  source: crowdcent
+  source: local
   path: predictions.parquet
   date_column: release_date
   asset_id_column: id
-  prediction_column: pred_10d
+  prediction_column: pred_30d
+
 portfolio:
-  num_long: 60
-  num_short: 50
-  target_leverage: 4
+  weighting_method: hrp
+  hrp_lookback_days: 60
+  num_long: 22
+  num_short: 22
+  target_leverage: 1
   rank_power: 0.0
   stop_loss:
     sides: short_only
-    pct: 0.17
+    pct: 0.15
     slippage: 0.07
   rebalancing:
-    every_n_days: 10
+    mode: rolling
+    every_n_days: 30
     at_time: '18:05'
+    rolling_days: 30
+    seed_full: true
+
 execution:
   order_type: limit
   time_in_force: Gtc
