@@ -28,6 +28,8 @@ from .portfolio import (
     weights_from_hrp_lw,
     weights_from_mhrp,
     weights_from_ivp,
+    weights_from_erc,
+    weights_from_gmv,
 )
 
 
@@ -421,6 +423,34 @@ class Backtester:
                 hist = returns_wide
  
             return weights_from_ivp(
+                long_assets=long_assets,
+                short_assets=short_assets,
+                returns_wide=hist,
+                target_gross=target_gross,
+                lookback_days=self.config.hrp_lookback_days,
+            )
+        
+        if self.config.weighting_method == "erc" and returns_wide is not None:
+            if current_date is not None:
+                hist = returns_wide.filter(pl.col("date") < current_date)
+            else:
+                hist = returns_wide
+ 
+            return weights_from_erc(
+                long_assets=long_assets,
+                short_assets=short_assets,
+                returns_wide=hist,
+                target_gross=target_gross,
+                lookback_days=self.config.hrp_lookback_days,
+            )
+        
+        if self.config.weighting_method == "gmv" and returns_wide is not None:
+            if current_date is not None:
+                hist = returns_wide.filter(pl.col("date") < current_date)
+            else:
+                hist = returns_wide
+ 
+            return weights_from_gmv(
                 long_assets=long_assets,
                 short_assets=short_assets,
                 returns_wide=hist,
