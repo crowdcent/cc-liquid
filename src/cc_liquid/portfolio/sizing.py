@@ -478,3 +478,499 @@ def _ledoit_wolf_intensity(
 
     alpha = (pi_hat / n) / delta_sq
     return max(0.0, min(1.0, alpha))
+
+# ===========================================================================
+# Modified Hierarchical Risk Parity (MHRP)
+# ---------------------------------------------------------------------------
+# Based on Molyboga (2020), "A Modified Hierarchical Risk Parity Framework
+# for Portfolio Management", Journal of Financial Data Science.
+#
+# Three enhancements over standard HRP:
+#   1. Exponentially Weighted Moving Average (EWMA) covariance with
+#      Ledoit-Wolf shrinkage toward the constant-correlation target.
+#   2. Inverse-volatility (equal-volatility) allocation in recursive
+#      bisection, replacing the original inverse-variance approach.
+#   3. Optional volatility targeting: rescales weights so that the
+#      portfolio's expected annualised volatility equals vol_target.
+#
+# Design notes
+# ------------
+# All helpers carry the _mhrp_ prefix so this block is fully self-contained
+# and can be removed (or moved) without touching anything else in sizing.py.
+# No existing function is imported, called, or modified.
+#
+# ewma_lambda is intentionally left as a tunable parameter with no
+# hard-coded "smart" default tied to a rebalancing cadence.  The default
+# of 0.97 is a conservative starting point; users should treat it like any
+# other hyperparameter and sweep it through the optimizer alongside
+# lookback_days.  Higher lambda = slower decay = longer effective memory.
+#
+# vol_target is off by default (None).  When enabled it acts as a
+# multiplicative pre-scaler on the HRP weights before the target_gross
+# normalisation.  target_gross remains the hard cap on gross exposure, so
+# live-trading leverage limits are always respected.
+# ===========================================================================
+
+
+def weights_from_mhrp(
+    long_assets: Sequence[str],
+    short_assets: Sequence[str],
+    returns_wide: pl.DataFrame,
+    target_gross: float,
+    lookback_days: int = 60,
+    ewma_lambda: float = 0.97,
+    shrinkage: float | None = None,
+    vol_target: float | None = None,
+    annual_factor: int = 365,
+) -> Dict[str, float]:
+    """Compute signed portfolio weights using Modified Hierarchical Risk Parity.
+
+    Extends HRP with three enhancements from Molyboga (2020):
+    (1) EWMA covariance with Ledoit-Wolf shrinkage replaces the flat sample
+        covariance, giving more weight to recent observations while
+        regularising the matrix toward the constant-correlation target.
+    (2) Inverse-volatility allocation in recursive bisection produces more
+        balanced diversification than the original inverse-variance split.
+    (3) Optional volatility targeting rescales the portfolio so its expected
+        annualised volatility equals vol_target before the target_gross cap
+        is applied.
+
+    Each side (long/short) is weighted independently using MHRP, then
+    scaled so the combined absolute weights sum to target_gross.
+
+    Args:
+        long_assets:    Assets to hold long, in signal rank order (best first).
+        short_assets:   Assets to hold short, in signal rank order (worst first).
+        returns_wide:   Wide-format returns DataFrame (dates x assets).
+        target_gross:   Target sum of absolute weights (e.g. 2.0 = 2x gross
+                        leverage).  Always respected as a hard cap.
+        lookback_days:  Number of recent trading days used for covariance
+                        estimation.  Should be tuned alongside ewma_lambda.
+        ewma_lambda:    EWMA decay factor in (0, 1).  Higher = slower decay =
+                        longer effective memory.  Treat as a hyperparameter;
+                        sweep via the optimizer for your rebalance cadence.
+                        Default 0.97 is a conservative starting point.
+        shrinkage:      Ledoit-Wolf shrinkage intensity in [0.0, 1.0].
+                        0.0 = raw EWMA covariance.
+                        1.0 = full constant-correlation target.
+                        None = analytically estimated (oracle).
+        vol_target:     Annualised volatility target, e.g. 0.15 for 15%.
+                        None = disabled; weights are scaled only by
+                        target_gross (identical behaviour to hrp_lw).
+        annual_factor:  Trading periods per year used for annualisation.
+                        365 for crypto (default); 252 for equities.
+
+    Returns:
+        Dict mapping asset id to signed weight.  Positive = long, negative =
+        short.  Absolute values sum to target_gross (or less if vol_target
+        constrains effective leverage below target_gross).
+        Returns empty dict if insufficient data or no valid assets.
+    """
+    all_assets = list(long_assets) + list(short_assets)
+    if not all_assets or target_gross <= 0:
+        return {}
+
+    available_cols = set(returns_wide.columns) - {"date"}
+    long_valid  = [a for a in long_assets  if a in available_cols]
+    short_valid = [a for a in short_assets if a in available_cols]
+    all_valid   = long_valid + short_valid
+
+    if not all_valid:
+        return {}
+
+    recent = returns_wide.tail(lookback_days).select(all_valid).drop_nulls()
+
+    if len(recent) < 10:
+        # Not enough history — fall back to equal weight
+        return _mhrp_equal_weight(long_valid, short_valid, target_gross)
+
+    # Step 1: EWMA covariance shrunk toward constant-correlation target
+    cov = _mhrp_covariance_ewma_shrunk(recent, all_valid, ewma_lambda, shrinkage)
+
+    n_long  = len(long_valid)
+    n_short = len(short_valid)
+    total   = n_long + n_short
+
+    gross_long  = target_gross * (n_long  / total) if total > 0 else 0.0
+    gross_short = target_gross * (n_short / total) if total > 0 else 0.0
+
+    weights: Dict[str, float] = {}
+
+    # Step 2: inverse-volatility HRP on each side independently
+    if long_valid:
+        hrp_long = _mhrp_hrp_weights_invvol(long_valid, cov)
+        for asset, w in hrp_long.items():
+            weights[asset] = +w * gross_long
+
+    if short_valid:
+        hrp_short = _mhrp_hrp_weights_invvol(short_valid, cov)
+        for asset, w in hrp_short.items():
+            weights[asset] = -w * gross_short
+
+    # Step 3: optional volatility targeting (pre-scaler before gross cap)
+    if vol_target is not None and vol_target > 0:
+        scalar = _mhrp_vol_scalar(weights, cov, vol_target, annual_factor)
+        weights = {a: w * scalar for a, w in weights.items()}
+
+        # Re-normalise to target_gross after vol scaling
+        gross_sum = sum(abs(w) for w in weights.values())
+        if gross_sum > 0:
+            scale = target_gross / gross_sum
+            weights = {a: w * scale for a, w in weights.items()}
+
+    return weights
+
+
+# ---------------------------------------------------------------------------
+# MHRP private helpers
+# ---------------------------------------------------------------------------
+
+def _mhrp_covariance_ewma_shrunk(
+    returns: pl.DataFrame,
+    assets: list[str],
+    lam: float,
+    shrinkage: float | None,
+) -> Dict[str, Dict[str, float]]:
+    """EWMA sample covariance shrunk toward the constant-correlation target.
+
+    Combines two enhancements into one step:
+    - EWMA weighting: recent observations carry more weight, controlled by lam.
+    - Ledoit-Wolf shrinkage: pulls the matrix toward the constant-correlation
+      target to improve conditioning on short lookback windows.
+
+    Args:
+        returns:    Wide DataFrame of asset returns (rows = observations).
+        assets:     Ordered list of asset column names.
+        lam:        EWMA decay factor in (0, 1).
+        shrinkage:  Shrinkage intensity or None for analytic estimation.
+
+    Returns:
+        Nested dict covariance matrix, same shape as _covariance output.
+    """
+    n = len(returns)
+    p = len(assets)
+
+    # --- Build exponentially decaying observation weights ---
+    # Index 0 = most recent (tail of DataFrame).  Weight decays as lam^k.
+    raw_w = [lam ** k for k in range(n)]
+    total_w = sum(raw_w)
+    w = [rw / total_w for rw in raw_w]  # normalised, sum to 1.0
+
+    # Retrieve column data as lists once to avoid repeated Polars overhead
+    data: Dict[str, list[float]] = {a: returns[a].to_list() for a in assets}
+
+    # Weighted means (most-recent observation is index 0 in the weight list,
+    # but the DataFrame is ordered oldest-first, so row i maps to weight
+    # w[n-1-i] — i.e. the last row gets w[0] = highest weight)
+    means: Dict[str, float] = {}
+    for a in assets:
+        col = data[a]
+        means[a] = sum(w[n - 1 - i] * col[i] for i in range(n))
+
+    # Weighted (biased) covariance — using effective sample size correction
+    # is unnecessary here; shrinkage regularises the matrix.
+    cov_ewma: Dict[str, Dict[str, float]] = {a: {} for a in assets}
+    for i, a in enumerate(assets):
+        for j, b in enumerate(assets):
+            if j < i:
+                cov_ewma[a][b] = cov_ewma[b][a]
+            else:
+                ra, rb = data[a], data[b]
+                c = sum(
+                    w[n - 1 - k] * (ra[k] - means[a]) * (rb[k] - means[b])
+                    for k in range(n)
+                )
+                cov_ewma[a][b] = c
+                cov_ewma[b][a] = c
+
+    # --- Ledoit-Wolf shrinkage toward constant-correlation target ---
+    # Compute sample correlations and their cross-sectional mean
+    corr_sum   = 0.0
+    corr_count = 0
+    for i, a in enumerate(assets):
+        for j, b in enumerate(assets):
+            if i < j:
+                denom = math.sqrt(cov_ewma[a][a] * cov_ewma[b][b])
+                rho = cov_ewma[a][b] / denom if denom > 0 else 0.0
+                corr_sum   += rho
+                corr_count += 1
+
+    rho_bar = corr_sum / corr_count if corr_count > 0 else 0.0
+
+    # Constant-correlation target: preserves EWMA variances on diagonal,
+    # replaces all off-diagonal correlations with the mean rho_bar
+    target: Dict[str, Dict[str, float]] = {a: {} for a in assets}
+    for a in assets:
+        for b in assets:
+            if a == b:
+                target[a][b] = cov_ewma[a][a]
+            else:
+                target[a][b] = rho_bar * math.sqrt(
+                    cov_ewma[a][a] * cov_ewma[b][b]
+                )
+
+    # Analytically estimate shrinkage intensity if not provided
+    if shrinkage is None:
+        shrinkage = _mhrp_ledoit_wolf_intensity(
+            data, assets, means, w, n, cov_ewma, target
+        )
+
+    shrinkage = max(0.0, min(1.0, shrinkage))
+
+    # Blend: cov_shrunk = (1 - alpha) * cov_ewma + alpha * target
+    cov_shrunk: Dict[str, Dict[str, float]] = {a: {} for a in assets}
+    for a in assets:
+        for b in assets:
+            cov_shrunk[a][b] = (
+                (1.0 - shrinkage) * cov_ewma[a][b]
+                + shrinkage * target[a][b]
+            )
+
+    return cov_shrunk
+
+
+def _mhrp_ledoit_wolf_intensity(
+    data: Dict[str, list[float]],
+    assets: list[str],
+    means: Dict[str, float],
+    w: list[float],
+    n: int,
+    cov_sample: Dict[str, Dict[str, float]],
+    target: Dict[str, Dict[str, float]],
+) -> float:
+    """Analytically estimate optimal Ledoit-Wolf shrinkage intensity.
+
+    Adapted from the oracle formula: minimises expected Frobenius distance
+    between the shrunk estimator and the true covariance matrix.  Uses the
+    EWMA-weighted residuals to be consistent with the EWMA sample covariance.
+
+    Args:
+        data:       Pre-extracted column lists keyed by asset name.
+        assets:     Ordered list of asset names.
+        means:      EWMA-weighted means keyed by asset name.
+        w:          Normalised EWMA weights, index 0 = most recent.
+        n:          Number of observations.
+        cov_sample: EWMA sample covariance (the matrix being shrunk).
+        target:     Constant-correlation shrinkage target.
+
+    Returns:
+        Shrinkage intensity in [0.0, 1.0].
+    """
+    # Numerator: weighted sum of squared deviations of outer products from
+    # the sample covariance (asymptotic variance of the estimator)
+    pi_hat = 0.0
+    for a in assets:
+        for b in assets:
+            vals = [
+                w[n - 1 - k] * (data[a][k] - means[a]) * (data[b][k] - means[b])
+                - cov_sample[a][b]
+                for k in range(n)
+            ]
+            pi_hat += sum(v ** 2 for v in vals)
+
+    # Denominator: squared Frobenius norm of (sample - target)
+    delta_sq = 0.0
+    for a in assets:
+        for b in assets:
+            delta_sq += (cov_sample[a][b] - target[a][b]) ** 2
+
+    if delta_sq == 0.0:
+        return 0.0
+
+    alpha = pi_hat / delta_sq
+    return max(0.0, min(1.0, alpha))
+
+
+def _mhrp_hrp_weights_invvol(
+    assets: list[str],
+    cov: Dict[str, Dict[str, float]],
+) -> Dict[str, float]:
+    """Compute MHRP weights using inverse-volatility bisection allocation.
+
+    Identical pipeline to standard HRP (correlation → distance → single-
+    linkage clustering → recursive bisection) except that the bisection
+    split uses cluster volatility (sqrt of variance) rather than variance.
+    This produces more balanced diversification per Molyboga (2020).
+
+    Returns weights that sum to 1.0 (unsigned). Caller applies sign and
+    scaling.
+    """
+    if len(assets) == 1:
+        return {assets[0]: 1.0}
+
+    # Step 1: correlation and distance matrices
+    corr: Dict[str, Dict[str, float]] = {a: {} for a in assets}
+    for a in assets:
+        for b in assets:
+            denom = math.sqrt(cov[a][a] * cov[b][b])
+            corr[a][b] = cov[a][b] / denom if denom > 0 else 0.0
+
+    dist: Dict[str, Dict[str, float]] = {a: {} for a in assets}
+    for a in assets:
+        for b in assets:
+            dist[a][b] = math.sqrt(max(0.0, 0.5 * (1.0 - corr[a][b])))
+
+    # Step 2: single-linkage hierarchical clustering → quasi-diagonal order
+    clusters_cl = [[a] for a in assets]
+    while len(clusters_cl) > 1:
+        min_dist = float("inf")
+        merge_i, merge_j = 0, 1
+        for i in range(len(clusters_cl)):
+            for j in range(i + 1, len(clusters_cl)):
+                d = min(
+                    dist[a][b]
+                    for a in clusters_cl[i]
+                    for b in clusters_cl[j]
+                )
+                if d < min_dist:
+                    min_dist = d
+                    merge_i, merge_j = i, j
+        merged = clusters_cl[merge_i] + clusters_cl[merge_j]
+        clusters_cl = [
+            c for k, c in enumerate(clusters_cl)
+            if k not in (merge_i, merge_j)
+        ]
+        clusters_cl.append(merged)
+
+    ordered: list[str] = clusters_cl[0]
+
+    # Step 3: recursive bisection with inverse-volatility split
+    weights = {a: 1.0 for a in ordered}
+    clusters_rb = [ordered]
+
+    while clusters_rb:
+        new_clusters: list[list[str]] = []
+        for cluster in clusters_rb:
+            if len(cluster) <= 1:
+                continue
+
+            mid   = len(cluster) // 2
+            left  = cluster[:mid]
+            right = cluster[mid:]
+
+            var_left  = _mhrp_cluster_variance(left,  cov, weights)
+            var_right = _mhrp_cluster_variance(right, cov, weights)
+
+            # --- KEY DIFFERENCE vs standard HRP ---
+            # Use volatility (sqrt of variance) not variance itself.
+            # This gives equal-volatility allocation rather than
+            # equal-variance, producing more balanced diversification.
+            vol_left  = math.sqrt(max(0.0, var_left))
+            vol_right = math.sqrt(max(0.0, var_right))
+            total_vol = vol_left + vol_right
+
+            if total_vol > 0:
+                alpha = 1.0 - vol_left / total_vol  # weight for left cluster
+            else:
+                alpha = 0.5
+
+            for a in left:
+                weights[a] *= alpha
+            for a in right:
+                weights[a] *= (1.0 - alpha)
+
+            new_clusters.extend([left, right])
+
+        clusters_rb = new_clusters
+
+    # Normalise to sum to 1.0
+    total = sum(weights.values())
+    if total > 0:
+        weights = {a: w / total for a, w in weights.items()}
+
+    return weights
+
+
+def _mhrp_cluster_variance(
+    cluster: list[str],
+    cov: Dict[str, Dict[str, float]],
+    weights: Dict[str, float],
+) -> float:
+    """Compute the variance of a cluster given current weights.
+
+    Weights within the cluster are normalised before computing portfolio
+    variance so that only relative allocations matter.
+    """
+    cluster_w = {a: weights[a] for a in cluster}
+    total = sum(cluster_w.values())
+    if total <= 0:
+        return 0.0
+    norm_w = {a: w / total for a, w in cluster_w.items()}
+
+    variance = 0.0
+    for a in cluster:
+        for b in cluster:
+            variance += norm_w[a] * norm_w[b] * cov[a][b]
+
+    return max(0.0, variance)
+
+
+def _mhrp_vol_scalar(
+    weights: Dict[str, float],
+    cov: Dict[str, Dict[str, float]],
+    vol_target: float,
+    annual_factor: int,
+) -> float:
+    """Compute the scalar that brings portfolio volatility to vol_target.
+
+    Computes realised portfolio variance using the current weights and the
+    EWMA+LW covariance, annualises it, then returns vol_target / port_vol.
+
+    The scalar is clamped to [0.1, 10.0] to prevent extreme leverage
+    adjustments when the covariance estimate is noisy — e.g. at the start
+    of a backtest with a short history.
+
+    Args:
+        weights:       Signed weight dict (positive = long, negative = short).
+        cov:           EWMA+LW covariance matrix (nested dict).
+        vol_target:    Target annualised volatility, e.g. 0.15.
+        annual_factor: Trading periods per year (365 crypto, 252 equities).
+
+    Returns:
+        Multiplicative scalar to apply to all weights.
+    """
+    assets = list(weights.keys())
+
+    # Portfolio variance: w' * Sigma * w
+    port_var = 0.0
+    for a in assets:
+        for b in assets:
+            if a in cov and b in cov.get(a, {}):
+                port_var += weights[a] * weights[b] * cov[a][b]
+
+    port_var = max(0.0, port_var)
+
+    if port_var == 0.0:
+        return 1.0
+
+    port_vol_ann = math.sqrt(port_var * annual_factor)
+
+    if port_vol_ann == 0.0:
+        return 1.0
+
+    scalar = vol_target / port_vol_ann
+
+    # Clamp: avoid extreme leverage adjustments on noisy short-history windows
+    return max(0.1, min(10.0, scalar))
+
+
+def _mhrp_equal_weight(
+    long_assets: list[str],
+    short_assets: list[str],
+    target_gross: float,
+) -> Dict[str, float]:
+    """Fallback equal-weight allocation when MHRP cannot run.
+
+    Triggered when the lookback window contains fewer than 10 clean
+    observations — identical fallback logic to the other HRP variants.
+    """
+    total = len(long_assets) + len(short_assets)
+    if total == 0 or target_gross <= 0:
+        return {}
+    w = target_gross / total
+    result: Dict[str, float] = {}
+    for a in long_assets:
+        result[a] = +w
+    for a in short_assets:
+        result[a] = -w
+    return result
