@@ -479,37 +479,36 @@ def _ledoit_wolf_intensity(
     alpha = (pi_hat / n) / delta_sq
     return max(0.0, min(1.0, alpha))
 
-# ===========================================================================
 # Modified Hierarchical Risk Parity (MHRP)
-# ---------------------------------------------------------------------------
-# Based on Molyboga (2020), "A Modified Hierarchical Risk Parity Framework
-# for Portfolio Management", Journal of Financial Data Science.
-#
-# Three enhancements over standard HRP:
-#   1. Exponentially Weighted Moving Average (EWMA) covariance with
-#      Ledoit-Wolf shrinkage toward the constant-correlation target.
-#   2. Inverse-volatility (equal-volatility) allocation in recursive
-#      bisection, replacing the original inverse-variance approach.
-#   3. Optional volatility targeting: rescales weights so that the
-#      portfolio's expected annualised volatility equals vol_target.
-#
-# Design notes
-# ------------
-# All helpers carry the _mhrp_ prefix so this block is fully self-contained
-# and can be removed (or moved) without touching anything else in sizing.py.
-# No existing function is imported, called, or modified.
-#
-# ewma_lambda is intentionally left as a tunable parameter with no
-# hard-coded "smart" default tied to a rebalancing cadence.  The default
-# of 0.97 is a conservative starting point; users should treat it like any
-# other hyperparameter and sweep it through the optimizer alongside
-# lookback_days.  Higher lambda = slower decay = longer effective memory.
-#
-# vol_target is off by default (None).  When enabled it acts as a
-# multiplicative pre-scaler on the HRP weights before the target_gross
-# normalisation.  target_gross remains the hard cap on gross exposure, so
-# live-trading leverage limits are always respected.
-# ===========================================================================
+"""
+Based on Molyboga (2020), "A Modified Hierarchical Risk Parity Framework
+for Portfolio Management", Journal of Financial Data Science.
+
+Three enhancements over standard HRP:
+  1. Exponentially Weighted Moving Average (EWMA) covariance with
+     Ledoit-Wolf shrinkage toward the constant-correlation target.
+  2. Inverse-volatility (equal-volatility) allocation in recursive
+     bisection, replacing the original inverse-variance approach.
+  3. Optional volatility targeting: rescales weights so that the
+     portfolio's expected annualised volatility equals vol_target.
+
+Design notes
+------------
+All helpers carry the _mhrp_ prefix so this block is fully self-contained
+and can be removed (or moved) without touching anything else in sizing.py.
+No existing function is imported, called, or modified.
+
+ewma_lambda is intentionally left as a tunable parameter with no
+hard-coded "smart" default tied to a rebalancing cadence.  The default
+of 0.97 is a conservative starting point; users should treat it like any
+other hyperparameter and sweep it through the optimizer alongside
+lookback_days.  Higher lambda = slower decay = longer effective memory.
+
+vol_target is off by default (None).  When enabled it acts as a
+multiplicative pre-scaler on the HRP weights before the target_gross
+normalisation.  target_gross remains the hard cap on gross exposure, so
+live-trading leverage limits are always respected.
+"""
 
 
 def weights_from_mhrp(
@@ -620,10 +619,7 @@ def weights_from_mhrp(
 
     return weights
 
-
-# ---------------------------------------------------------------------------
 # MHRP private helpers
-# ---------------------------------------------------------------------------
 
 def _mhrp_covariance_ewma_shrunk(
     returns: pl.DataFrame,
@@ -976,36 +972,35 @@ def _mhrp_equal_weight(
     return result
 
 
-# ===========================================================================
 # Inverse Volatility Portfolio (IVP)
-# ---------------------------------------------------------------------------
-# The simplest possible risk-based allocator. Each asset receives a weight
-# proportional to the inverse of its rolling volatility (standard deviation
-# of returns). No clustering, no matrix inversion, no correlation structure.
-#
-#   w_i = (1 / σ_i) / Σ_j (1 / σ_j)
-#
-# This is the purest expression of the vol-parity idea: every asset
-# contributes equal volatility to the portfolio, assuming zero correlation
-# between assets. That assumption is obviously wrong in practice, but the
-# resulting robustness to estimation error often compensates — particularly
-# on short histories where correlation estimates are noisy.
-#
-# Design notes
-# ------------
-# All helpers carry the _ivp_ prefix so this block is fully self-contained
-# and can be removed without touching anything else in sizing.py.
-#
-# Volatility is estimated as the flat rolling standard deviation over
-# lookback_days, consistent with the covariance estimator used in hrp and
-# hrp_lw. This keeps IVP as a clean isolated test of the vol-parity
-# mechanism without introducing EWMA recency bias. An EWMA variant can be
-# layered on later if needed.
-#
-# Each side (long/short) is weighted independently then scaled so the
-# combined absolute weights sum to target_gross — identical convention to
-# all other optimizers in this file.
-# ===========================================================================
+"""
+The simplest possible risk-based allocator. Each asset receives a weight
+proportional to the inverse of its rolling volatility (standard deviation
+of returns). No clustering, no matrix inversion, no correlation structure.
+
+  w_i = (1 / σ_i) / Σ_j (1 / σ_j)
+
+This is the purest expression of the vol-parity idea: every asset
+contributes equal volatility to the portfolio, assuming zero correlation
+between assets. That assumption is obviously wrong in practice, but the
+resulting robustness to estimation error often compensates — particularly
+on short histories where correlation estimates are noisy.
+
+Design notes
+------------
+All helpers carry the _ivp_ prefix so this block is fully self-contained
+and can be removed without touching anything else in sizing.py.
+
+Volatility is estimated as the flat rolling standard deviation over
+lookback_days, consistent with the covariance estimator used in hrp and
+hrp_lw. This keeps IVP as a clean isolated test of the vol-parity
+mechanism without introducing EWMA recency bias. An EWMA variant can be
+layered on later if needed.
+
+Each side (long/short) is weighted independently then scaled so the
+combined absolute weights sum to target_gross — identical convention to
+all other optimizers in this file.
+"""
 
 
 def weights_from_ivp(
@@ -1093,9 +1088,7 @@ def weights_from_ivp(
     return weights
 
 
-# ---------------------------------------------------------------------------
 # IVP private helpers
-# ---------------------------------------------------------------------------
 
 def _ivp_volatilities(
     returns: pl.DataFrame,
@@ -1183,50 +1176,49 @@ def _ivp_equal_weight(
     return result
 
 
-# ===========================================================================
 # Equal Risk Contribution (ERC) — Risk Parity
-# ---------------------------------------------------------------------------
-# Introduced by Maillard, Roncalli & Teiletche (2010). Each asset contributes
-# equally to total portfolio volatility. Formally, find weights w such that:
-#
-#   RC_i = w_i * (Σw)_i / √(w'Σw)  =  1/N  for all i
-#
-# where Σ is the covariance matrix, (Σw)_i is the i-th element of Σw
-# (the marginal risk contribution of asset i), and N is the number of assets.
-#
-# Unlike IVP which ignores correlations entirely, ERC uses the full covariance
-# structure. Unlike minimum variance which minimises total risk, ERC equalises
-# risk budgets. It sits between the two: more diversified than min-var,
-# better risk-adjusted than equal weight.
-#
-# Solver — Improved Cyclical Coordinate Descent (Choi & Chen, 2022)
-# -----------------------------------------------------------------
-# The analytic solution does not exist in general. We use the improved CCD
-# algorithm which:
-#   1. Initialises from IVP weights (faster convergence than equal weight)
-#   2. Updates one weight at a time via the analytic per-asset formula
-#   3. Rescales to sum to 1.0 after each full pass over all assets
-#   4. Converges when max weight change < tolerance across all assets
-#
-# This is the fastest known iterative method for ERC and requires only
-# simple arithmetic — no matrix inversion, no external optimiser.
-#
-# Design notes
-# ------------
-# All helpers carry the _erc_ prefix so this block is fully self-contained
-# and can be removed without touching anything else in sizing.py.
-#
-# Covariance is estimated as the flat rolling sample covariance, consistent
-# with hrp. This keeps ERC as a clean isolated test of the equal-risk-
-# contribution mechanism without EWMA recency bias.
-#
-# Each side (long/short) is solved independently then scaled to target_gross,
-# identical convention to all other optimizers in this file.
-#
-# If the solver does not converge within max_iter iterations, the function
-# falls back to IVP weights for that side rather than silently returning a
-# poor solution. Both fallbacks are documented in the return value.
-# ===========================================================================
+"""
+Introduced by Maillard, Roncalli & Teiletche (2010). Each asset contributes
+equally to total portfolio volatility. Formally, find weights w such that:
+
+  RC_i = w_i * (Σw)_i / √(w'Σw)  =  1/N  for all i
+
+where Σ is the covariance matrix, (Σw)_i is the i-th element of Σw
+(the marginal risk contribution of asset i), and N is the number of assets.
+
+Unlike IVP which ignores correlations entirely, ERC uses the full covariance
+structure. Unlike minimum variance which minimises total risk, ERC equalises
+risk budgets. It sits between the two: more diversified than min-var,
+better risk-adjusted than equal weight.
+
+Solver — Improved Cyclical Coordinate Descent (Choi & Chen, 2022)
+-----------------------------------------------------------------
+The analytic solution does not exist in general. We use the improved CCD
+algorithm which:
+  1. Initialises from IVP weights (faster convergence than equal weight)
+  2. Updates one weight at a time via the analytic per-asset formula
+  3. Rescales to sum to 1.0 after each full pass over all assets
+  4. Converges when max weight change < tolerance across all assets
+
+This is the fastest known iterative method for ERC and requires only
+simple arithmetic — no matrix inversion, no external optimiser.
+
+Design notes
+------------
+All helpers carry the _erc_ prefix so this block is fully self-contained
+and can be removed without touching anything else in sizing.py.
+
+Covariance is estimated as the flat rolling sample covariance, consistent
+with hrp. This keeps ERC as a clean isolated test of the equal-risk-
+contribution mechanism without EWMA recency bias.
+
+Each side (long/short) is solved independently then scaled to target_gross,
+identical convention to all other optimizers in this file.
+
+If the solver does not converge within max_iter iterations, the function
+falls back to IVP weights for that side rather than silently returning a
+poor solution. Both fallbacks are documented in the return value.
+"""
 
 
 def weights_from_erc(
@@ -1314,9 +1306,7 @@ def weights_from_erc(
     return weights
 
 
-# ---------------------------------------------------------------------------
 # ERC private helpers
-# ---------------------------------------------------------------------------
 
 def _erc_covariance(
     returns: pl.DataFrame,
@@ -1491,49 +1481,48 @@ def _erc_equal_weight(
     return result
 
 
-# ===========================================================================
 # Global Minimum Variance (GMV)
-# ---------------------------------------------------------------------------
-# The classical Markowitz (1952) risk-minimisation portfolio. Finds weights
-# that minimise total portfolio variance with no constraint on expected return.
-#
-# For a long-only unconstrained portfolio the closed-form solution is:
-#
-#   w* = Σ⁻¹1 / (1'Σ⁻¹1)
-#
-# where Σ is the covariance matrix and 1 is a vector of ones.
-# The solution requires inverting Σ — making GMV uniquely sensitive to
-# estimation error in the covariance matrix.  Unlike HRP (which avoids
-# inversion entirely) or ERC (iterative solver), GMV lives or dies by the
-# quality of its covariance estimate.
-#
-# Covariance — Ledoit-Wolf shrinkage is mandatory
-# -----------------------------------------------
-# On a short crypto history, the raw sample covariance matrix is ill-
-# conditioned and its inverse amplifies noise catastrophically.  LW
-# shrinkage toward the constant-correlation target is not optional here —
-# it is load-bearing.  We use the same flat-sample LW approach as hrp_lw,
-# reproduced self-contained with the _gmv_ prefix.
-#
-# Matrix solve — Cholesky decomposition
-# -------------------------------------
-# We solve Σx = 1 via Cholesky decomposition (LL' = Σ) followed by forward
-# and backward substitution to obtain x = Σ⁻¹1.  This avoids computing the
-# full matrix inverse, is more numerically stable, and requires only pure
-# Python arithmetic — no external dependencies.
-#
-# Fallback chain
-# --------------
-# 1. If Cholesky fails (matrix not positive-definite despite shrinkage):
-#    fall back to IVP weights for that side.
-# 2. If history < 10 observations: fall back to equal weight.
-#
-# Design notes
-# ------------
-# All helpers carry the _gmv_ prefix so this block is fully self-contained.
-# Long and short sides are solved independently then scaled to target_gross,
-# identical convention to all other optimizers in this file.
-# ===========================================================================
+"""
+The classical Markowitz (1952) risk-minimisation portfolio. Finds weights
+that minimise total portfolio variance with no constraint on expected return.
+
+For a long-only unconstrained portfolio the closed-form solution is:
+
+  w* = Σ⁻¹1 / (1'Σ⁻¹1)
+
+where Σ is the covariance matrix and 1 is a vector of ones.
+The solution requires inverting Σ — making GMV uniquely sensitive to
+estimation error in the covariance matrix.  Unlike HRP (which avoids
+inversion entirely) or ERC (iterative solver), GMV lives or dies by the
+quality of its covariance estimate.
+
+Covariance — Ledoit-Wolf shrinkage is mandatory
+-----------------------------------------------
+On a short crypto history, the raw sample covariance matrix is ill-
+conditioned and its inverse amplifies noise catastrophically.  LW
+shrinkage toward the constant-correlation target is not optional here —
+it is load-bearing.  We use the same flat-sample LW approach as hrp_lw,
+reproduced self-contained with the _gmv_ prefix.
+
+Matrix solve — Cholesky decomposition
+-------------------------------------
+We solve Σx = 1 via Cholesky decomposition (LL' = Σ) followed by forward
+and backward substitution to obtain x = Σ⁻¹1.  This avoids computing the
+full matrix inverse, is more numerically stable, and requires only pure
+Python arithmetic — no external dependencies.
+
+Fallback chain
+--------------
+1. If Cholesky fails (matrix not positive-definite despite shrinkage):
+   fall back to IVP weights for that side.
+2. If history < 10 observations: fall back to equal weight.
+
+Design notes
+------------
+All helpers carry the _gmv_ prefix so this block is fully self-contained.
+Long and short sides are solved independently then scaled to target_gross,
+identical convention to all other optimizers in this file.
+"""
 
 
 def weights_from_gmv(
@@ -1621,9 +1610,7 @@ def weights_from_gmv(
     return weights
 
 
-# ---------------------------------------------------------------------------
 # GMV private helpers
-# ---------------------------------------------------------------------------
 
 def _gmv_covariance_shrunk(
     returns: pl.DataFrame,
