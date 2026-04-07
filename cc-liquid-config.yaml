@@ -14,15 +14,18 @@ data:
   prediction_column: pred_30d
 
 portfolio:
-  weighting_method: hrp
+  weighting_method: hrp_lw
   hrp_lookback_days: 60
   num_long: 22
   num_short: 22
-  target_leverage: 1
+  target_leverage: 2
   rank_power: 0.0
+  mhrp_ewma_lambda: 0.97       # decay factor — tune via optimizer
+  mhrp_vol_target: null        # e.g. 0.15 for 15% annualised vol target; null = off
+  mhrp_annual_factor: 365      # 365 crypto / 252 equities
   stop_loss:
     sides: short_only
-    pct: 0.15
+    pct: 0.2
     slippage: 0.07
   rebalancing:
     mode: rolling

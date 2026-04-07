@@ -22,7 +22,15 @@ from typing import Any, Literal
 
 import polars as pl
 
-from .portfolio import weights_from_ranks, weights_from_hrp, weights_from_hrp_lw
+from .portfolio import (
+    weights_from_ranks,
+    weights_from_hrp,
+    weights_from_hrp_lw,
+    weights_from_mhrp,
+    weights_from_ivp,
+    weights_from_erc,
+    weights_from_gmv,
+)
 
 
 @dataclass
@@ -60,6 +68,9 @@ class BacktestConfig:
     # Weighting method: "rank_power" (default) or "hrp"
     weighting_method: str = "rank_power"
     hrp_lookback_days: int = 60  # Trading days of returns used for HRP covariance
+    mhrp_ewma_lambda: float = 0.97
+    mhrp_vol_target: float | None = None
+    mhrp_annual_factor: int = 365
 
     # Rebalancing
     rebalance_every_n_days: int = 10
@@ -381,6 +392,65 @@ class Backtester:
                 hist = returns_wide
 
             return weights_from_hrp_lw(
+                long_assets=long_assets,
+                short_assets=short_assets,
+                returns_wide=hist,
+                target_gross=target_gross,
+                lookback_days=self.config.hrp_lookback_days,
+            )
+        
+        if self.config.weighting_method == "mhrp" and returns_wide is not None:
+            if current_date is not None:
+                hist = returns_wide.filter(pl.col("date") < current_date)
+            else:
+                hist = returns_wide
+ 
+            return weights_from_mhrp(
+                long_assets=long_assets,
+                short_assets=short_assets,
+                returns_wide=hist,
+                target_gross=target_gross,
+                lookback_days=self.config.hrp_lookback_days,
+                ewma_lambda=self.config.mhrp_ewma_lambda,
+                vol_target=self.config.mhrp_vol_target,
+                annual_factor=self.config.mhrp_annual_factor,
+            )
+        
+        if self.config.weighting_method == "ivp" and returns_wide is not None:
+            if current_date is not None:
+                hist = returns_wide.filter(pl.col("date") < current_date)
+            else:
+                hist = returns_wide
+ 
+            return weights_from_ivp(
+                long_assets=long_assets,
+                short_assets=short_assets,
+                returns_wide=hist,
+                target_gross=target_gross,
+                lookback_days=self.config.hrp_lookback_days,
+            )
+        
+        if self.config.weighting_method == "erc" and returns_wide is not None:
+            if current_date is not None:
+                hist = returns_wide.filter(pl.col("date") < current_date)
+            else:
+                hist = returns_wide
+ 
+            return weights_from_erc(
+                long_assets=long_assets,
+                short_assets=short_assets,
+                returns_wide=hist,
+                target_gross=target_gross,
+                lookback_days=self.config.hrp_lookback_days,
+            )
+        
+        if self.config.weighting_method == "gmv" and returns_wide is not None:
+            if current_date is not None:
+                hist = returns_wide.filter(pl.col("date") < current_date)
+            else:
+                hist = returns_wide
+ 
+            return weights_from_gmv(
                 long_assets=long_assets,
                 short_assets=short_assets,
                 returns_wide=hist,
@@ -905,6 +975,9 @@ class BacktestOptimizer:
             rank_power=params["rank_power"],
             weighting_method=self.base_config.weighting_method,
             hrp_lookback_days=self.base_config.hrp_lookback_days,
+            mhrp_ewma_lambda=self.base_config.mhrp_ewma_lambda,
+            mhrp_vol_target=self.base_config.mhrp_vol_target,
+            mhrp_annual_factor=self.base_config.mhrp_annual_factor,
         )
 
         try:
