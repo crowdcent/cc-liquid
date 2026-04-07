@@ -16,8 +16,8 @@ data:
 portfolio:
   weighting_method: hrp_lw
   hrp_lookback_days: 60
-  num_long: 22
-  num_short: 22
+  num_long: 25
+  num_short: 25
   target_leverage: 2
   rank_power: 0.0
   mhrp_ewma_lambda: 0.97       # decay factor — tune via optimizer

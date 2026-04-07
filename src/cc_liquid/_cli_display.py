@@ -1337,27 +1337,16 @@ def create_backtest_metrics_panel(stats: dict) -> Panel:
     calmar = stats.get("calmar_ratio", 0)
     max_dd = stats.get("max_drawdown", 0)
     vol = stats.get("annual_volatility", 0)
-    psr = stats.get("probabilistic_sr")   # None if not computed
-    dsr = stats.get("deflated_sr")        # None if not computed
 
     # Color code risk metrics
     sharpe_color = "green" if sharpe > 1 else "yellow" if sharpe > 0.5 else "red"
     dd_color = "green" if max_dd > -0.1 else "yellow" if max_dd > -0.2 else "red"
- 
+
     right_table.add_row("SHARPE", f"[{sharpe_color}]{sharpe:.2f}[/{sharpe_color}]")
     right_table.add_row("SORTINO", f"{sortino:.2f}")
     right_table.add_row("CALMAR", f"{calmar:.2f}")
     right_table.add_row("MAX DRAWDOWN", f"[{dd_color}]{max_dd:.1%}[/{dd_color}]")
     right_table.add_row("VOLATILITY", f"{vol:.1%}")
- 
-    # PSR/DSR — only shown when present (i.e. scipy is available and
-    # _compute_stats ran successfully with the DSR block in place)
-    if psr is not None:
-        psr_color = "green" if psr >= 0.95 else "yellow" if psr >= 0.90 else "red"
-        right_table.add_row("PSR", f"[{psr_color}]{psr:.3f}[/{psr_color}]")
-    if dsr is not None:
-        dsr_color = "green" if dsr >= 0.95 else "yellow" if dsr >= 0.90 else "red"
-        right_table.add_row("DSR", f"[{dsr_color}]{dsr:.3f}[/{dsr_color}]")
 
     return Panel(
         Columns([left_table, right_table], expand=True),
@@ -1770,16 +1759,6 @@ def create_optimization_small_multiples_panel(results_df) -> Panel | None:
                 "values": results_df["volatility"].to_list(),
                 "color": "yellow",
             }
-        if "psr" in cols:
-            series_map["PSR"] = {
-                "values": results_df["psr"].to_list(),
-                "color": "cyan",
-            }
-        if "dsr" in cols:
-            series_map["DSR"] = {
-                "values": results_df["dsr"].to_list(),
-                "color": "magenta",
-            }
         if not series_map:
             return None
         return create_small_multiples_panel(
@@ -1825,16 +1804,7 @@ def create_optimization_results_table(results_df, metric: str, top_n: int) -> Pa
     )
     table.add_column("MAX DD", justify="right", width=8)
     table.add_column("EQUITY", justify="right", width=10)
-    table.add_column("EQUITY", justify="right", width=10)
-    # NEW — conditional DSR columns
-    has_psr = "psr" in results_df.columns
-    has_dsr = "dsr" in results_df.columns
-    if has_psr:
-        table.add_column("PSR", justify="right", width=6, style="cyan")
-    if has_dsr:
-        table.add_column("DSR", justify="right", width=6, style="magenta")
 
- 
     for i, row in enumerate(results_df.head(top_n).iter_rows(named=True), 1):
         # Color code metrics based on performance
         sharpe = row["sharpe"]
@@ -1849,7 +1819,7 @@ def create_optimization_results_table(results_df, metric: str, top_n: int) -> Pa
         # Special highlighting for top 3
         rank_style = "bold cyan" if i == 1 else "cyan" if i <= 3 else "dim"
 
-        row_values = [
+        table.add_row(
             f"[{rank_style}]{i}[/{rank_style}]",
             str(row["num_long"]),
             str(row["num_short"]),
@@ -1861,16 +1831,7 @@ def create_optimization_results_table(results_df, metric: str, top_n: int) -> Pa
             f"{row['calmar']:.2f}",
             f"[{dd_color}]{dd:.1%}[/{dd_color}]",
             format_currency(row["final_equity"], compact=True),
-        ]
-        if has_psr:
-            psr_val = float(row.get("psr", 0.0))
-            psr_c = "green" if psr_val >= 0.95 else "yellow" if psr_val >= 0.90 else "red"
-            row_values.append(f"[{psr_c}]{psr_val:.3f}[/{psr_c}]")
-        if has_dsr:
-            dsr_val = float(row.get("dsr", 0.0))
-            dsr_c = "green" if dsr_val >= 0.95 else "yellow" if dsr_val >= 0.90 else "red"
-            row_values.append(f"[{dsr_c}]{dsr_val:.3f}[/{dsr_c}]")
-        table.add_row(*row_values)
+        )
 
     # Calculate title with statistics
     total_tested = len(results_df)
@@ -1926,16 +1887,6 @@ def create_optimization_summary_panel(best_row_df, metric: str, config=None) -> 
 
     table.add_row("MAX DD", f"{best['max_dd']:.1%}")
     table.add_row("VOLATILITY", f"{best['volatility']:.1%}")
-    if "psr" in best:
-        psr_val = float(best.get("psr", 0.0))
-        psr_c = "green" if psr_val >= 0.95 else "yellow" if psr_val >= 0.90 else "red"
-        table.add_row("PSR", f"[{psr_c}]{psr_val:.3f}[/{psr_c}]")
-    if "dsr" in best:
-        dsr_val = float(best.get("dsr", 0.0))
-        dsr_c = "green" if dsr_val >= 0.95 else "yellow" if dsr_val >= 0.90 else "red"
-        table.add_row("DSR", f"[{dsr_c}]{dsr_val:.3f}[/{dsr_c}]")
-    table.add_row("", "")
-    table.add_row("FINAL EQUITY", format_currency(best["final_equity"]))
     table.add_row("", "")
     table.add_row("FINAL EQUITY", format_currency(best["final_equity"]))
 

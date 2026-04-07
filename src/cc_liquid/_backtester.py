@@ -19,7 +19,6 @@ import math
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import Any, Literal
-from scipy.stats import norm as _scipy_norm
 
 import polars as pl
 
@@ -89,7 +88,6 @@ class BacktestConfig:
 
     # Options
     verbose: bool = False
-    n_trials: int = 1
 
 
 @dataclass
@@ -108,134 +106,6 @@ class BacktestResult:
     # Config used
     config: BacktestConfig | None = None
 
-def _compute_dsr(
-        returns: list[float],
-        daily_sharpe: float,
-        n_trials: int = 1,
-    ) -> dict[str, float]:
-        """Compute Probabilistic and Deflated Sharpe Ratios.
-    
-        Implements Bailey & López de Prado (2014), "The Deflated Sharpe Ratio:
-        Correcting for Selection Bias, Backtest Overfitting and Non-Normality",
-        Journal of Portfolio Management, 40(5).
-    
-        The PSR corrects for non-normality of returns (skewness and excess
-        kurtosis inflate or deflate confidence in the observed SR).  The DSR
-        further deflates for multiple testing: when n_trials configurations
-        were evaluated and the best was selected, the expected maximum SR under
-        the null grows with n_trials, raising the bar for statistical credibility.
-    
-        When n_trials=1 DSR == PSR — no multiple testing correction is applied.
-        This is the correct behaviour for a standalone backtest with no prior
-        parameter search.
-    
-        All Sharpe ratio calculations internally use NON-ANNUALISED (daily) SR
-        as required by the formula.  Output DSR/PSR are probabilities in [0, 1].
-    
-        Interpretation:
-            >= 0.95  Strong evidence the SR is genuine
-            0.90-0.95  Moderate evidence
-            < 0.90   Treat with scepticism
-    
-        Args:
-            returns:      List of daily portfolio returns.  Should be clean
-                        (no NaNs) — pass returns.drop_nulls().to_list().
-            daily_sharpe: Non-annualised daily Sharpe (mean_return / std_return).
-            n_trials:     Total parameter combinations tested in the optimizer
-                        run that produced this strategy.  1 = no correction.
-    
-        Returns:
-            Dict with keys: skewness, kurtosis, psr, dsr.
-        """
-        # Euler-Mascheroni constant (γ)
-        EULER_GAMMA = 0.5772156649015328606
-    
-        n = len(returns)
-    
-        if n < 4:
-            return {"skewness": 0.0, "kurtosis": 3.0, "psr": 0.0, "dsr": 0.0}
-    
-        # --- Higher moments ---
-        mean = sum(returns) / n
-        diffs = [r - mean for r in returns]
-    
-        variance = sum(d ** 2 for d in diffs) / (n - 1)
-        if variance <= 0:
-            return {"skewness": 0.0, "kurtosis": 3.0, "psr": 0.0, "dsr": 0.0}
-    
-        std = math.sqrt(variance)
-    
-        # Sample skewness (bias-corrected)
-        skewness = (
-            (n / ((n - 1) * (n - 2)))
-            * sum(d ** 3 for d in diffs)
-            / (std ** 3)
-        )
-    
-        # Sample kurtosis — non-excess form (normal distribution = 3)
-        # DSR formula uses non-excess kurtosis directly.
-        kurtosis_excess = (
-            ((n * (n + 1)) / ((n - 1) * (n - 2) * (n - 3)))
-            * sum(d ** 4 for d in diffs)
-            / (std ** 4)
-            - (3 * (n - 1) ** 2) / ((n - 2) * (n - 3))
-        )
-        kurtosis = kurtosis_excess + 3.0  # convert to non-excess
-    
-        # --- Standard error of SR corrected for non-normality ---
-        # σ(SR) = sqrt((1 - γ3*SR + (γ4-1)/4 * SR²) / (T-1))
-        sr = daily_sharpe
-        moment_adj = 1.0 - skewness * sr + ((kurtosis - 1) / 4.0) * sr ** 2
-        moment_adj = max(moment_adj, 1e-8)
-    
-        sr_std = math.sqrt(moment_adj / (n - 1))
-    
-        # --- PSR: probability true SR > 0, corrected for non-normality ---
-        # Benchmark SR* = 0 (is the strategy better than nothing?)
-        if sr_std > 0:
-            psr = float(_scipy_norm.cdf(sr / sr_std))
-        else:
-            psr = 1.0 if sr > 0 else 0.0
-    
-        # --- DSR: PSR further deflated by multiple testing penalty ---
-        # Expected maximum SR under the null after n_trials independent tests.
-        # SR0 = sqrt(Var_SR) * ((1-γ)*Φ⁻¹(1-1/N) + γ*Φ⁻¹(1-1/(N*e)))
-        if n_trials <= 1:
-            # No search was conducted — DSR equals PSR
-            dsr = psr
-        else:
-            var_sr = moment_adj / (n - 1)
-    
-            if var_sr <= 0:
-                dsr = psr
-            else:
-                N = float(n_trials)
-                e = math.e
-    
-                # Normal quantiles for the expected maximum formula
-                # Guard against N=1 edge case in log (already handled above)
-                z1 = float(_scipy_norm.ppf(1.0 - 1.0 / N))
-                z2 = float(_scipy_norm.ppf(1.0 - 1.0 / (N * e)))
-    
-                # Expected maximum SR under null hypothesis
-                sr0 = math.sqrt(var_sr) * (
-                    (1.0 - EULER_GAMMA) * z1
-                    + EULER_GAMMA * z2
-                )
-    
-                # DSR: probability observed SR exceeds sr0 after non-normality
-                # correction
-                if sr_std > 0:
-                    dsr = float(_scipy_norm.cdf((sr - sr0) / sr_std))
-                else:
-                    dsr = 1.0 if sr > sr0 else 0.0
-    
-        return {
-            "skewness": round(skewness, 6),
-            "kurtosis": round(kurtosis, 6),
-            "psr": round(max(0.0, min(1.0, psr)), 6),
-            "dsr": round(max(0.0, min(1.0, dsr)), 6),
-        }
 
 class Backtester:
     """Core backtesting engine."""
@@ -286,7 +156,7 @@ class Backtester:
             )
 
         # 7. Compute statistics
-        stats = self._compute_stats(result["daily"], n_trials=self.config.n_trials)
+        stats = self._compute_stats(result["daily"])
 
         return BacktestResult(
             daily=result["daily"],
@@ -932,7 +802,7 @@ class Backtester:
 
         return vintages
 
-    def _compute_stats(self, daily: pl.DataFrame, n_trials: int = 1) -> dict[str, float]:
+    def _compute_stats(self, daily: pl.DataFrame) -> dict[str, float]:
         """Compute summary statistics from daily results."""
 
         if len(daily) == 0:
@@ -996,20 +866,6 @@ class Backtester:
         else:
             sortino = float("inf") if annualized_mean_return > 0 else 0
 
-        # --- Deflated Sharpe Ratio (Bailey & López de Prado, 2014) ---
-        returns_list = returns.drop_nulls().to_list()
-        daily_sr = (
-            float(mean_daily_return / daily_vol)
-            if daily_vol is not None and daily_vol > 0
-            else 0.0
-        )
-
-        dsr_stats = _compute_dsr(
-            returns=returns_list,
-            daily_sharpe=daily_sr,
-            n_trials=n_trials,
-        )
-
         return {
             "days": n_days,
             "total_return": total_return,
@@ -1022,12 +878,8 @@ class Backtester:
             "win_rate": win_rate,
             "avg_turnover": avg_turnover,
             "final_equity": final_equity,
-            # Higher moments and DSR
-            "skewness": dsr_stats["skewness"],
-            "kurtosis": dsr_stats["kurtosis"],
-            "probabilistic_sr": dsr_stats["psr"],
-            "deflated_sr": dsr_stats["dsr"],
         }
+
 
 class BacktestOptimizer:
     """Grid search optimizer for backtesting parameters with parallel execution and caching."""
@@ -1126,7 +978,6 @@ class BacktestOptimizer:
             mhrp_ewma_lambda=self.base_config.mhrp_ewma_lambda,
             mhrp_vol_target=self.base_config.mhrp_vol_target,
             mhrp_annual_factor=self.base_config.mhrp_annual_factor,
-            n_trials=self.base_config.n_trials,
         )
 
         try:
@@ -1149,10 +1000,6 @@ class BacktestOptimizer:
                 "volatility": result.stats["annual_volatility"],
                 "win_rate": result.stats["win_rate"],
                 "final_equity": result.stats["final_equity"],
-                "skewness": result.stats.get("skewness", 0.0),
-                "kurtosis": result.stats.get("kurtosis", 3.0),
-                "psr": result.stats.get("probabilistic_sr", 0.0),
-                "dsr": result.stats.get("deflated_sr", 0.0),
             }
 
             return result_data
@@ -1220,18 +1067,6 @@ class BacktestOptimizer:
                                     "rank_power": rank_pow,
                                 }
                             )
-        
-        effective_n_trials = (
-            self.base_config.n_trials
-            if self.base_config.n_trials > 1
-            else len(param_combinations)
-        )
-        for p in param_combinations:
-            p["_n_trials"] = effective_n_trials
- 
-        # Update base_config so _run_single_backtest picks it up
-        self.base_config.n_trials = effective_n_trials
-    
 
         # Check cache to see which we already have
         cache = self._load_cache()
@@ -1382,12 +1217,7 @@ class BacktestOptimizer:
         df = pl.DataFrame(results)
         
         # Cast numeric columns to proper float types (handles complex numbers, NaN, inf)
-        numeric_cols = [
-            "sharpe", "cagr", "calmar", "sortino", "max_dd",
-            "volatility", "win_rate", "final_equity",
-            "skewness", "kurtosis", "psr", "dsr",
-        ]
-
+        numeric_cols = ["sharpe", "cagr", "calmar", "sortino", "max_dd", "volatility", "win_rate", "final_equity"]
         df = df.with_columns([
             pl.col(col).cast(pl.Float64, strict=False).fill_nan(0.0)
             for col in numeric_cols if col in df.columns
