@@ -974,3 +974,210 @@ def _mhrp_equal_weight(
     for a in short_assets:
         result[a] = -w
     return result
+
+
+# ===========================================================================
+# Inverse Volatility Portfolio (IVP)
+# ---------------------------------------------------------------------------
+# The simplest possible risk-based allocator. Each asset receives a weight
+# proportional to the inverse of its rolling volatility (standard deviation
+# of returns). No clustering, no matrix inversion, no correlation structure.
+#
+#   w_i = (1 / σ_i) / Σ_j (1 / σ_j)
+#
+# This is the purest expression of the vol-parity idea: every asset
+# contributes equal volatility to the portfolio, assuming zero correlation
+# between assets. That assumption is obviously wrong in practice, but the
+# resulting robustness to estimation error often compensates — particularly
+# on short histories where correlation estimates are noisy.
+#
+# Design notes
+# ------------
+# All helpers carry the _ivp_ prefix so this block is fully self-contained
+# and can be removed without touching anything else in sizing.py.
+#
+# Volatility is estimated as the flat rolling standard deviation over
+# lookback_days, consistent with the covariance estimator used in hrp and
+# hrp_lw. This keeps IVP as a clean isolated test of the vol-parity
+# mechanism without introducing EWMA recency bias. An EWMA variant can be
+# layered on later if needed.
+#
+# Each side (long/short) is weighted independently then scaled so the
+# combined absolute weights sum to target_gross — identical convention to
+# all other optimizers in this file.
+# ===========================================================================
+
+
+def weights_from_ivp(
+    long_assets: Sequence[str],
+    short_assets: Sequence[str],
+    returns_wide: pl.DataFrame,
+    target_gross: float,
+    lookback_days: int = 60,
+) -> Dict[str, float]:
+    """Compute signed portfolio weights using Inverse Volatility weighting.
+
+    Each asset is weighted in proportion to the inverse of its rolling
+    volatility (standard deviation of returns over lookback_days). Assets
+    with lower volatility receive higher weights, with the constraint that
+    absolute weights sum to target_gross.
+
+    Correlations between assets are ignored entirely — this is the key
+    difference from HRP and MHRP. The approach is optimal when assets
+    have similar Sharpe ratios and similar pairwise correlations. Its
+    main advantage is robustness: with only N volatility estimates to
+    compute (vs N² covariance entries), estimation error is minimised.
+
+    Each side (long/short) is weighted independently using IVP, then
+    scaled so the combined absolute weights sum to target_gross.
+
+    Args:
+        long_assets:    Assets to hold long, in signal rank order (best first).
+        short_assets:   Assets to hold short, in signal rank order (worst first).
+        returns_wide:   Wide-format returns DataFrame (dates x assets).
+        target_gross:   Target sum of absolute weights (e.g. 2.0 = 2x gross
+                        leverage).  Always respected as a hard cap.
+        lookback_days:  Number of recent trading days used for volatility
+                        estimation.  Same parameter shared with HRP variants
+                        via hrp_lookback_days in config.
+
+    Returns:
+        Dict mapping asset id to signed weight.  Positive = long, negative =
+        short.  Absolute values sum to target_gross.
+        Returns empty dict if insufficient data or no valid assets.
+    """
+    all_assets = list(long_assets) + list(short_assets)
+    if not all_assets or target_gross <= 0:
+        return {}
+
+    available_cols = set(returns_wide.columns) - {"date"}
+    long_valid  = [a for a in long_assets  if a in available_cols]
+    short_valid = [a for a in short_assets if a in available_cols]
+    all_valid   = long_valid + short_valid
+
+    if not all_valid:
+        return {}
+
+    recent = returns_wide.tail(lookback_days).select(all_valid).drop_nulls()
+
+    if len(recent) < 10:
+        # Not enough history — fall back to equal weight
+        return _ivp_equal_weight(long_valid, short_valid, target_gross)
+
+    # Compute per-asset volatilities over the lookback window
+    vols = _ivp_volatilities(recent, all_valid)
+
+    # Check all vols are usable
+    if not vols or all(v <= 0 for v in vols.values()):
+        return _ivp_equal_weight(long_valid, short_valid, target_gross)
+
+    n_long  = len(long_valid)
+    n_short = len(short_valid)
+    total   = n_long + n_short
+
+    gross_long  = target_gross * (n_long  / total) if total > 0 else 0.0
+    gross_short = target_gross * (n_short / total) if total > 0 else 0.0
+
+    weights: Dict[str, float] = {}
+
+    if long_valid:
+        ivp_long = _ivp_weights(long_valid, vols)
+        for asset, w in ivp_long.items():
+            weights[asset] = +w * gross_long
+
+    if short_valid:
+        ivp_short = _ivp_weights(short_valid, vols)
+        for asset, w in ivp_short.items():
+            weights[asset] = -w * gross_short
+
+    return weights
+
+
+# ---------------------------------------------------------------------------
+# IVP private helpers
+# ---------------------------------------------------------------------------
+
+def _ivp_volatilities(
+    returns: pl.DataFrame,
+    assets: list[str],
+) -> Dict[str, float]:
+    """Compute rolling standard deviation for each asset.
+
+    Uses the sample standard deviation (ddof=1) over the full window,
+    consistent with the covariance estimator in _covariance.
+
+    Args:
+        returns:  Wide DataFrame of asset returns (rows = observations).
+        assets:   Ordered list of asset column names.
+
+    Returns:
+        Dict mapping asset name to annualisation-free volatility estimate.
+        Assets with zero or negative variance are assigned vol=0.0 and
+        handled gracefully in the caller.
+    """
+    n = len(returns)
+    if n < 2:
+        return {a: 0.0 for a in assets}
+
+    vols: Dict[str, float] = {}
+    for a in assets:
+        col = returns[a].to_list()
+        mean = sum(col) / n
+        variance = sum((x - mean) ** 2 for x in col) / (n - 1)
+        vols[a] = math.sqrt(max(0.0, variance))
+
+    return vols
+
+
+def _ivp_weights(
+    assets: list[str],
+    vols: Dict[str, float],
+) -> Dict[str, float]:
+    """Compute inverse-volatility weights that sum to 1.0 for a set of assets.
+
+    Assets with zero volatility are excluded from the inverse-vol calculation
+    and receive zero weight.  If all assets have zero volatility the fallback
+    is equal weighting.
+
+    Args:
+        assets:  Ordered list of asset names for this side (long or short).
+        vols:    Per-asset volatility estimates from _ivp_volatilities.
+
+    Returns:
+        Dict of unsigned weights summing to 1.0.  Caller applies sign and
+        gross scaling.
+    """
+    # Inverse volatility — zero-vol assets get zero weight
+    inv_vols = {a: (1.0 / vols[a]) if vols.get(a, 0.0) > 0 else 0.0
+                for a in assets}
+
+    total_inv = sum(inv_vols.values())
+
+    if total_inv <= 0:
+        # All assets have zero vol — fall back to equal weight
+        n = len(assets)
+        return {a: 1.0 / n for a in assets} if n > 0 else {}
+
+    return {a: inv_vols[a] / total_inv for a in assets}
+
+
+def _ivp_equal_weight(
+    long_assets: list[str],
+    short_assets: list[str],
+    target_gross: float,
+) -> Dict[str, float]:
+    """Fallback equal-weight allocation when IVP cannot run.
+
+    Triggered when the lookback window contains fewer than 10 clean
+    observations — identical fallback logic to all other variants.
+    """
+    total = len(long_assets) + len(short_assets)
+    if total == 0 or target_gross <= 0:
+        return {}
+    w = target_gross / total
+    result: Dict[str, float] = {}
+    for a in long_assets:
+        result[a] = +w
+    for a in short_assets:
+        result[a] = -w
+    return result

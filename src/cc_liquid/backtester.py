@@ -22,7 +22,13 @@ from typing import Any, Literal
 
 import polars as pl
 
-from .portfolio import weights_from_ranks, weights_from_hrp, weights_from_hrp_lw, weights_from_mhrp
+from .portfolio import (
+    weights_from_ranks,
+    weights_from_hrp,
+    weights_from_hrp_lw,
+    weights_from_mhrp,
+    weights_from_ivp,
+)
 
 
 @dataclass
@@ -406,6 +412,20 @@ class Backtester:
                 ewma_lambda=self.config.mhrp_ewma_lambda,
                 vol_target=self.config.mhrp_vol_target,
                 annual_factor=self.config.mhrp_annual_factor,
+            )
+        
+        if self.config.weighting_method == "ivp" and returns_wide is not None:
+            if current_date is not None:
+                hist = returns_wide.filter(pl.col("date") < current_date)
+            else:
+                hist = returns_wide
+ 
+            return weights_from_ivp(
+                long_assets=long_assets,
+                short_assets=short_assets,
+                returns_wide=hist,
+                target_gross=target_gross,
+                lookback_days=self.config.hrp_lookback_days,
             )
 
         # Default: rank_power

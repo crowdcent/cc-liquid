@@ -14,7 +14,7 @@ data:
   prediction_column: pred_30d
 
 portfolio:
-  weighting_method: mhrp
+  weighting_method: hrp_lw
   hrp_lookback_days: 60
   num_long: 22
   num_short: 22
