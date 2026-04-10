@@ -42,3 +42,6 @@ wallet_key*
 
 # Local development files
 dev/
+data/
+.gitignore
+cc-liqiud-config.yaml

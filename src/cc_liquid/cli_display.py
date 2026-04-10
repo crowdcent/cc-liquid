@@ -1273,7 +1273,7 @@ def create_backtest_config_panel(config) -> Panel:
     )
     tree.add_row("├─ Rebalance", f"{config.rebalance_every_n_days}d")
     weighting_method = getattr(config, "weighting_method", "rank_power")
-    method_color = "cyan" if weighting_method in ("hrp", "hrp_lw") else "white"
+    method_color = "white" if weighting_method in ("hrp", "hrp_lw") else "white"
     tree.add_row("└─ Method", f"[{method_color}]{weighting_method}[/{method_color}]")
     tree.add_row("", "")
 
@@ -1353,10 +1353,10 @@ def create_backtest_metrics_panel(stats: dict) -> Panel:
     # PSR/DSR — only shown when present (i.e. scipy is available and
     # _compute_stats ran successfully with the DSR block in place)
     if psr is not None:
-        psr_color = "green" if psr >= 0.95 else "yellow" if psr >= 0.90 else "red"
+        psr_color = "green" if psr >= 0.50 else "yellow" if psr >= 0.50 else "red"
         right_table.add_row("PSR", f"[{psr_color}]{psr:.3f}[/{psr_color}]")
     if dsr is not None:
-        dsr_color = "green" if dsr >= 0.95 else "yellow" if dsr >= 0.90 else "red"
+        dsr_color = "green" if dsr >= 0.50 else "yellow" if dsr >= 0.50 else "red"
         right_table.add_row("DSR", f"[{dsr_color}]{dsr:.3f}[/{dsr_color}]")
 
     return Panel(
