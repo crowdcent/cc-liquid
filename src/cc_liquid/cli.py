@@ -1125,6 +1125,18 @@ def apply_stops(set_overrides):
     help="Show detailed position analysis table",
 )
 @click.option(
+    "--n-trials",
+    type=int,
+    default=1,
+    show_default=True,
+    help=(
+        "Number of parameter combinations tested in the optimizer run that "
+        "produced this strategy. Used for the Deflated Sharpe Ratio multiple "
+        "testing correction. Pass the same value used in your optimize run. "
+        "Default 1 = PSR only (no multiple testing correction)."
+    ),
+)
+@click.option(
     "--verbose",
     is_flag=True,
     help="Show detailed progress",
@@ -1137,6 +1149,7 @@ def analyze(
     fee_bps,
     slippage_bps,
     prediction_lag,
+    n_trials,
     save_daily,
     show_positions,
     verbose,
@@ -1186,6 +1199,12 @@ def analyze(
         num_short=config.portfolio.num_short,
         target_leverage=config.portfolio.target_leverage,
         rank_power=config.portfolio.rank_power,
+        weighting_method=config.portfolio.weighting_method,
+        hrp_lookback_days=config.portfolio.hrp_lookback_days,
+        mhrp_ewma_lambda=config.portfolio.mhrp_ewma_lambda,
+        mhrp_vol_target=config.portfolio.mhrp_vol_target,
+        mhrp_annual_factor=config.portfolio.mhrp_annual_factor,
+        n_trials=n_trials,
         rebalance_every_n_days=config.portfolio.rebalancing.every_n_days,
         prediction_lag_days=prediction_lag,
         mode=config.portfolio.rebalancing.mode,
@@ -1333,6 +1352,18 @@ def analyze(
     help="Clear cached optimization results",
 )
 @click.option(
+    "--n-trials",
+    type=int,
+    default=None,
+    help=(
+        "Override the number of trials for the Deflated Sharpe Ratio "
+        "multiple testing correction. By default the optimizer computes "
+        "this automatically from the total number of parameter combinations. "
+        "Only set this if you want to account for combinations tested in "
+        "previous separate optimizer runs."
+    ),
+)
+@click.option(
     "--verbose",
     is_flag=True,
     help="Show detailed progress",
@@ -1352,6 +1383,7 @@ def optimize(
     fee_bps,
     slippage_bps,
     prediction_lag,
+    n_trials,        # NEW
     top_n,
     apply_best,
     save_results,
@@ -1401,6 +1433,12 @@ def optimize(
         start_date=start_date,
         end_date=end_date,
         rank_power=config.portfolio.rank_power,
+        weighting_method=config.portfolio.weighting_method,
+        hrp_lookback_days=config.portfolio.hrp_lookback_days,
+        mhrp_ewma_lambda=config.portfolio.mhrp_ewma_lambda,
+        mhrp_vol_target=config.portfolio.mhrp_vol_target,
+        mhrp_annual_factor=config.portfolio.mhrp_annual_factor,
+        n_trials=n_trials if n_trials is not None else 1,
         prediction_lag_days=prediction_lag,
         mode=config.portfolio.rebalancing.mode,
         rolling_days=config.portfolio.rebalancing.rolling_days,
@@ -1518,6 +1556,8 @@ def optimize(
                     target_leverage=best_params["target_leverage"],
                     rebalance_every_n_days=best_params["rebalance_every_n_days"],
                     rank_power=best_params["rank_power"],
+                    weighting_method=config.portfolio.weighting_method,
+                    hrp_lookback_days=config.portfolio.hrp_lookback_days,
                     prediction_lag_days=prediction_lag,
                     mode=config.portfolio.rebalancing.mode,
                     rolling_days=config.portfolio.rebalancing.rolling_days,

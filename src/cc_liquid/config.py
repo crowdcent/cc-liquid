@@ -49,6 +49,24 @@ class PortfolioConfig:
     num_short: int = 10
     target_leverage: float = 1.0  # Position sizing multiplier (1.0 = no leverage)
     rank_power: float = 0.0  # 0.0 = equal weight (default), higher = more concentration
+    weighting_method: str = "rank_power"  # "rank_power" or "hrp"
+    hrp_lookback_days: int = 60  # Trading days of returns used for HRP covariance estimation
+    mhrp_ewma_lambda: float = 0.97
+    # EWMA decay factor for MHRP covariance estimation.
+    # Range: (0, 1). Higher = slower decay = longer effective memory.
+    # This is a hyperparameter: sweep it via the optimizer alongside
+    # hrp_lookback_days to find the best fit for your rebalance cadence.
+    # 0.97 is a conservative starting point with no cadence assumption.
+    mhrp_vol_target: float | None = None
+    # Annualised volatility target for MHRP, e.g. 0.15 for 15%.
+    # None = disabled; weights are scaled by target_gross only.
+    # When set, weights are pre-scaled to hit this volatility before
+    # the target_gross cap is applied.  Requires annual_factor to be
+    # set correctly for your asset class (see mhrp_annual_factor).
+    mhrp_annual_factor: int = 365
+    # Trading periods per year used to annualise portfolio volatility.
+    # 365 for crypto (default), 252 for equities.
+    # Only relevant when mhrp_vol_target is set.
     rebalancing: RebalancingConfig = field(default_factory=RebalancingConfig)
     stop_loss: StopLossConfig = field(default_factory=StopLossConfig)
 
