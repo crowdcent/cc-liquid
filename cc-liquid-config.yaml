@@ -8,17 +8,20 @@ profiles:
 
 data:
   source: local
-  path: predictions.parquet
-  date_column: release_date
-  asset_id_column: id
-  prediction_column: pred_30d
+  path: ens_predictions.parquet
+  # date_column: release_date
+  # asset_id_column: id
+  # prediction_column: pred_30d
+  date_column: date
+  asset_id_column: symbol
+  prediction_column: prediction
 
 portfolio:
   weighting_method: hrp_lw
   hrp_lookback_days: 60
-  num_long: 25
-  num_short: 25
-  target_leverage: 2
+  num_long: 30
+  num_short: 30
+  target_leverage: 3
   rank_power: 0.0
   mhrp_ewma_lambda: 0.97       # decay factor — tune via optimizer
   mhrp_vol_target: null        # e.g. 0.15 for 15% annualised vol target; null = off
